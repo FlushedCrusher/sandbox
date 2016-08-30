@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Daniel J. Montanez">
+    
+  <title>Reduxish Counter</title>
+
+</head>
+
+  <body></body>
+
+  <script type="text/javascript" src="../js/philosophy.js"></script>
+  <script type="text/javascript">
+
+    var Reduxish = new Reduxish();
+    var counter = function( state, action ) {
+      'use strict';
+      
+      var state = (typeof state !== 'undefined') ? state : 0;
+      switch(action.type) {
+        case 'SHIFT_LEFT':
+          return shiftLeft(state);
+        case 'INCREMENT':
+          return state + 1;
+        case 'DECREMENT':
+          return state - 1;
+        case 'SHIFT_RIGHT':
+          return shiftRight(state);
+        default:
+          return state;
+      }
+      
+    };
+
+    /**
+    * Helper Functions
+    */
+    function shiftLeft(num) {
+      var str = num.toString();
+      var pre = "";
+      if(str.length > 1 && str[0] === "-") {
+        pre = "-";
+        str = str.substr(1);
+      }
+      return parseInt(pre + str.substr(1) + str[0]);
+    }
+    function shiftRight(num) {
+      var str = num.toString();
+      var pre = "";
+      if(str.length > 1 && str[0] === "-") {
+        pre = "-";
+        str = str.substr(1);
+      }
+      return parseInt(pre + str[str.length-1] + str.substr(0,str.length - 1));
+    }
+    var store = Reduxish.createStore( counter );
+
+    var render = function() {
+      document.body.innerText = store.getState();
+    };
+
+    var log = function() {
+      console.debug("|- Previous State -|-------- Action --------|- Current State -| \n" + 
+                    "| " + JSON.stringify(store.getPreviousState()) + ",                " + 
+                    JSON.stringify(store.getLastAction()) + ",     " + 
+                    JSON.stringify(store.getState())
+                    );
+    };
+
+    store.subscribe( render );
+    store.subscribe( log );
+    render();
+
+    document.addEventListener('keydown', function( event ) {
+    
+      switch(event.which) {
+        case 37:
+          store.dispatch({
+            type: 'SHIFT_LEFT'
+          });
+          break;
+        case 38:
+          store.dispatch({
+            type: 'INCREMENT'
+          });
+          break;
+        case 39:
+          store.dispatch({
+            type: 'SHIFT_RIGHT'
+          });
+          break;
+        case 40:
+          store.dispatch({
+            type: 'DECREMENT'
+          });
+          break;
+        default:
+          break;
+      }
+      
+    }, false);
+    
+  </script>
+</html>

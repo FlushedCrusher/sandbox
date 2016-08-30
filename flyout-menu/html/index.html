@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Daniel J. Montanez">
+    
+  <title>Flyout Menu</title>
+    
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="../css/Flyout.css">
+  <link rel="stylesheet" href="../css/content.css">
+
+</head>
+
+  <body>
+    <div id="app">
+      <div id="content"></div>
+    </div>
+  </body>
+
+  <script type="text/javascript" src="../js/Flyout.js"></script>
+    
+  <script>
+    var flyout = new Flyout({
+      state: 'close',
+      position: 'left',
+      size: '200px',
+      icon: 'glyphicon glyphicon-align-justify',
+      title: 'Create',
+      buttons: [
+        {
+          text: 'Option One',
+          callback: function() {
+            content.textContent = "Option One Selected"
+          }
+        },
+        {
+          text: 'Option Two',
+          callback: function() {
+            content.textContent = "Option One Selected"
+          }
+        }
+      ]
+    });
+    app.appendChild(flyout.element);
+  </script>
+    
+</html>

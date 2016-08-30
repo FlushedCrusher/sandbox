@@ -1,0 +1,11 @@
+{
+  "name": "rjs_vanilla",
+  "version": "1.0.0",
+  "description": "Angular RJS implementation",
+  "main": "index.html",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Daniel J. Montanez",
+  "license": "MIT"
+}
