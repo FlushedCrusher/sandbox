@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="author" content="Daniel J. Montanez">
+    
+    <title>Flash Deck v 1.0.0</title>
+    
+    <link id="import_header" rel="import" href="header.html">
+    <link id="import_header_2" rel="import" href="header-2.html">
+
+</head>
+
+<body>
+    
+    <div id="container"></div>
+    
+    <script>
+        // Local variables
+        var header        = document.querySelector('#import_header');
+        var header_2        = document.querySelector('#import_header_2');
+        // Imported variables
+        var _header     = header.import.querySelector ('#_import_header');
+        var _header_2   = header_2.import.querySelector ('#_import_header_2');
+        // Write the content
+        container.appendChild( _header.cloneNode(true) );
+        container.appendChild( _header_2.cloneNode(true) );
+    </script>
+    
+</body>
+
+</html>
