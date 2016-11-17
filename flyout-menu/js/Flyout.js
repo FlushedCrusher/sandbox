@@ -6,6 +6,8 @@
  *  @param icon
  *  @param title
  *  @param buttons
+ *    @param text
+ *    @param callback
  */
 function Flyout( attrs ) {
   this.setConfig( attrs );
