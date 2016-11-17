@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Daniel J. Montanez">
+    
+  <title>Reduxish Counter</title>
+
+</head>
+
+  <body></body>
+
+  <script type="text/javascript" src="philosophy.js"></script>
+  <script type="text/javascript">
+
+    var Reduxish = new Reduxish();
+    var counter = function( state, action ) {
+      'use strict';
+      
+      var state = (typeof state !== 'undefined') ? state : 0;
+      switch(action.type) {
+        case 'INCREMENT':
+          return state + 1;
+        case 'DECREMENT':
+          return state - 1;
+        default:
+          return state;
+      }
+      
+    };
+
+    var store = Reduxish.createStore( counter );
+
+    var render = function() {
+      document.body.innerText = store.getState();
+    };
+
+    var log = function() {
+      console.debug("---------- Previous State\n" + store.getPreviousState());
+      console.debug("----- Action -----\n" + JSON.stringify( store.getLastAction() ));
+      console.debug("Current State ----------\n" + store.getState());
+    };
+
+    store.subscribe( render );
+    store.subscribe( log );
+    render();
+
+    document.addEventListener('mousedown', function( event ) {
+    
+      switch(event.which) {
+        case 1:
+          store.dispatch({
+            type: 'INCREMENT'
+          });
+          break;
+        case 3:
+          store.dispatch({
+            type: 'DECREMENT'
+          });
+          break;
+        default:
+          break;
+      }
+      
+    }, false);
+    
+  </script>
+</html>
