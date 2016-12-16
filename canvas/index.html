@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Daniel J. Montanez">
+    
+  <title>HTML5 Canvas</title>
+
+</head>
+
+  <body>
+     <canvas id="canvas" width="40" height="60" style="border:1px solid #000000;"></canvas>
+     <img id="image">
+  </body>
+    
+  <script type="text/javascript">
+    var ctx = canvas.getContext("2d");
+        ctx.strokeStyle = "red";
+        ctx.fillStyle = "red";
+        
+        ctx.moveTo(20,5);
+        ctx.lineTo(25,15);
+        ctx.lineTo(15,15);
+        ctx.lineTo(20,5);
+        ctx.fill();
+
+        ctx.moveTo(20,15);
+        ctx.lineTo(20,25);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(20,30,5,0,2*Math.PI);
+        ctx.fill();
+
+        ctx.moveTo(15,55);
+        ctx.lineTo(25,55);
+        ctx.stroke();
+  </script>
+
+</html>

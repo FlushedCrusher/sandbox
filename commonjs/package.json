@@ -1,0 +1,14 @@
+{
+  "name": "test_common_webpack",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Daniel J. Montanez",
+  "license": "MIT",
+  "devDependencies": {
+    "webpack": "^1.14.0"
+  }
+}
