@@ -1,8 +1,5 @@
-/*
- * Element base class
- * 
- */
-// Toggle.prototype = Object.create(Element.prototype);
+var EventList = require('../Events/EventList.js');
+
 function Element(type) {
   'use strict';
   this.element = type ? document.createElement(type) : null;
@@ -69,15 +66,41 @@ Element.prototype.removeChild = function(component) {
  */
 Element.prototype.addToParent = function(component) {
   'use strict';
-  var elem = this.element.parentElemen | this.element;
+  var elem = this.element.parentElement || this.element;
   elem.appendChild(component);
   return this;
 };
 Element.prototype.removeFromParent = function(component) {
   'use strict';
-  var elem = this.element.parentElement | this.element;
+  var elem = this.element.parentElement || this.element;
   elem.removeChild(component);
   return this;
+};
+/*
+ * Event modifiers
+ */
+Element.prototype.setEvent = function(key, action) {
+  'use strict';
+  if(this.element[key] !== undefined && EventList.includes(key)) { 
+    this.element[key] = action;
+  }
+};
+Element.prototype.removeEvent = function(key) {
+  'use strict';
+  if(this.element[key] !== undefined && EventList.includes(key)) { 
+    this.element[key] = null;
+  }
+};
+Element.prototype.setEvents = function(events) {
+  'use strict';
+  var self = this;
+  for (var key in events) {
+    if (!events.hasOwnProperty(key)) {
+      continue;
+    }
+    var action = events[key];
+    self.setEvent(key, action);
+  }
 };
 
 module.exports = Element;

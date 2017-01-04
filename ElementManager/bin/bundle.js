@@ -46,24 +46,46 @@
 
 	'use strict'; // eslint-disable-line strict
 
-	var ElementManager = __webpack_require__(1); // eslint-disable-line no-unused-vars
+	var ElementManager = __webpack_require__(1);
 	var elementManager = new ElementManager();
 
-	var Div = __webpack_require__(4);
+	var DivOptions = __webpack_require__(4);
+	var Div = __webpack_require__(7);
 	elementManager.register('Div', Div);
-	elementManager.create('Div', {
-	  name: 'myDivOptions'
-	}).nest('Div', {
-	  name: 'myDivOptions'
-	}).nest('Div', {
-	  name: 'myDivOptions'
-	}).nest('Div', {
-	  name: 'myDivOptions'
-	}).nest('Div', {
-	  name: 'myDivOptions'
+
+	var l1 = new DivOptions();
+	l1.setTextContent('Level 1');
+	var l2 = new DivOptions();
+	l2.setTextContent('Level 2');
+	var l3 = new DivOptions();
+	l3.setTextContent('Level 3');
+	var l4 = new DivOptions();
+	l4.setTextContent('Level 4')
+	.events.set('onclick', function() {
+	  'use strict';
+	  alert('Clicked level 4!');
+	}).set('onmouseover', function() {
+	  'use strict';
+	  alert('Moused over level 4!');
 	});
 
-	window.ElementManager = elementManager;
+	elementManager
+	  .create('Div', l1)
+	  .nest('Div', l2)
+	  .nest('Div', l3)
+	  .after('Div', l3, true)
+	  .nest('Div', l4)
+	  .end();
+
+	elementManager
+	  .create('Div', l1)
+	  .nest('Div', l2, true)
+	  .nest('Div', l2)
+	  .nest('Div', l3, true)
+	  .after('Div', l2)
+	  .build();
+
+	// window.ElementManager = elementManager;
 
 /***/ },
 /* 1 */
@@ -80,6 +102,14 @@
 	  this.factory = new ElementFactory();
 	  this.guid = new Guid();
 	}
+	ElementManager.prototype.get = function(key) {
+	  'use strict';
+	  return this.elements.get(key);
+	};
+	ElementManager.prototype.addOrReplace = function(key, value) {
+	  'use strict';
+	  this.elements.set(key, value);
+	};
 	ElementManager.prototype.register = function(key, value) {
 	  'use strict';
 	  this.factory.registerElement(key, value);
@@ -89,30 +119,64 @@
 	  'use strict';
 	  var element = this.factory.create(key, options);
 	  var id = this.guid.create();
-	  this.elements.set(id, element);
+	  this.addOrReplace(id, element);
+	  this.select(element);
+	  return this;
+	};
+	ElementManager.prototype.nest = function (key, options, chain) {
+	  'use strict';
+	  var tmp = this.factory.create(key, options);
+	  this.component.addChild(tmp.element);
+	  if(!chain) {
+	    this.select(tmp);
+	  }
+	  return this;
+	};
+	ElementManager.prototype.after = function (key, options, chain) {
+	  'use strict';
+	  var tmp = this.factory.create(key, options);
+	  this.component.addToParent(tmp.element);
+	  if(!chain) {
+	    this.select(tmp);
+	  }
+	  return this;
+	};
+	ElementManager.prototype.select = function(elementOrKey) {
+	  'use strict';
+	  var element = typeof elementOrKey === 'object' ? elementOrKey : this.get(elementOrKey);
 	  this.component = element;
-	  return this;
 	};
-	ElementManager.prototype.createChain = function(key, options) {
+	ElementManager.prototype.end = function() {
 	  'use strict';
-	  return this.factory.create(key, options);
-	};
-	ElementManager.prototype.nest = function (key, options) {
-	  'use strict';
-	  var tmp = this.createChain(key, options);
-	  this.component.appendChild(tmp.element);
-	  return this;
+	  this.select(null);
 	};
 	ElementManager.prototype.addToDom = function(component) {
 	  'use strict';
 	  this.dom.appendChild(component);
+	  return this;
+	};
+	ElementManager.prototype.removeFromDom = function(component) {
+	  'use strict';
+	  this.dom.remove(component);
+	  return this;
+	};
+	ElementManager.prototype.clearDom = function() {
+	  'use strict';
+	  var self = this;
+	  this.elements.forEach(function(n) {
+	    self.removeFromDom(n.element);
+	  });
+	  this.end();
+	  return this;
 	};
 	ElementManager.prototype.build = function() {
 	  'use strict';
 	  var self = this;
+	  // this.clearDom();
 	  this.elements.forEach(function(n) {
 	    self.addToDom(n.element);
 	  });
+	  return this;
 	};
 
 	module.exports = ElementManager;
@@ -166,25 +230,172 @@
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Element = __webpack_require__(5);
+	var EventOptions = __webpack_require__(5);
+
+	function DivOptions() {
+	  'use strict';
+	  this.textContent = null;
+	  this.events = new EventOptions();
+	}
+	DivOptions.prototype.getTextContent = function() {
+	  'use strict';
+	  return this.textContent;
+	};
+	DivOptions.prototype.setTextContent = function(content) {
+	  'use strict';
+	  this.textContent = content;
+	  return this;
+	};
+
+	module.exports = DivOptions;
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var EventList = __webpack_require__(6);
+
+	function EventOptions() {
+	  'use strict';
+	}
+	EventOptions.prototype.get = function(key) {
+	  'use strict';
+	  var action = null;
+	  if(EventList.includes(key)) {
+	    action = this[key];
+	  }
+	  return action;
+	};
+	EventOptions.prototype.set = function(key, action) {
+	  'use strict';
+	  if(EventList.includes(key)) {
+	    this[key] = action;
+	  }
+	  return this;
+	};
+
+	module.exports = EventOptions;
+
+/***/ },
+/* 6 */
+/***/ function(module, exports) {
+
+	var EventList = [
+	  'onabort',
+	  'onauxclick',
+	  'onbeforecopy',
+	  'onbeforecut',
+	  'onbeforepaste',
+	  'onblur',
+	  'oncancel',
+	  'oncanplay',
+	  'oncanplaythrough',
+	  'onchange',
+	  'onclick',
+	  'onclose',
+	  'oncontextmenu',
+	  'oncopy',
+	  'oncuechange',
+	  'oncut',
+	  'ondblclick',
+	  'ondrag',
+	  'ondragend',
+	  'ondragenter',
+	  'ondragleave',
+	  'ondragover',
+	  'ondragstart',
+	  'ondrop',
+	  'ondurationchange',
+	  'onemptied',
+	  'onended',
+	  'onerror',
+	  'onfocus',
+	  'ongotpointercapture',
+	  'oninput',
+	  'oninvalid',
+	  'onkeydown',
+	  'onkeypress',
+	  'onkeyup',
+	  'onload',
+	  'onloadeddata',
+	  'onloadedmetadata',
+	  'onloadstart',
+	  'onlostpointercapture',
+	  'onmousedown',
+	  'onmouseenter',
+	  'onmouseleave',
+	  'onmousemove',
+	  'onmouseout',
+	  'onmouseover',
+	  'onmouseup',
+	  'onmousewheel',
+	  'onpaste',
+	  'onpause',
+	  'onplay',
+	  'onplaying',
+	  'onpointercancel',
+	  'onpointerdown',
+	  'onpointerenter',
+	  'onpointerleave',
+	  'onpointermove',
+	  'onpointerout',
+	  'onpointerover',
+	  'onpointerup',
+	  'onprogress',
+	  'onratechange',
+	  'onreset',
+	  'onresize',
+	  'onscroll',
+	  'onsearch',
+	  'onseeked',
+	  'onseeking',
+	  'onselect',
+	  'onselectstart',
+	  'onshow',
+	  'onstalled',
+	  'onsubmit',
+	  'onsuspend',
+	  'ontimeupdate',
+	  'ontoggle',
+	  'onvolumechange',
+	  'onwaiting',
+	  'onwebkitfullscreenchange',
+	  'onwebkitfullscreenerror',
+	  'onwheel'
+	];
+
+	module.exports = EventList;
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Element = __webpack_require__(8);
 
 	function Div(options) {
 	  'use strict';
 	  Element.call(this, 'div');
-	  this.prototype = Object.create(Element.prototype);
-	  this.element.textContent = 'Hello World!';
+	  if(options) {
+	    this.setTextContent(options.textContent || "");
+	    this.setEvents(options.events || {});
+	  }
+	  
 	}
+	Div.prototype = Object.create(Element.prototype);
+	Div.prototype.setTextContent = function(content) {
+	  'use strict';
+	  this.element.textContent = content;
+	  return this;
+	};
+
 	module.exports = Div;
 
 /***/ },
-/* 5 */
-/***/ function(module, exports) {
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
 
-	/*
-	 * Element base class
-	 * 
-	 */
-	// Toggle.prototype = Object.create(Element.prototype);
+	var EventList = __webpack_require__(6);
+
 	function Element(type) {
 	  'use strict';
 	  this.element = type ? document.createElement(type) : null;
@@ -251,15 +462,41 @@
 	 */
 	Element.prototype.addToParent = function(component) {
 	  'use strict';
-	  var elem = this.element.parentElemen | this.element;
+	  var elem = this.element.parentElement || this.element;
 	  elem.appendChild(component);
 	  return this;
 	};
 	Element.prototype.removeFromParent = function(component) {
 	  'use strict';
-	  var elem = this.element.parentElement | this.element;
+	  var elem = this.element.parentElement || this.element;
 	  elem.removeChild(component);
 	  return this;
+	};
+	/*
+	 * Event modifiers
+	 */
+	Element.prototype.setEvent = function(key, action) {
+	  'use strict';
+	  if(this.element[key] !== undefined && EventList.includes(key)) { 
+	    this.element[key] = action;
+	  }
+	};
+	Element.prototype.removeEvent = function(key) {
+	  'use strict';
+	  if(this.element[key] !== undefined && EventList.includes(key)) { 
+	    this.element[key] = null;
+	  }
+	};
+	Element.prototype.setEvents = function(events) {
+	  'use strict';
+	  var self = this;
+	  for (var key in events) {
+	    if (!events.hasOwnProperty(key)) {
+	      continue;
+	    }
+	    var action = events[key];
+	    self.setEvent(key, action);
+	  }
 	};
 
 	module.exports = Element;
