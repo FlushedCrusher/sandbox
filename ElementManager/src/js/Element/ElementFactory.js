@@ -1,3 +1,9 @@
+/**
+ * Element factory 
+ * 
+ * @returns {ElementFactory}
+ */
+
 function ElementFactory() {
   'use strict';
   this.registeredElements = new Map();

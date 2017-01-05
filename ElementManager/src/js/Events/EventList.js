@@ -1,3 +1,9 @@
+/**
+ * Acceptable events
+ * 
+ * @returns {EventList}
+ */
+
 var EventList = [
   'onabort',
   'onauxclick',

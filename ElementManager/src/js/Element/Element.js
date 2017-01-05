@@ -1,12 +1,17 @@
+/**
+ * Dom Element wrapper
+ * 
+ * @requires {EventList}
+ * @param {String} type Element type
+ * @returns {Element}
+ */
+
 var EventList = require('../Events/EventList.js');
 
 function Element(type) {
   'use strict';
   this.element = type ? document.createElement(type) : null;
 }
-/*
- * Element display modifiers
- */
 Element.prototype.show = function() {
   'use strict';
   var elem = this.element;
@@ -25,9 +30,6 @@ Element.prototype.toggleDisplay = function() {
   elem.style.display = (elem.style.display === 'none') ? 'block' : 'none';
   return this;
 };
-/*
- * Element visibility modifiers
- */
 Element.prototype.visible = function() {
   'use strict';
   var elem = this.element;
@@ -46,9 +48,6 @@ Element.prototype.toggleVisibility = function() {
   elem.style.visibility = (elem.style.visibility === 'hidden') ? 'visible' : 'hidden';
   return this;
 };
-/*
- * Element children modifiers
- */
 Element.prototype.addChild = function(component) {
   'use strict';
   var elem = this.element;
@@ -61,9 +60,6 @@ Element.prototype.removeChild = function(component) {
   elem.removeChild(component);
   return this;
 };
-/*
- * Element parent modifiers
- */
 Element.prototype.addToParent = function(component) {
   'use strict';
   var elem = this.element.parentElement || this.element;
@@ -76,9 +72,6 @@ Element.prototype.removeFromParent = function(component) {
   elem.removeChild(component);
   return this;
 };
-/*
- * Event modifiers
- */
 Element.prototype.setEvent = function(key, action) {
   'use strict';
   if(this.element[key] !== undefined && EventList.includes(key)) { 
@@ -101,6 +94,17 @@ Element.prototype.setEvents = function(events) {
     var action = events[key];
     self.setEvent(key, action);
   }
+};
+Element.prototype.setStyle = function(style) {
+  'use strict';
+  if(style.cssText) {
+    this.element.style.cssText = style.cssText;
+  }
+  return this;
+};
+Element.prototype.clearStyle = function() {
+  'use strict';
+  this.element.style.cssText = "";
 };
 
 module.exports = Element;

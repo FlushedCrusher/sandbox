@@ -9,18 +9,27 @@ elementManager.register('Div', Div);
 
 var l1 = new DivOptions();
 l1.setTextContent('Level 1');
+
 var l2 = new DivOptions();
-l2.setTextContent('Level 2');
+l2.setTextContent('Level 2')
+.setStyle({
+  cssText:
+    "color: white;" +
+    "background-color: red;"
+});
+
 var l3 = new DivOptions();
-l3.setTextContent('Level 3');
+l3.setTextContent('Level 3').setStyle({
+  cssText:
+    "color: green;" +
+    "background-color: yellow;"
+});;
+
 var l4 = new DivOptions();
-l4.setTextContent('Level 4')
+l4.setTemplate("<div>I am a template div!</div>")
 .events.set('onclick', function() {
   'use strict';
   alert('Clicked level 4!');
-}).set('onmouseover', function() {
-  'use strict';
-  alert('Moused over level 4!');
 });
 
 elementManager
@@ -29,7 +38,7 @@ elementManager
   .nest('Div', l3)
   .after('Div', l3, true)
   .nest('Div', l4)
-  .end();
+  .build();
 
 elementManager
   .create('Div', l1)
@@ -38,5 +47,3 @@ elementManager
   .nest('Div', l3, true)
   .after('Div', l2)
   .build();
-
-// window.ElementManager = elementManager;

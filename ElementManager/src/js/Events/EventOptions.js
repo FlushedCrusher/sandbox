@@ -1,3 +1,10 @@
+/**
+ * Event options object
+ * 
+ * @requires {EventList}
+ * @returns {EventOptions}
+ */
+
 var EventList = require('./EventList.js');
 
 function EventOptions() {

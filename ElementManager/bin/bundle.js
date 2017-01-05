@@ -55,18 +55,27 @@
 
 	var l1 = new DivOptions();
 	l1.setTextContent('Level 1');
+
 	var l2 = new DivOptions();
-	l2.setTextContent('Level 2');
+	l2.setTextContent('Level 2')
+	.setStyle({
+	  cssText:
+	    "color: white;" +
+	    "background-color: red;"
+	});
+
 	var l3 = new DivOptions();
-	l3.setTextContent('Level 3');
+	l3.setTextContent('Level 3').setStyle({
+	  cssText:
+	    "color: green;" +
+	    "background-color: yellow;"
+	});;
+
 	var l4 = new DivOptions();
-	l4.setTextContent('Level 4')
+	l4.setTemplate("<div>I am a template div!</div>")
 	.events.set('onclick', function() {
 	  'use strict';
 	  alert('Clicked level 4!');
-	}).set('onmouseover', function() {
-	  'use strict';
-	  alert('Moused over level 4!');
 	});
 
 	elementManager
@@ -75,7 +84,7 @@
 	  .nest('Div', l3)
 	  .after('Div', l3, true)
 	  .nest('Div', l4)
-	  .end();
+	  .build();
 
 	elementManager
 	  .create('Div', l1)
@@ -85,11 +94,17 @@
 	  .after('Div', l2)
 	  .build();
 
-	// window.ElementManager = elementManager;
-
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Element manager
+	 * 
+	 * @requires {ElementFactory}
+	 * @requires {Guid}
+	 * @returns {ElementManager}
+	 */
 
 	var ElementFactory = __webpack_require__(2);
 	var Guid = __webpack_require__(3);
@@ -157,7 +172,9 @@
 	};
 	ElementManager.prototype.removeFromDom = function(component) {
 	  'use strict';
-	  this.dom.remove(component);
+	  if(this.dom.contains(component)) {
+	    this.dom.removeChild(component);
+	  }
 	  return this;
 	};
 	ElementManager.prototype.clearDom = function() {
@@ -172,7 +189,7 @@
 	ElementManager.prototype.build = function() {
 	  'use strict';
 	  var self = this;
-	  // this.clearDom();
+	  this.clearDom();
 	  this.elements.forEach(function(n) {
 	    self.addToDom(n.element);
 	  });
@@ -184,6 +201,12 @@
 /***/ },
 /* 2 */
 /***/ function(module, exports) {
+
+	/**
+	 * Element factory 
+	 * 
+	 * @returns {ElementFactory}
+	 */
 
 	function ElementFactory() {
 	  'use strict';
@@ -205,6 +228,12 @@
 /***/ },
 /* 3 */
 /***/ function(module, exports) {
+
+	/**
+	 * Guid generator and hash
+	 * 
+	 * @returns {Guid}
+	 */
 
 	function Guid() {
 	  'use strict';
@@ -230,12 +259,21 @@
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/**
+	 * Options for Div element wrapper
+	 * 
+	 * @requires {EventOptions}
+	 * @returns {DivOptions}
+	 */
+
 	var EventOptions = __webpack_require__(5);
 
 	function DivOptions() {
 	  'use strict';
 	  this.textContent = null;
+	  this.template = null;
 	  this.events = new EventOptions();
+	  this.style = null;
 	}
 	DivOptions.prototype.getTextContent = function() {
 	  'use strict';
@@ -246,12 +284,46 @@
 	  this.textContent = content;
 	  return this;
 	};
+	DivOptions.prototype.getTemplate = function() {
+	  'use strict';
+	  return this.template;
+	};
+	DivOptions.prototype.setTemplate = function(content) {
+	  'use strict';
+	  this.template = content;
+	  return this;
+	};
+	DivOptions.prototype.getEvents = function() {
+	  'use strict';
+	  return this.events;
+	};
+	DivOptions.prototype.setEvents = function(content) {
+	  'use strict';
+	  this.events = content;
+	  return this;
+	};
+	DivOptions.prototype.getStyle = function() {
+	  'use strict';
+	  return this.style;
+	};
+	DivOptions.prototype.setStyle = function(content) {
+	  'use strict';
+	  this.style = content;
+	  return this;
+	};
 
 	module.exports = DivOptions;
 
 /***/ },
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Event options object
+	 * 
+	 * @requires {EventList}
+	 * @returns {EventOptions}
+	 */
 
 	var EventList = __webpack_require__(6);
 
@@ -279,6 +351,12 @@
 /***/ },
 /* 6 */
 /***/ function(module, exports) {
+
+	/**
+	 * Acceptable events
+	 * 
+	 * @returns {EventList}
+	 */
 
 	var EventList = [
 	  'onabort',
@@ -370,21 +448,46 @@
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/**
+	 * Basic Div element wrapper
+	 * 
+	 * @requires {Element}
+	 * @requires {DivOptions}
+	 * @augments {Element}
+	 * @param {DivOptions} options
+	 * @returns {Div}
+	 */
+
 	var Element = __webpack_require__(8);
+	var DivOptions = __webpack_require__(4);
 
 	function Div(options) {
 	  'use strict';
 	  Element.call(this, 'div');
-	  if(options) {
-	    this.setTextContent(options.textContent || "");
-	    this.setEvents(options.events || {});
+	  var _options = options ? options : new DivOptions();
+	  if(_options.template) {
+	    this.setTemplate(_options.template);
+	  } else if(_options.textContent){
+	    this.setTextContent(_options.textContent);
 	  }
-	  
+	  if(_options.events) {
+	    this.setEvents(_options.events);
+	  }
+	  if(_options.style) {
+	    this.setStyle(_options.style);
+	  } else {
+	    this.clearStyle();
+	  }
 	}
 	Div.prototype = Object.create(Element.prototype);
 	Div.prototype.setTextContent = function(content) {
 	  'use strict';
 	  this.element.textContent = content;
+	  return this;
+	};
+	Div.prototype.setTemplate = function(content) {
+	  'use strict';
+	  this.element.innerHTML = content;
 	  return this;
 	};
 
@@ -394,15 +497,20 @@
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/**
+	 * Dom Element wrapper
+	 * 
+	 * @requires {EventList}
+	 * @param {String} type Element type
+	 * @returns {Element}
+	 */
+
 	var EventList = __webpack_require__(6);
 
 	function Element(type) {
 	  'use strict';
 	  this.element = type ? document.createElement(type) : null;
 	}
-	/*
-	 * Element display modifiers
-	 */
 	Element.prototype.show = function() {
 	  'use strict';
 	  var elem = this.element;
@@ -421,9 +529,6 @@
 	  elem.style.display = (elem.style.display === 'none') ? 'block' : 'none';
 	  return this;
 	};
-	/*
-	 * Element visibility modifiers
-	 */
 	Element.prototype.visible = function() {
 	  'use strict';
 	  var elem = this.element;
@@ -442,9 +547,6 @@
 	  elem.style.visibility = (elem.style.visibility === 'hidden') ? 'visible' : 'hidden';
 	  return this;
 	};
-	/*
-	 * Element children modifiers
-	 */
 	Element.prototype.addChild = function(component) {
 	  'use strict';
 	  var elem = this.element;
@@ -457,9 +559,6 @@
 	  elem.removeChild(component);
 	  return this;
 	};
-	/*
-	 * Element parent modifiers
-	 */
 	Element.prototype.addToParent = function(component) {
 	  'use strict';
 	  var elem = this.element.parentElement || this.element;
@@ -472,9 +571,6 @@
 	  elem.removeChild(component);
 	  return this;
 	};
-	/*
-	 * Event modifiers
-	 */
 	Element.prototype.setEvent = function(key, action) {
 	  'use strict';
 	  if(this.element[key] !== undefined && EventList.includes(key)) { 
@@ -497,6 +593,17 @@
 	    var action = events[key];
 	    self.setEvent(key, action);
 	  }
+	};
+	Element.prototype.setStyle = function(style) {
+	  'use strict';
+	  if(style.cssText) {
+	    this.element.style.cssText = style.cssText;
+	  }
+	  return this;
+	};
+	Element.prototype.clearStyle = function() {
+	  'use strict';
+	  this.element.style.cssText = "";
 	};
 
 	module.exports = Element;

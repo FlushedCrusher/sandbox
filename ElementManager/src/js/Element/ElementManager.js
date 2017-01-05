@@ -1,3 +1,11 @@
+/**
+ * Element manager
+ * 
+ * @requires {ElementFactory}
+ * @requires {Guid}
+ * @returns {ElementManager}
+ */
+
 var ElementFactory = require('./ElementFactory.js');
 var Guid = require('../Guid/Guid.js');
 
@@ -64,7 +72,9 @@ ElementManager.prototype.addToDom = function(component) {
 };
 ElementManager.prototype.removeFromDom = function(component) {
   'use strict';
-  this.dom.remove(component);
+  if(this.dom.contains(component)) {
+    this.dom.removeChild(component);
+  }
   return this;
 };
 ElementManager.prototype.clearDom = function() {
@@ -79,7 +89,7 @@ ElementManager.prototype.clearDom = function() {
 ElementManager.prototype.build = function() {
   'use strict';
   var self = this;
-  // this.clearDom();
+  this.clearDom();
   this.elements.forEach(function(n) {
     self.addToDom(n.element);
   });

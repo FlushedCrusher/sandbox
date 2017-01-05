@@ -1,3 +1,9 @@
+/**
+ * Guid generator and hash
+ * 
+ * @returns {Guid}
+ */
+
 function Guid() {
   'use strict';
   this.hash = new Map();
