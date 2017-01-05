@@ -24,9 +24,7 @@ function Div(options) {
     this.setEvents(_options.events);
   }
   if(_options.style) {
-    this.setStyle(_options.style);
-  } else {
-    this.clearStyle();
+    this.setStyles(_options.style);
   }
 }
 Div.prototype = Object.create(Element.prototype);

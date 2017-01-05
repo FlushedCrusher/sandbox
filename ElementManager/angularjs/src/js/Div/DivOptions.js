@@ -1,17 +1,14 @@
 /**
  * Options for Div element wrapper
  * 
- * @requires {EventOptions}
  * @returns {DivOptions}
  */
-
-var EventOptions = require('../Events/EventOptions.js');
 
 function DivOptions() {
   'use strict';
   this.textContent = null;
   this.template = null;
-  this.events = new EventOptions();
+  this.events = null;
   this.style = null;
 }
 DivOptions.prototype.getTextContent = function() {

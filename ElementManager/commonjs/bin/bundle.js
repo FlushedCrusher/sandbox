@@ -49,34 +49,44 @@
 	var ElementManager = __webpack_require__(1);
 	var elementManager = new ElementManager();
 
-	var DivOptions = __webpack_require__(4);
-	var Div = __webpack_require__(7);
+	var EventOptions = __webpack_require__(4);
+	var StyleOptions = __webpack_require__(6);
+
+	var DivOptions = __webpack_require__(7);
+	var Div = __webpack_require__(8);
 	elementManager.register('Div', Div);
 
 	var l1 = new DivOptions();
 	l1.setTextContent('Level 1');
 
 	var l2 = new DivOptions();
+	var styles2 = new StyleOptions();
+	styles2.set('cssText',
+	  "color: white;" +
+	  "background-color: red;" +
+	  'border: 1px solid black;'
+	).set('color', 'blue');
 	l2.setTextContent('Level 2')
-	.setStyle({
-	  cssText:
-	    "color: white;" +
-	    "background-color: red;"
-	});
+	.setStyle(styles2);
 
 	var l3 = new DivOptions();
-	l3.setTextContent('Level 3').setStyle({
-	  cssText:
-	    "color: green;" +
-	    "background-color: yellow;"
-	});;
+	var styles3 = new StyleOptions();
+	styles3.set('cssText',
+	  'color: green;' +
+	  'background-color: yellow;' +
+	  'border: 1px solid black;'
+	);
+	l3.setTextContent('Level 3')
+	.setStyle(styles3);
 
 	var l4 = new DivOptions();
-	l4.setTemplate("<div>I am a template div!</div>")
-	.events.set('onclick', function() {
+	var events4 = new EventOptions();
+	events4.set('onclick', function() {
 	  'use strict';
 	  alert('Clicked level 4!');
 	});
+	l4.setTemplate("<div>I am a template div!</div>")
+	.setEvents(events4);
 
 	elementManager
 	  .create('Div', l1)
@@ -260,72 +270,13 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Options for Div element wrapper
-	 * 
-	 * @requires {EventOptions}
-	 * @returns {DivOptions}
-	 */
-
-	var EventOptions = __webpack_require__(5);
-
-	function DivOptions() {
-	  'use strict';
-	  this.textContent = null;
-	  this.template = null;
-	  this.events = new EventOptions();
-	  this.style = null;
-	}
-	DivOptions.prototype.getTextContent = function() {
-	  'use strict';
-	  return this.textContent;
-	};
-	DivOptions.prototype.setTextContent = function(content) {
-	  'use strict';
-	  this.textContent = content;
-	  return this;
-	};
-	DivOptions.prototype.getTemplate = function() {
-	  'use strict';
-	  return this.template;
-	};
-	DivOptions.prototype.setTemplate = function(content) {
-	  'use strict';
-	  this.template = content;
-	  return this;
-	};
-	DivOptions.prototype.getEvents = function() {
-	  'use strict';
-	  return this.events;
-	};
-	DivOptions.prototype.setEvents = function(content) {
-	  'use strict';
-	  this.events = content;
-	  return this;
-	};
-	DivOptions.prototype.getStyle = function() {
-	  'use strict';
-	  return this.style;
-	};
-	DivOptions.prototype.setStyle = function(content) {
-	  'use strict';
-	  this.style = content;
-	  return this;
-	};
-
-	module.exports = DivOptions;
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
 	 * Event options object
 	 * 
 	 * @requires {EventList}
 	 * @returns {EventOptions}
 	 */
 
-	var EventList = __webpack_require__(6);
+	var EventList = __webpack_require__(5);
 
 	function EventOptions() {
 	  'use strict';
@@ -349,7 +300,7 @@
 	module.exports = EventOptions;
 
 /***/ },
-/* 6 */
+/* 5 */
 /***/ function(module, exports) {
 
 	/**
@@ -445,7 +396,88 @@
 	module.exports = EventList;
 
 /***/ },
+/* 6 */
+/***/ function(module, exports) {
+
+	/**
+	 * Style options object
+	 * 
+	 * @returns {StyleOptions}
+	 */
+
+	function StyleOptions() {
+	  'use strict';
+	}
+	StyleOptions.prototype.get = function(key) {
+	  'use strict';
+	  var style = this[key];
+	  return style;
+	};
+	StyleOptions.prototype.set = function(key, style) {
+	  'use strict';
+	  this[key] = style;
+	  return this;
+	};
+	module.exports = StyleOptions;
+
+/***/ },
 /* 7 */
+/***/ function(module, exports) {
+
+	/**
+	 * Options for Div element wrapper
+	 * 
+	 * @returns {DivOptions}
+	 */
+
+	function DivOptions() {
+	  'use strict';
+	  this.textContent = null;
+	  this.template = null;
+	  this.events = null;
+	  this.style = null;
+	}
+	DivOptions.prototype.getTextContent = function() {
+	  'use strict';
+	  return this.textContent;
+	};
+	DivOptions.prototype.setTextContent = function(content) {
+	  'use strict';
+	  this.textContent = content;
+	  return this;
+	};
+	DivOptions.prototype.getTemplate = function() {
+	  'use strict';
+	  return this.template;
+	};
+	DivOptions.prototype.setTemplate = function(content) {
+	  'use strict';
+	  this.template = content;
+	  return this;
+	};
+	DivOptions.prototype.getEvents = function() {
+	  'use strict';
+	  return this.events;
+	};
+	DivOptions.prototype.setEvents = function(content) {
+	  'use strict';
+	  this.events = content;
+	  return this;
+	};
+	DivOptions.prototype.getStyle = function() {
+	  'use strict';
+	  return this.style;
+	};
+	DivOptions.prototype.setStyle = function(content) {
+	  'use strict';
+	  this.style = content;
+	  return this;
+	};
+
+	module.exports = DivOptions;
+
+/***/ },
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -458,8 +490,8 @@
 	 * @returns {Div}
 	 */
 
-	var Element = __webpack_require__(8);
-	var DivOptions = __webpack_require__(4);
+	var Element = __webpack_require__(9);
+	var DivOptions = __webpack_require__(7);
 
 	function Div(options) {
 	  'use strict';
@@ -474,9 +506,7 @@
 	    this.setEvents(_options.events);
 	  }
 	  if(_options.style) {
-	    this.setStyle(_options.style);
-	  } else {
-	    this.clearStyle();
+	    this.setStyles(_options.style);
 	  }
 	}
 	Div.prototype = Object.create(Element.prototype);
@@ -494,7 +524,7 @@
 	module.exports = Div;
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -505,12 +535,15 @@
 	 * @returns {Element}
 	 */
 
-	var EventList = __webpack_require__(6);
+	var EventList = __webpack_require__(5);
 
 	function Element(type) {
 	  'use strict';
 	  this.element = type ? document.createElement(type) : null;
 	}
+	/*
+	 * Display modifiers
+	 */
 	Element.prototype.show = function() {
 	  'use strict';
 	  var elem = this.element;
@@ -529,6 +562,9 @@
 	  elem.style.display = (elem.style.display === 'none') ? 'block' : 'none';
 	  return this;
 	};
+	/*
+	 * Visibility modifiers
+	 */
 	Element.prototype.visible = function() {
 	  'use strict';
 	  var elem = this.element;
@@ -547,6 +583,9 @@
 	  elem.style.visibility = (elem.style.visibility === 'hidden') ? 'visible' : 'hidden';
 	  return this;
 	};
+	/*
+	 * Child modifiers
+	 */
 	Element.prototype.addChild = function(component) {
 	  'use strict';
 	  var elem = this.element;
@@ -559,6 +598,9 @@
 	  elem.removeChild(component);
 	  return this;
 	};
+	/*
+	 * Sibling modifiers
+	 */
 	Element.prototype.addToParent = function(component) {
 	  'use strict';
 	  var elem = this.element.parentElement || this.element;
@@ -571,17 +613,22 @@
 	  elem.removeChild(component);
 	  return this;
 	};
+	/*
+	 * Event modifiers
+	 */
 	Element.prototype.setEvent = function(key, action) {
 	  'use strict';
 	  if(this.element[key] !== undefined && EventList.includes(key)) { 
 	    this.element[key] = action;
 	  }
+	  return this;
 	};
 	Element.prototype.removeEvent = function(key) {
 	  'use strict';
 	  if(this.element[key] !== undefined && EventList.includes(key)) { 
 	    this.element[key] = null;
 	  }
+	  return this;
 	};
 	Element.prototype.setEvents = function(events) {
 	  'use strict';
@@ -593,17 +640,57 @@
 	    var action = events[key];
 	    self.setEvent(key, action);
 	  }
+	  return this;
 	};
-	Element.prototype.setStyle = function(style) {
+	Element.prototype.clearEvents = function() {
 	  'use strict';
-	  if(style.cssText) {
-	    this.element.style.cssText = style.cssText;
+	  var self = this;
+	  var _events = this.element;
+	  for (var key in _events) {
+	    if (!_events.hasOwnProperty(key) && !EventList.includes(key)) {
+	      continue;
+	    }
+	    self.removeEvent(key);
 	  }
 	  return this;
 	};
-	Element.prototype.clearStyle = function() {
+	/*
+	 * Style modifiers
+	 */
+	Element.prototype.setStyle = function(key, style) {
 	  'use strict';
-	  this.element.style.cssText = "";
+	  this.element.style[key] = style;
+	  return this;
+	};
+	Element.prototype.removeStyle = function(style) {
+	  'use strict';
+	  var _styles = this.element.style;
+	  _styles[style] = null;
+	  return this;
+	};
+	Element.prototype.setStyles = function(styles) {
+	  'use strict';
+	  var self = this;
+	  for (var key in styles) {
+	    if (!styles.hasOwnProperty(key)) {
+	      continue;
+	    }
+	    var _style = styles[key];
+	    self.setStyle(key, _style);
+	  }
+	  return this;
+	};
+	Element.prototype.clearStyles = function() {
+	  'use strict';
+	  var self = this;
+	  var _styles = this.element.style;
+	  for (var style in _styles) {
+	    if (!_styles.hasOwnProperty(style)) {
+	      continue;
+	    }
+	    self.removeStyle(style);
+	  }
+	  return this;
 	};
 
 	module.exports = Element;

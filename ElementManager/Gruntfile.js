@@ -1,15 +1,19 @@
-var webpack_config = require('./webpack.config.js');
+var commonjs_webpack_config = require('./commonjs/webpack.config.js');
+var angularjs_webpack_config = require('./angularjs/webpack.config.js');
 
 module.exports = function(grunt) {
+  'use strict';
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     webpack: {
-      build: webpack_config
+      build_commonjs: commonjs_webpack_config,
+      build_angularjs: angularjs_webpack_config
     },
     watch: {
       files: [
-        './src/js/**/*.js'
+        './commonjs/src/js/**/*.js',
+        './angularjs/src/js/**/*.js'
       ],
       tasks: [
         'webpack'
