@@ -1,8 +1,9 @@
-/*
- * Redux Philosophy
+/**
+ * Store for Reduxish
+ * 
+ * @returns {Store}
  */
- 
-// Store
+
 function Store(reducer) {
   this.previousState
   this.state;
@@ -24,7 +25,7 @@ Store.prototype.getLastAction = function() {
 };
 Store.prototype.dispatch = function( action ) {
   'use strict';
-  this.previousState =this.state;
+  this.previousState = this.state;
   this.lastAction = Object.assign({}, action);
   this.state = this.reducer( this.state, action );
   this.listeners.forEach(function( callback ) {
@@ -41,12 +42,4 @@ Store.prototype.subscribe = function( callback ) {
   };
 };
 
-//Reduxish
-function Reduxish () {}
-Reduxish.prototype.createStore = function(reducer) {
-  'use strict';
-  
-  this.store = new Store(reducer);
-  this.store.dispatch({});
-  return this.store;
-};
+module.exports = Store;

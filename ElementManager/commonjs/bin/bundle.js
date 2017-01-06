@@ -46,654 +46,255 @@
 
 	'use strict'; // eslint-disable-line strict
 
-	var ElementManager = __webpack_require__(1);
-	var elementManager = new ElementManager();
+	var Reduxish = __webpack_require__(1);
+	var counter = __webpack_require__(3);
+	var Render = __webpack_require__(6);
+	var Log = __webpack_require__(7);
 
-	var EventOptions = __webpack_require__(4);
-	var StyleOptions = __webpack_require__(6);
+	var WindowListeners = __webpack_require__(8);
+	var KeyDown = __webpack_require__(9);
 
-	var DivOptions = __webpack_require__(7);
-	var Div = __webpack_require__(8);
-	elementManager.register('Div', Div);
+	var Redux = new Reduxish();
+	var store = Redux.createStore(counter);
 
-	var l1 = new DivOptions();
-	l1.setTextContent('Level 1');
+	var render = new Render(store);
+	store.subscribe(render.execute.bind(render));
 
-	var l2 = new DivOptions();
-	var styles2 = new StyleOptions();
-	styles2.set('cssText',
-	  "color: white;" +
-	  "background-color: red;" +
-	  'border: 1px solid black;'
-	).set('color', 'blue');
-	l2.setTextContent('Level 2')
-	.setStyle(styles2);
+	var log = new Log(store);
+	store.subscribe(log.execute.bind(log));
 
-	var l3 = new DivOptions();
-	var styles3 = new StyleOptions();
-	styles3.set('cssText',
-	  'color: green;' +
-	  'background-color: yellow;' +
-	  'border: 1px solid black;'
-	);
-	l3.setTextContent('Level 3')
-	.setStyle(styles3);
+	var keyDown = new KeyDown(store);
 
-	var l4 = new DivOptions();
-	var events4 = new EventOptions();
-	events4.set('onclick', function() {
-	  'use strict';
-	  alert('Clicked level 4!');
-	});
-	l4.setTemplate("<div>I am a template div!</div>")
-	.setEvents(events4);
+	render.execute();
 
-	elementManager
-	  .create('Div', l1)
-	  .nest('Div', l2)
-	  .nest('Div', l3)
-	  .after('Div', l3, true)
-	  .nest('Div', l4)
-	  .build();
-
-	elementManager
-	  .create('Div', l1)
-	  .nest('Div', l2, true)
-	  .nest('Div', l2)
-	  .nest('Div', l3, true)
-	  .after('Div', l2)
-	  .build();
+	var listeners = new WindowListeners();
+	listeners.add('keydown', keyDown.execute.bind(keyDown));
 
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Element manager
+	 * Reduxish
 	 * 
-	 * @requires {ElementFactory}
-	 * @requires {Guid}
-	 * @returns {ElementManager}
+	 * @requires {Store}
+	 * @returns {Reduxish}
 	 */
 
-	var ElementFactory = __webpack_require__(2);
-	var Guid = __webpack_require__(3);
+	var Store = __webpack_require__(2);
 
-	function ElementManager() {
+	function Reduxish () {
 	  'use strict';
-	  this.dom = document.body;
-	  this.component = null;
-	  this.elements = new Map();
-	  this.factory = new ElementFactory();
-	  this.guid = new Guid();
+	  this.store = undefined;
 	}
-	ElementManager.prototype.get = function(key) {
+	Reduxish.prototype.createStore = function(reducer) {
 	  'use strict';
-	  return this.elements.get(key);
-	};
-	ElementManager.prototype.addOrReplace = function(key, value) {
-	  'use strict';
-	  this.elements.set(key, value);
-	};
-	ElementManager.prototype.register = function(key, value) {
-	  'use strict';
-	  this.factory.registerElement(key, value);
-	  return this;
-	};
-	ElementManager.prototype.create = function(key, options) {
-	  'use strict';
-	  var element = this.factory.create(key, options);
-	  var id = this.guid.create();
-	  this.addOrReplace(id, element);
-	  this.select(element);
-	  return this;
-	};
-	ElementManager.prototype.nest = function (key, options, chain) {
-	  'use strict';
-	  var tmp = this.factory.create(key, options);
-	  this.component.addChild(tmp.element);
-	  if(!chain) {
-	    this.select(tmp);
-	  }
-	  return this;
-	};
-	ElementManager.prototype.after = function (key, options, chain) {
-	  'use strict';
-	  var tmp = this.factory.create(key, options);
-	  this.component.addToParent(tmp.element);
-	  if(!chain) {
-	    this.select(tmp);
-	  }
-	  return this;
-	};
-	ElementManager.prototype.select = function(elementOrKey) {
-	  'use strict';
-	  var element = typeof elementOrKey === 'object' ? elementOrKey : this.get(elementOrKey);
-	  this.component = element;
-	};
-	ElementManager.prototype.end = function() {
-	  'use strict';
-	  this.select(null);
-	};
-	ElementManager.prototype.addToDom = function(component) {
-	  'use strict';
-	  this.dom.appendChild(component);
-	  return this;
-	};
-	ElementManager.prototype.removeFromDom = function(component) {
-	  'use strict';
-	  if(this.dom.contains(component)) {
-	    this.dom.removeChild(component);
-	  }
-	  return this;
-	};
-	ElementManager.prototype.clearDom = function() {
-	  'use strict';
-	  var self = this;
-	  this.elements.forEach(function(n) {
-	    self.removeFromDom(n.element);
-	  });
-	  this.end();
-	  return this;
-	};
-	ElementManager.prototype.build = function() {
-	  'use strict';
-	  var self = this;
-	  this.clearDom();
-	  this.elements.forEach(function(n) {
-	    self.addToDom(n.element);
-	  });
-	  return this;
+	  this.store = new Store(reducer);
+	  this.store.dispatch({});
+	  return this.store;
 	};
 
-	module.exports = ElementManager;
+	module.exports = Reduxish;
 
 /***/ },
 /* 2 */
 /***/ function(module, exports) {
 
 	/**
-	 * Element factory 
+	 * Store for Reduxish
 	 * 
-	 * @returns {ElementFactory}
+	 * @returns {Store}
 	 */
 
-	function ElementFactory() {
-	  'use strict';
-	  this.registeredElements = new Map();
+	function Store(reducer) {
+	  this.previousState
+	  this.state;
+	  this.lastAction;
+	  this.reducer = reducer;
+	  this.listeners = [];
 	}
-	ElementFactory.prototype.registerElement = function(key, value) {
+	Store.prototype.getState = function() {
 	  'use strict';
-	  this.registeredElements.set(key, value);
-	  return this;
+	  return this.state;
 	};
-	ElementFactory.prototype.create = function(key, options) {
+	Store.prototype.getPreviousState = function() {
 	  'use strict';
-	  var Elem = this.registeredElements.get(key);
-	  return new Elem(options);
+	  return this.previousState;
+	};
+	Store.prototype.getLastAction = function() {
+	  'use strict';
+	  return this.lastAction;
+	};
+	Store.prototype.dispatch = function( action ) {
+	  'use strict';
+	  this.previousState = this.state;
+	  this.lastAction = Object.assign({}, action);
+	  this.state = this.reducer( this.state, action );
+	  this.listeners.forEach(function( callback ) {
+	    callback();
+	  });
+	};
+	Store.prototype.subscribe = function( callback ) {
+	  var self = this;
+	  this.listeners.push( callback );
+	  return function() {
+	    self.listeners = self.listeners.filter(function( l ) {
+	      l !== listener;
+	    })
+	  };
 	};
 
-	module.exports = ElementFactory;
+	module.exports = Store;
 
 /***/ },
 /* 3 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	/**
-	 * Guid generator and hash
-	 * 
-	 * @returns {Guid}
-	 */
+	
+	var shiftLeft = __webpack_require__(4);
+	var shiftRight = __webpack_require__(5);
 
-	function Guid() {
+	function Counter( state, action ) {
 	  'use strict';
-	  this.hash = new Map();
-	}
-	Guid.prototype.create = function() {
-	  'use strict';
-	  var guid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-	    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); // eslint-disable-line eqeqeq
-	    return v.toString(16);
-	  });
-	  if(this.hash.has(guid)) {
-	    guid = this.create();
-	  } else {
-	    this.hash.set(guid, guid);
+	  
+	  var state = (typeof state !== 'undefined') ? state : 0;
+	  switch(action.type) {
+	    case 'SHIFT_LEFT':
+	      return shiftLeft(state);
+	    case 'INCREMENT':
+	      return state + 1;
+	    case 'DECREMENT':
+	      return state - 1;
+	    case 'SHIFT_RIGHT':
+	      return shiftRight(state);
+	    default:
+	      return state;
 	  }
-	  return guid;
 	};
 
-	module.exports = Guid;
+	module.exports = Counter;
 
 /***/ },
 /* 4 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	/**
-	 * Event options object
-	 * 
-	 * @requires {EventList}
-	 * @returns {EventOptions}
-	 */
-
-	var EventList = __webpack_require__(5);
-
-	function EventOptions() {
+	function ShiftLeft(num) {
 	  'use strict';
+	  var str = num.toString();
+	  var pre = "";
+	  if(str.length > 1 && str[0] === "-") {
+	    pre = "-";
+	    str = str.substr(1);
+	  }
+	  return parseInt(pre + str.substr(1) + str[0]);
 	}
-	EventOptions.prototype.get = function(key) {
-	  'use strict';
-	  var action = null;
-	  if(EventList.includes(key)) {
-	    action = this[key];
-	  }
-	  return action;
-	};
-	EventOptions.prototype.set = function(key, action) {
-	  'use strict';
-	  if(EventList.includes(key)) {
-	    this[key] = action;
-	  }
-	  return this;
-	};
 
-	module.exports = EventOptions;
+	module.exports = ShiftLeft;
 
 /***/ },
 /* 5 */
 /***/ function(module, exports) {
 
-	/**
-	 * Acceptable events
-	 * 
-	 * @returns {EventList}
-	 */
+	function ShiftRight(num) {
+	  'use strict';
+	  var str = num.toString();
+	  var pre = "";
+	  if(str.length > 1 && str[0] === "-") {
+	    pre = "-";
+	    str = str.substr(1);
+	  }
+	  return parseInt(pre + str[str.length-1] + str.substr(0,str.length - 1));
+	}
 
-	var EventList = [
-	  'onabort',
-	  'onauxclick',
-	  'onbeforecopy',
-	  'onbeforecut',
-	  'onbeforepaste',
-	  'onblur',
-	  'oncancel',
-	  'oncanplay',
-	  'oncanplaythrough',
-	  'onchange',
-	  'onclick',
-	  'onclose',
-	  'oncontextmenu',
-	  'oncopy',
-	  'oncuechange',
-	  'oncut',
-	  'ondblclick',
-	  'ondrag',
-	  'ondragend',
-	  'ondragenter',
-	  'ondragleave',
-	  'ondragover',
-	  'ondragstart',
-	  'ondrop',
-	  'ondurationchange',
-	  'onemptied',
-	  'onended',
-	  'onerror',
-	  'onfocus',
-	  'ongotpointercapture',
-	  'oninput',
-	  'oninvalid',
-	  'onkeydown',
-	  'onkeypress',
-	  'onkeyup',
-	  'onload',
-	  'onloadeddata',
-	  'onloadedmetadata',
-	  'onloadstart',
-	  'onlostpointercapture',
-	  'onmousedown',
-	  'onmouseenter',
-	  'onmouseleave',
-	  'onmousemove',
-	  'onmouseout',
-	  'onmouseover',
-	  'onmouseup',
-	  'onmousewheel',
-	  'onpaste',
-	  'onpause',
-	  'onplay',
-	  'onplaying',
-	  'onpointercancel',
-	  'onpointerdown',
-	  'onpointerenter',
-	  'onpointerleave',
-	  'onpointermove',
-	  'onpointerout',
-	  'onpointerover',
-	  'onpointerup',
-	  'onprogress',
-	  'onratechange',
-	  'onreset',
-	  'onresize',
-	  'onscroll',
-	  'onsearch',
-	  'onseeked',
-	  'onseeking',
-	  'onselect',
-	  'onselectstart',
-	  'onshow',
-	  'onstalled',
-	  'onsubmit',
-	  'onsuspend',
-	  'ontimeupdate',
-	  'ontoggle',
-	  'onvolumechange',
-	  'onwaiting',
-	  'onwebkitfullscreenchange',
-	  'onwebkitfullscreenerror',
-	  'onwheel'
-	];
-
-	module.exports = EventList;
+	module.exports = ShiftRight;
 
 /***/ },
 /* 6 */
 /***/ function(module, exports) {
 
-	/**
-	 * Style options object
-	 * 
-	 * @returns {StyleOptions}
-	 */
-
-	function StyleOptions() {
+	function Render(store) {
 	  'use strict';
+	  this.store = store;
 	}
-	StyleOptions.prototype.get = function(key) {
+	Render.prototype.execute = function() {
 	  'use strict';
-	  var style = this[key];
-	  return style;
+	  document.body.innerText = this.store.getState();
 	};
-	StyleOptions.prototype.set = function(key, style) {
-	  'use strict';
-	  this[key] = style;
-	  return this;
-	};
-	module.exports = StyleOptions;
+
+	module.exports = Render;
 
 /***/ },
 /* 7 */
 /***/ function(module, exports) {
 
-	/**
-	 * Options for Div element wrapper
-	 * 
-	 * @returns {DivOptions}
-	 */
-
-	function DivOptions() {
+	function Log(store) {
 	  'use strict';
-	  this.textContent = null;
-	  this.template = null;
-	  this.events = null;
-	  this.style = null;
+	  this.store = store;
 	}
-	DivOptions.prototype.getTextContent = function() {
+	Log.prototype.execute = function() {
 	  'use strict';
-	  return this.textContent;
-	};
-	DivOptions.prototype.setTextContent = function(content) {
-	  'use strict';
-	  this.textContent = content;
-	  return this;
-	};
-	DivOptions.prototype.getTemplate = function() {
-	  'use strict';
-	  return this.template;
-	};
-	DivOptions.prototype.setTemplate = function(content) {
-	  'use strict';
-	  this.template = content;
-	  return this;
-	};
-	DivOptions.prototype.getEvents = function() {
-	  'use strict';
-	  return this.events;
-	};
-	DivOptions.prototype.setEvents = function(content) {
-	  'use strict';
-	  this.events = content;
-	  return this;
-	};
-	DivOptions.prototype.getStyle = function() {
-	  'use strict';
-	  return this.style;
-	};
-	DivOptions.prototype.setStyle = function(content) {
-	  'use strict';
-	  this.style = content;
-	  return this;
+	  console.debug(
+	    "|- Previous State -|-------- Action --------|- Current State -| \n" + 
+	    "| " + JSON.stringify(this.store.getPreviousState()) + ",                " + 
+	    JSON.stringify(this.store.getLastAction()) + ",     " + 
+	    JSON.stringify(this.store.getState())
+	  );
 	};
 
-	module.exports = DivOptions;
+	module.exports = Log;
 
 /***/ },
 /* 8 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	/**
-	 * Basic Div element wrapper
-	 * 
-	 * @requires {Element}
-	 * @requires {DivOptions}
-	 * @augments {Element}
-	 * @param {DivOptions} options
-	 * @returns {Div}
-	 */
-
-	var Element = __webpack_require__(9);
-	var DivOptions = __webpack_require__(7);
-
-	function Div(options) {
+	function WindowListeners() {
 	  'use strict';
-	  Element.call(this, 'div');
-	  var _options = options ? options : new DivOptions();
-	  if(_options.template) {
-	    this.setTemplate(_options.template);
-	  } else if(_options.textContent){
-	    this.setTextContent(_options.textContent);
-	  }
-	  if(_options.events) {
-	    this.setEvents(_options.events);
-	  }
-	  if(_options.style) {
-	    this.setStyles(_options.style);
-	  }
 	}
-	Div.prototype = Object.create(Element.prototype);
-	Div.prototype.setTextContent = function(content) {
+	WindowListeners.prototype.add = function(key, action) {
 	  'use strict';
-	  this.element.textContent = content;
-	  return this;
-	};
-	Div.prototype.setTemplate = function(content) {
-	  'use strict';
-	  this.element.innerHTML = content;
+	  document.addEventListener(key, action, false);
 	  return this;
 	};
 
-	module.exports = Div;
+	module.exports = WindowListeners;
 
 /***/ },
 /* 9 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	/**
-	 * Dom Element wrapper
-	 * 
-	 * @requires {EventList}
-	 * @param {String} type Element type
-	 * @returns {Element}
-	 */
-
-	var EventList = __webpack_require__(5);
-
-	function Element(type) {
+	function KeyDown(store) {
 	  'use strict';
-	  this.element = type ? document.createElement(type) : null;
+	  this.store = store;
 	}
-	/*
-	 * Display modifiers
-	 */
-	Element.prototype.show = function() {
+	KeyDown.prototype.execute = function(event) {
 	  'use strict';
-	  var elem = this.element;
-	  elem.style.display = 'block';
-	  return this;
-	};
-	Element.prototype.hide = function() {
-	  'use strict';
-	  var elem = this.element;
-	  elem.style.display = 'none';
-	  return this;
-	};
-	Element.prototype.toggleDisplay = function() {
-	  'use strict';
-	  var elem = this.element;
-	  elem.style.display = (elem.style.display === 'none') ? 'block' : 'none';
-	  return this;
-	};
-	/*
-	 * Visibility modifiers
-	 */
-	Element.prototype.visible = function() {
-	  'use strict';
-	  var elem = this.element;
-	  elem.style.visibility = 'visible';
-	  return this;
-	};
-	Element.prototype.invisible = function() {
-	  'use strict';
-	  var elem = this.element;
-	  elem.style.visibility = 'hidden';
-	  return this;
-	};
-	Element.prototype.toggleVisibility = function() {
-	  'use strict';
-	  var elem = this.element;
-	  elem.style.visibility = (elem.style.visibility === 'hidden') ? 'visible' : 'hidden';
-	  return this;
-	};
-	/*
-	 * Child modifiers
-	 */
-	Element.prototype.addChild = function(component) {
-	  'use strict';
-	  var elem = this.element;
-	  elem.appendChild(component);
-	  return this;
-	};
-	Element.prototype.removeChild = function(component) {
-	  'use strict';
-	  var elem = this.element;
-	  elem.removeChild(component);
-	  return this;
-	};
-	/*
-	 * Sibling modifiers
-	 */
-	Element.prototype.addToParent = function(component) {
-	  'use strict';
-	  var elem = this.element.parentElement || this.element;
-	  elem.appendChild(component);
-	  return this;
-	};
-	Element.prototype.removeFromParent = function(component) {
-	  'use strict';
-	  var elem = this.element.parentElement || this.element;
-	  elem.removeChild(component);
-	  return this;
-	};
-	/*
-	 * Event modifiers
-	 */
-	Element.prototype.setEvent = function(key, action) {
-	  'use strict';
-	  if(this.element[key] !== undefined && EventList.includes(key)) { 
-	    this.element[key] = action;
+	  switch(event.which) {
+	    case 37:
+	      this.store.dispatch({
+	        type: 'SHIFT_LEFT'
+	      });
+	      break;
+	    case 38:
+	      this.store.dispatch({
+	        type: 'INCREMENT'
+	      });
+	      break;
+	    case 39:
+	      this.store.dispatch({
+	        type: 'SHIFT_RIGHT'
+	      });
+	      break;
+	    case 40:
+	      this.store.dispatch({
+	        type: 'DECREMENT'
+	      });
+	      break;
+	    default:
+	      break;
 	  }
-	  return this;
-	};
-	Element.prototype.removeEvent = function(key) {
-	  'use strict';
-	  if(this.element[key] !== undefined && EventList.includes(key)) { 
-	    this.element[key] = null;
-	  }
-	  return this;
-	};
-	Element.prototype.setEvents = function(events) {
-	  'use strict';
-	  var self = this;
-	  for (var key in events) {
-	    if (!events.hasOwnProperty(key)) {
-	      continue;
-	    }
-	    var action = events[key];
-	    self.setEvent(key, action);
-	  }
-	  return this;
-	};
-	Element.prototype.clearEvents = function() {
-	  'use strict';
-	  var self = this;
-	  var _events = this.element;
-	  for (var key in _events) {
-	    if (!_events.hasOwnProperty(key) && !EventList.includes(key)) {
-	      continue;
-	    }
-	    self.removeEvent(key);
-	  }
-	  return this;
-	};
-	/*
-	 * Style modifiers
-	 */
-	Element.prototype.setStyle = function(key, style) {
-	  'use strict';
-	  this.element.style[key] = style;
-	  return this;
-	};
-	Element.prototype.removeStyle = function(style) {
-	  'use strict';
-	  var _styles = this.element.style;
-	  _styles[style] = null;
-	  return this;
-	};
-	Element.prototype.setStyles = function(styles) {
-	  'use strict';
-	  var self = this;
-	  for (var key in styles) {
-	    if (!styles.hasOwnProperty(key)) {
-	      continue;
-	    }
-	    var _style = styles[key];
-	    self.setStyle(key, _style);
-	  }
-	  return this;
-	};
-	Element.prototype.clearStyles = function() {
-	  'use strict';
-	  var self = this;
-	  var _styles = this.element.style;
-	  for (var style in _styles) {
-	    if (!_styles.hasOwnProperty(style)) {
-	      continue;
-	    }
-	    self.removeStyle(style);
-	  }
-	  return this;
 	};
 
-	module.exports = Element;
+	module.exports = KeyDown;
 
 /***/ }
 /******/ ]);

@@ -17,4 +17,5 @@ StyleOptions.prototype.set = function(key, style) {
   this[key] = style;
   return this;
 };
+
 module.exports = StyleOptions;
