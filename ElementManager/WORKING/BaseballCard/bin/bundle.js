@@ -52,8 +52,10 @@
 	__webpack_require__(13);
 	__webpack_require__(15);
 	__webpack_require__(18);
+	__webpack_require__(20);
 
-	var info = __webpack_require__(20);
+	var run = __webpack_require__(22);
+	var info = __webpack_require__(23);
 
 	angular.module('app',
 	  [
@@ -62,10 +64,18 @@
 	    'EventsPkg',
 	    'StylePkg',
 	    'BannerPkg',
-	    'TestPkg'
+	    'TestPkg',
+	    'AngularHelperPkg'
+	  ])
+	  .run([
+	    '$injector',
+	    '$compile',
+	    '$rootScope',
+	    run
 	  ])
 	  .controller('info', [
 	    '$injector',
+	    '$compile',
 	    '$scope',
 	    info
 	  ]);
@@ -115,7 +125,9 @@
 
 	  Element.call(this, _options);
 
-	  if(_options.template) {
+	  if(_options.template && typeof _options.template === 'object') {
+	    this.append(_options.template);
+	  } else if(_options.template){
 	    this.setTemplate(_options.template);
 	  } else if(_options.textContent){
 	    this.setTextContent(_options.textContent);
@@ -209,6 +221,14 @@
 	  'use strict';
 	  var elem = this.element;
 	  elem.style.visibility = (elem.style.visibility === 'hidden') ? 'visible' : 'hidden';
+	  return this;
+	};
+	/*
+	 * Append modifier
+	 */
+	Element.prototype.append = function(content) {
+	  'use strict';
+	  this.element.append(content);
 	  return this;
 	};
 	/*
@@ -598,9 +618,37 @@
 	  this.dom = document.body;
 	  this.component = null;
 	  this.elements = new Map();
+	  this.UICache = {};
 	  this.factory = new ElementFactory();
 	  this.guid = new Guid();
 	}
+	ElementManager.prototype.saveUI = function(name) {
+	  'use strict';
+	  this.UICache[name] = this.getUI();
+	  return this;
+	};
+	ElementManager.prototype.getUI = function() {
+	  'use strict';
+	  return new Map(this.elements);
+	};
+	ElementManager.prototype.setUI = function(name) {
+	  'use strict';
+	  delete this.elements;
+	  this.elements = new Map(this.UICache[name]);
+	  return this;
+	};
+	ElementManager.prototype.clearUI = function() {
+	  'use strict';
+	  delete this.elements;
+	  this.elements = new Map();
+	  return this;
+	};
+	ElementManager.prototype.clearUICache = function() {
+	  'use strict';
+	  delete this.UICache;
+	  this.UICache = {};
+	  return this;
+	};
 	ElementManager.prototype.get = function(key) {
 	  'use strict';
 	  return this.elements.get(key);
@@ -850,10 +898,12 @@
 	  this._p = new Element('p');
 	  this.addChild(this._p.element);
 
-	  if(options.template) {
-	    this.setTemplate(options.template);
-	  } else if(options.textContent){
-	    this.setTextContent(options.textContent);
+	  if(_options.template && typeof _options.template === 'object') {
+	    this.append(_options.template);
+	  } else if(_options.template){
+	    this.setTemplate(_options.template);
+	  } else if(_options.textContent){
+	    this.setTextContent(_options.textContent);
 	  }
 
 	}
@@ -1590,18 +1640,63 @@
 
 /***/ },
 /* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * AngularHelperPkg module definition
+	 */
+
+	var AngularHelper = __webpack_require__(21);
+
+	angular.module('AngularHelperPkg', [])
+	  .service('AngularHelper',  AngularHelper);
+
+/***/ },
+/* 21 */
 /***/ function(module, exports) {
 
 	/**
-	 * Info State Controller
+	 * AngularHelper wrapper
 	 * 
-	 * @returns {info}
+	 * @returns {AngularHelper}
 	 */
 
-	function info($injector, $scope) {
+	function AngularHelper() {
+	  'use strict';
+	  this.scope;
+	  this.compile;
+	}
+	AngularHelper.prototype.bind = function(scope, compile) {
+	  'use strict';
+	  this.scope = scope;
+	  this.compile = compile;
+	  return this;
+	};
+	AngularHelper.prototype.getTemplate = function(template) {
+	  'use strict';
+	  var content = this.compile(template)(this.scope);
+	  return content[0];
+	};
+
+	module.exports = AngularHelper;
+
+/***/ },
+/* 22 */
+/***/ function(module, exports) {
+
+	/**
+	 * Run State Controller
+	 * 
+	 * @returns {run}
+	 */
+
+	function run($injector, $compile, $rootScope) {
 	  'use strict';
 
 	  var ElementManager = $injector.get('ElementManager');
+
+	  var AngularHelper = $injector.get('AngularHelper');
+	  AngularHelper.bind($rootScope, $compile);
 
 	  var Banner = $injector.get('Banner');
 	  var BannerOptions = $injector.get('BannerOptions');
@@ -1612,8 +1707,6 @@
 	  ElementManager.register('Div', Div);
 
 	  var StyleOptions = $injector.get('StyleOptions');
-	  var Stubs = $injector.get('Stubs');
-	  $scope.track = Stubs.FULL_TRACKDATA;
 
 	  /* ****************************************
 	   *
@@ -1634,6 +1727,9 @@
 	   **************************************** */
 	  var contentOptions = new DivOptions();
 	  var contentStyle = new StyleOptions();
+	  var contentTemplate = AngularHelper.getTemplate(
+	    '<span>{{track.name | uppercase}}</span>'
+	  );
 	  contentStyle
 	  .set('margin-left', 'auto')
 	  .set('margin-right', 'auto')
@@ -1641,7 +1737,7 @@
 	  contentOptions
 	    .addClass('scroll-content')
 	    .setStyle(contentStyle)
-	    .setTemplate($scope.track.name);
+	    .setTemplate(contentTemplate);
 
 	  /* ****************************************
 	   *
@@ -1681,6 +1777,32 @@
 	    .create('Div', contentOptions)
 	    .nest('Div', panelHeadingOptions)
 	    .create('Banner', footerOptions)
+	    .saveUI('info');
+
+	}
+
+	module.exports = run;
+
+/***/ },
+/* 23 */
+/***/ function(module, exports) {
+
+	/**
+	 * Info State Controller
+	 * 
+	 * @returns {info}
+	 */
+
+	function info($injector, $compile, $scope) {
+	  'use strict';
+
+	  var ElementManager = $injector.get('ElementManager');
+
+	  var Stubs = $injector.get('Stubs');
+	  $scope.track = Stubs.FULL_TRACKDATA;
+
+	  ElementManager
+	    .setUI('info')
 	    .build();
 
 	}

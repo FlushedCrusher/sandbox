@@ -14,9 +14,37 @@ function ElementManager() {
   this.dom = document.body;
   this.component = null;
   this.elements = new Map();
+  this.UICache = {};
   this.factory = new ElementFactory();
   this.guid = new Guid();
 }
+ElementManager.prototype.saveUI = function(name) {
+  'use strict';
+  this.UICache[name] = this.getUI();
+  return this;
+};
+ElementManager.prototype.getUI = function() {
+  'use strict';
+  return new Map(this.elements);
+};
+ElementManager.prototype.setUI = function(name) {
+  'use strict';
+  delete this.elements;
+  this.elements = new Map(this.UICache[name]);
+  return this;
+};
+ElementManager.prototype.clearUI = function() {
+  'use strict';
+  delete this.elements;
+  this.elements = new Map();
+  return this;
+};
+ElementManager.prototype.clearUICache = function() {
+  'use strict';
+  delete this.UICache;
+  this.UICache = {};
+  return this;
+};
 ElementManager.prototype.get = function(key) {
   'use strict';
   return this.elements.get(key);

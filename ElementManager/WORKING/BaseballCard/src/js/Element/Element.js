@@ -71,6 +71,14 @@ Element.prototype.toggleVisibility = function() {
   return this;
 };
 /*
+ * Append modifier
+ */
+Element.prototype.append = function(content) {
+  'use strict';
+  this.element.append(content);
+  return this;
+};
+/*
  * Child modifiers
  */
 Element.prototype.addChild = function(component) {

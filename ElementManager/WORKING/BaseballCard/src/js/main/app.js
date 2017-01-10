@@ -6,7 +6,9 @@ require('../Events/EventsPkg.js');
 require('../Style/StylePkg.js');
 require('../Banner/BannerPkg.js');
 require('../Test/TestPkg.js');
+require('../AngularHelper/AngularHelperPkg.js');
 
+var run = require('./run.js');
 var info = require('./controllers/info.js');
 
 angular.module('app',
@@ -16,10 +18,18 @@ angular.module('app',
     'EventsPkg',
     'StylePkg',
     'BannerPkg',
-    'TestPkg'
+    'TestPkg',
+    'AngularHelperPkg'
+  ])
+  .run([
+    '$injector',
+    '$compile',
+    '$rootScope',
+    run
   ])
   .controller('info', [
     '$injector',
+    '$compile',
     '$scope',
     info
   ]);

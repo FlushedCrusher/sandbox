@@ -20,10 +20,12 @@ function Banner(options) {
   this._p = new Element('p');
   this.addChild(this._p.element);
 
-  if(options.template) {
-    this.setTemplate(options.template);
-  } else if(options.textContent){
-    this.setTextContent(options.textContent);
+  if(_options.template && typeof _options.template === 'object') {
+    this.append(_options.template);
+  } else if(_options.template){
+    this.setTemplate(_options.template);
+  } else if(_options.textContent){
+    this.setTextContent(_options.textContent);
   }
 
 }

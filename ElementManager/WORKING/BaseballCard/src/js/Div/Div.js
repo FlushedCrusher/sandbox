@@ -18,7 +18,9 @@ function Div(options) {
 
   Element.call(this, _options);
 
-  if(_options.template) {
+  if(_options.template && typeof _options.template === 'object') {
+    this.append(_options.template);
+  } else if(_options.template){
     this.setTemplate(_options.template);
   } else if(_options.textContent){
     this.setTextContent(_options.textContent);
