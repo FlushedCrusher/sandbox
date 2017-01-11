@@ -6,6 +6,7 @@
 
 function ElementOptions() {
   'use strict';
+  this.angularTemplate = null;
   this.textContent = null;
   this.template = null;
   this.events = null;
@@ -19,6 +20,15 @@ ElementOptions.prototype.getTextContent = function() {
 ElementOptions.prototype.setTextContent = function(content) {
   'use strict';
   this.textContent = content;
+  return this;
+};
+ElementOptions.prototype.getAngularTemplate = function() {
+  'use strict';
+  return this.angularTemplate;
+};
+ElementOptions.prototype.setAngularTemplate = function(content) {
+  'use strict';
+  this.angularTemplate = content;
   return this;
 };
 ElementOptions.prototype.getTemplate = function() {

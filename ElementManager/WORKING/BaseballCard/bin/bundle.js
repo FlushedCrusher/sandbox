@@ -48,11 +48,11 @@
 
 	__webpack_require__(1);
 	__webpack_require__(7);
-	__webpack_require__(11);
-	__webpack_require__(13);
-	__webpack_require__(15);
-	__webpack_require__(18);
-	__webpack_require__(20);
+	__webpack_require__(12);
+	__webpack_require__(14);
+	__webpack_require__(16);
+	__webpack_require__(19);
+	__webpack_require__(21);
 
 	var run = __webpack_require__(22);
 	var info = __webpack_require__(23);
@@ -121,19 +121,21 @@
 	function Div(options) {
 	  'use strict';
 
-	  var _options = options ? options : new DivOptions();
+	  this._options = options ? options : new DivOptions();
 
-	  Element.call(this, _options);
+	  Element.call(this, this._options);
 
-	  if(_options.template && typeof _options.template === 'object') {
-	    this.append(_options.template);
-	  } else if(_options.template){
-	    this.setTemplate(_options.template);
-	  } else if(_options.textContent){
-	    this.setTextContent(_options.textContent);
+	  if(this._options.template) {
+	    this.setTemplate(this._options.template);
+	  } else if(this._options.textContent){
+	    this.setTextContent(this._options.textContent);
 	  }
 	}
 	Div.prototype = Object.create(Element.prototype);
+	Div.prototype.hasAngularTemplate = function() {
+	  'use strict';
+	  return (this._options.angularTemplate) ? true : false;
+	};
 	Div.prototype.setTextContent = function(content) {
 	  'use strict';
 	  this.element.textContent = content;
@@ -500,6 +502,7 @@
 
 	function ElementOptions() {
 	  'use strict';
+	  this.angularTemplate = null;
 	  this.textContent = null;
 	  this.template = null;
 	  this.events = null;
@@ -513,6 +516,15 @@
 	ElementOptions.prototype.setTextContent = function(content) {
 	  'use strict';
 	  this.textContent = content;
+	  return this;
+	};
+	ElementOptions.prototype.getAngularTemplate = function() {
+	  'use strict';
+	  return this.angularTemplate;
+	};
+	ElementOptions.prototype.setAngularTemplate = function(content) {
+	  'use strict';
+	  this.angularTemplate = content;
 	  return this;
 	};
 	ElementOptions.prototype.getTemplate = function() {
@@ -612,6 +624,7 @@
 
 	var ElementFactory = __webpack_require__(8);
 	var Guid = __webpack_require__(10);
+	var AngularHelper = __webpack_require__(11);
 
 	function ElementManager() {
 	  'use strict';
@@ -621,7 +634,13 @@
 	  this.UICache = {};
 	  this.factory = new ElementFactory();
 	  this.guid = new Guid();
+	  this.helper = new AngularHelper();
 	}
+	ElementManager.prototype.bind = function(scope, compile) {
+	  'use strict';
+	  this.helper.bind(scope, compile);
+	  return this;
+	};
 	ElementManager.prototype.saveUI = function(name) {
 	  'use strict';
 	  this.UICache[name] = this.getUI();
@@ -718,12 +737,25 @@
 	  this.end();
 	  return this;
 	};
+	ElementManager.prototype.compile = function(element) {
+	  'use strict';
+	  var template = this.helper.getTemplate(
+	    element._options.getAngularTemplate()
+	  );
+	  template.each(function() {
+	    element.append(this);
+	  });
+	  return this;
+	};
 	ElementManager.prototype.build = function() {
 	  'use strict';
 	  var self = this;
 	  this.clearDom();
-	  this.elements.forEach(function(n) {
-	    self.addToDom(n.element);
+	  this.elements.forEach(function(e) {
+	    if(e.hasAngularTemplate()) {
+	      self.compile(e)
+	    }
+	    self.addToDom(e.element);
 	  });
 	  return this;
 	};
@@ -762,13 +794,42 @@
 
 /***/ },
 /* 11 */
+/***/ function(module, exports) {
+
+	/**
+	 * AngularHelper wrapper
+	 * 
+	 * @returns {AngularHelper}
+	 */
+
+	function AngularHelper() {
+	  'use strict';
+	  this.scope;
+	  this.compile;
+	}
+	AngularHelper.prototype.bind = function(scope, compile) {
+	  'use strict';
+	  this.scope = scope;
+	  this.compile = compile;
+	  return this;
+	};
+	AngularHelper.prototype.getTemplate = function(template) {
+	  'use strict';
+	  var content = this.compile(template)(this.scope);
+	  return content;
+	};
+
+	module.exports = AngularHelper;
+
+/***/ },
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * EventsPkg module definition
 	 */
 
-	var EventOptions = __webpack_require__(12);
+	var EventOptions = __webpack_require__(13);
 
 	angular.module('EventsPkg', [])
 	  .factory('EventOptions', function() {
@@ -777,7 +838,7 @@
 	  });
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -811,14 +872,14 @@
 	module.exports = EventOptions;
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * StylePkg module definition
 	 */
 
-	var StyleOptions = __webpack_require__(14);
+	var StyleOptions = __webpack_require__(15);
 
 	angular.module('StylePkg', [])
 	  .factory('StyleOptions', function() {
@@ -827,7 +888,7 @@
 	  });
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports) {
 
 	/**
@@ -852,15 +913,15 @@
 	module.exports = StyleOptions;
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * BannerPkg module definition
 	 */
 
-	var Banner = __webpack_require__(16);
-	var BannerOptions = __webpack_require__(17);
+	var Banner = __webpack_require__(17);
+	var BannerOptions = __webpack_require__(18);
 
 	angular.module('BannerPkg', [])
 	  .factory('Banner', function() {
@@ -873,7 +934,7 @@
 	  });
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -887,27 +948,29 @@
 	 */
 
 	var Element = __webpack_require__(3);
-	var BannerOptions = __webpack_require__(17);
+	var BannerOptions = __webpack_require__(18);
 
 	function Banner(options) {
 	  'use strict';
 	  
-	  var _options = options ? options : new BannerOptions();
-	  Element.call(this, _options);
+	  this._options = options ? options : new BannerOptions();
+	  Element.call(this, this._options);
 	  
 	  this._p = new Element('p');
 	  this.addChild(this._p.element);
 
-	  if(_options.template && typeof _options.template === 'object') {
-	    this.append(_options.template);
-	  } else if(_options.template){
-	    this.setTemplate(_options.template);
-	  } else if(_options.textContent){
-	    this.setTextContent(_options.textContent);
+	  if(this._options.template) {
+	    this.setTemplate(this._options.template);
+	  } else if(this._options.textContent){
+	    this.setTextContent(this._options.textContent);
 	  }
 
 	}
 	Banner.prototype = Object.create(Element.prototype);
+	Banner.prototype.hasAngularTemplate = function() {
+	  'use strict';
+	  return (this._options.angularTemplate) ? true : false;
+	};
 	Banner.prototype.setTextContent = function(content) {
 	  'use strict';
 	  this._p.element.textContent = content;
@@ -922,7 +985,7 @@
 	module.exports = Banner;
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -954,20 +1017,20 @@
 	module.exports = BannerOptions;
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * TestPkg module definition
 	 */
 
-	var Stubs = __webpack_require__(19);
+	var Stubs = __webpack_require__(20);
 
 	angular.module('TestPkg', [])
 	  .constant('Stubs', Stubs);
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports) {
 
 	/**
@@ -1639,46 +1702,17 @@
 	  module.exports = Stubs;
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * AngularHelperPkg module definition
 	 */
 
-	var AngularHelper = __webpack_require__(21);
+	var AngularHelper = __webpack_require__(11);
 
 	angular.module('AngularHelperPkg', [])
 	  .service('AngularHelper',  AngularHelper);
-
-/***/ },
-/* 21 */
-/***/ function(module, exports) {
-
-	/**
-	 * AngularHelper wrapper
-	 * 
-	 * @returns {AngularHelper}
-	 */
-
-	function AngularHelper() {
-	  'use strict';
-	  this.scope;
-	  this.compile;
-	}
-	AngularHelper.prototype.bind = function(scope, compile) {
-	  'use strict';
-	  this.scope = scope;
-	  this.compile = compile;
-	  return this;
-	};
-	AngularHelper.prototype.getTemplate = function(template) {
-	  'use strict';
-	  var content = this.compile(template)(this.scope);
-	  return content[0];
-	};
-
-	module.exports = AngularHelper;
 
 /***/ },
 /* 22 */
@@ -1694,9 +1728,6 @@
 	  'use strict';
 
 	  var ElementManager = $injector.get('ElementManager');
-
-	  var AngularHelper = $injector.get('AngularHelper');
-	  AngularHelper.bind($rootScope, $compile);
 
 	  var Banner = $injector.get('Banner');
 	  var BannerOptions = $injector.get('BannerOptions');
@@ -1727,17 +1758,13 @@
 	   **************************************** */
 	  var contentOptions = new DivOptions();
 	  var contentStyle = new StyleOptions();
-	  var contentTemplate = AngularHelper.getTemplate(
-	    '<span>{{track.name | uppercase}}</span>'
-	  );
 	  contentStyle
 	  .set('margin-left', 'auto')
 	  .set('margin-right', 'auto')
 	  .set('max-width', '510px');
 	  contentOptions
 	    .addClass('scroll-content')
-	    .setStyle(contentStyle)
-	    .setTemplate(contentTemplate);
+	    .setStyle(contentStyle);
 
 	  /* ****************************************
 	   *
@@ -1746,6 +1773,16 @@
 	   **************************************** */
 	  var panelHeadingOptions = new DivOptions();
 	  var panelHeadingStyle = new StyleOptions();
+	  var panelHeaderTemplate = 
+	    '<!-- Ship Flag pic -->' +
+			'<img ng-src="{{flag_pic}}" class="flag-pic" onerror="this.style.display=\'none\'" />' +
+			'<!-- Track Name -->' +
+			'{{track.name | uppercase}},' +
+			'<!-- Country Code -->' +
+			'{{country | uppercase}}' +
+			'<span class="float-right">' +
+			'Last Updated - {{track.last_update | date:\'dd MMM yyyy HH:mm:ss\' : \'UTC\' | uppercase}}Z' +
+			'</span>';
 	  panelHeadingStyle
 	    .set('background-color', 'white')
 	    .set('color', 'black')
@@ -1753,7 +1790,8 @@
 	    .set('padding-bottom', '3px');
 	  panelHeadingOptions
 	    .addClass('panel-heading')
-	    .setStyle(panelHeadingStyle);
+	    .setStyle(panelHeadingStyle)
+	    .setAngularTemplate(panelHeaderTemplate);
 
 	  /* ****************************************
 	   *
@@ -1769,7 +1807,7 @@
 
 	  /* ****************************************
 	   *
-	   * Build the UI
+	   * Save the UI
 	   * 
 	   **************************************** */
 	  ElementManager
@@ -1797,6 +1835,7 @@
 	  'use strict';
 
 	  var ElementManager = $injector.get('ElementManager');
+	  ElementManager.bind($scope, $compile);
 
 	  var Stubs = $injector.get('Stubs');
 	  $scope.track = Stubs.FULL_TRACKDATA;

@@ -14,19 +14,21 @@ var DivOptions = require('./DivOptions.js');
 function Div(options) {
   'use strict';
 
-  var _options = options ? options : new DivOptions();
+  this._options = options ? options : new DivOptions();
 
-  Element.call(this, _options);
+  Element.call(this, this._options);
 
-  if(_options.template && typeof _options.template === 'object') {
-    this.append(_options.template);
-  } else if(_options.template){
-    this.setTemplate(_options.template);
-  } else if(_options.textContent){
-    this.setTextContent(_options.textContent);
+  if(this._options.template) {
+    this.setTemplate(this._options.template);
+  } else if(this._options.textContent){
+    this.setTextContent(this._options.textContent);
   }
 }
 Div.prototype = Object.create(Element.prototype);
+Div.prototype.hasAngularTemplate = function() {
+  'use strict';
+  return (this._options.angularTemplate) ? true : false;
+};
 Div.prototype.setTextContent = function(content) {
   'use strict';
   this.element.textContent = content;

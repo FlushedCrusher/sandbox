@@ -8,6 +8,7 @@
 
 var ElementFactory = require('./ElementFactory.js');
 var Guid = require('../Guid/Guid.js');
+var AngularHelper = require('../AngularHelper/AngularHelper.js');
 
 function ElementManager() {
   'use strict';
@@ -17,7 +18,13 @@ function ElementManager() {
   this.UICache = {};
   this.factory = new ElementFactory();
   this.guid = new Guid();
+  this.helper = new AngularHelper();
 }
+ElementManager.prototype.bind = function(scope, compile) {
+  'use strict';
+  this.helper.bind(scope, compile);
+  return this;
+};
 ElementManager.prototype.saveUI = function(name) {
   'use strict';
   this.UICache[name] = this.getUI();
@@ -114,12 +121,25 @@ ElementManager.prototype.clearDom = function() {
   this.end();
   return this;
 };
+ElementManager.prototype.compile = function(element) {
+  'use strict';
+  var template = this.helper.getTemplate(
+    element._options.getAngularTemplate()
+  );
+  template.each(function() {
+    element.append(this);
+  });
+  return this;
+};
 ElementManager.prototype.build = function() {
   'use strict';
   var self = this;
   this.clearDom();
-  this.elements.forEach(function(n) {
-    self.addToDom(n.element);
+  this.elements.forEach(function(e) {
+    if(e.hasAngularTemplate()) {
+      self.compile(e)
+    }
+    self.addToDom(e.element);
   });
   return this;
 };

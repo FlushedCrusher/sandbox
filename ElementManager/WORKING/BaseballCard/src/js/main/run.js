@@ -9,9 +9,6 @@ function run($injector, $compile, $rootScope) {
 
   var ElementManager = $injector.get('ElementManager');
 
-  var AngularHelper = $injector.get('AngularHelper');
-  AngularHelper.bind($rootScope, $compile);
-
   var Banner = $injector.get('Banner');
   var BannerOptions = $injector.get('BannerOptions');
   ElementManager.register('Banner', Banner);
@@ -41,17 +38,13 @@ function run($injector, $compile, $rootScope) {
    **************************************** */
   var contentOptions = new DivOptions();
   var contentStyle = new StyleOptions();
-  var contentTemplate = AngularHelper.getTemplate(
-    '<span>{{track.name | uppercase}}</span>'
-  );
   contentStyle
   .set('margin-left', 'auto')
   .set('margin-right', 'auto')
   .set('max-width', '510px');
   contentOptions
     .addClass('scroll-content')
-    .setStyle(contentStyle)
-    .setTemplate(contentTemplate);
+    .setStyle(contentStyle);
 
   /* ****************************************
    *
@@ -60,6 +53,16 @@ function run($injector, $compile, $rootScope) {
    **************************************** */
   var panelHeadingOptions = new DivOptions();
   var panelHeadingStyle = new StyleOptions();
+  var panelHeaderTemplate = 
+    '<!-- Ship Flag pic -->' +
+		'<img ng-src="{{flag_pic}}" class="flag-pic" onerror="this.style.display=\'none\'" />' +
+		'<!-- Track Name -->' +
+		'{{track.name | uppercase}},' +
+		'<!-- Country Code -->' +
+		'{{country | uppercase}}' +
+		'<span class="float-right">' +
+		'Last Updated - {{track.last_update | date:\'dd MMM yyyy HH:mm:ss\' : \'UTC\' | uppercase}}Z' +
+		'</span>';
   panelHeadingStyle
     .set('background-color', 'white')
     .set('color', 'black')
@@ -67,7 +70,8 @@ function run($injector, $compile, $rootScope) {
     .set('padding-bottom', '3px');
   panelHeadingOptions
     .addClass('panel-heading')
-    .setStyle(panelHeadingStyle);
+    .setStyle(panelHeadingStyle)
+    .setAngularTemplate(panelHeaderTemplate);
 
   /* ****************************************
    *
@@ -83,7 +87,7 @@ function run($injector, $compile, $rootScope) {
 
   /* ****************************************
    *
-   * Build the UI
+   * Save the UI
    * 
    **************************************** */
   ElementManager

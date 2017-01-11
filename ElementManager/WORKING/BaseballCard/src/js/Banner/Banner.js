@@ -14,22 +14,24 @@ var BannerOptions = require('./BannerOptions.js');
 function Banner(options) {
   'use strict';
   
-  var _options = options ? options : new BannerOptions();
-  Element.call(this, _options);
+  this._options = options ? options : new BannerOptions();
+  Element.call(this, this._options);
   
   this._p = new Element('p');
   this.addChild(this._p.element);
 
-  if(_options.template && typeof _options.template === 'object') {
-    this.append(_options.template);
-  } else if(_options.template){
-    this.setTemplate(_options.template);
-  } else if(_options.textContent){
-    this.setTextContent(_options.textContent);
+  if(this._options.template) {
+    this.setTemplate(this._options.template);
+  } else if(this._options.textContent){
+    this.setTextContent(this._options.textContent);
   }
 
 }
 Banner.prototype = Object.create(Element.prototype);
+Banner.prototype.hasAngularTemplate = function() {
+  'use strict';
+  return (this._options.angularTemplate) ? true : false;
+};
 Banner.prototype.setTextContent = function(content) {
   'use strict';
   this._p.element.textContent = content;

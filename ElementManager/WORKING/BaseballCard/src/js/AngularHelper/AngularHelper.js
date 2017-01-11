@@ -18,7 +18,7 @@ AngularHelper.prototype.bind = function(scope, compile) {
 AngularHelper.prototype.getTemplate = function(template) {
   'use strict';
   var content = this.compile(template)(this.scope);
-  return content[0];
+  return content;
 };
 
 module.exports = AngularHelper;
