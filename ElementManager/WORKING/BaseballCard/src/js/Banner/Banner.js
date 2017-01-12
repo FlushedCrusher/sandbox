@@ -18,7 +18,7 @@ function Banner(options) {
   Element.call(this, this._options);
   
   this._p = new Element('p');
-  this.addChild(this._p.element);
+  this.addElementChild(this._p.element);
 
   if(this._options.template) {
     this.setTemplate(this._options.template);
@@ -30,7 +30,7 @@ function Banner(options) {
 Banner.prototype = Object.create(Element.prototype);
 Banner.prototype.hasAngularTemplate = function() {
   'use strict';
-  return (this._options.angularTemplate) ? true : false;
+  return (this._options.angularTemplate) ? true : false; // eslint-disable-line no-unneeded-ternary
 };
 Banner.prototype.setTextContent = function(content) {
   'use strict';

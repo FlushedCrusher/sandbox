@@ -11,6 +11,7 @@ var EventList = require('../Events/EventList.js');
 function Element(options) {
   'use strict';
 
+  this.children = [];
   this.element =
     options.type ? 
       document.createElement(options.type) : 
@@ -71,7 +72,20 @@ Element.prototype.toggleVisibility = function() {
   return this;
 };
 /*
- * Append modifier
+ * Object child modifiers
+ */
+Element.prototype.addChild = function(component) {
+  'use strict';
+  this.children.push(component);
+  return this;
+};
+Element.prototype.removeChild = function(component) { // eslint-disable-line no-unused-vars
+  'use strict';
+  // TODO: remove component from children array
+  return this;
+};
+/*
+ * Append content to element
  */
 Element.prototype.append = function(content) {
   'use strict';
@@ -79,30 +93,29 @@ Element.prototype.append = function(content) {
   return this;
 };
 /*
- * Child modifiers
+ * Element Child modifiers
  */
-Element.prototype.addChild = function(component) {
+Element.prototype.addElementChild = function(component) {
   'use strict';
-  var elem = this.element;
-  elem.appendChild(component);
+  this.element.appendChild(component);
   return this;
 };
-Element.prototype.removeChild = function(component) {
+Element.prototype.removeElementChild = function(component) {
   'use strict';
   var elem = this.element;
   elem.removeChild(component);
   return this;
 };
 /*
- * Sibling modifiers
+ * Element Sibling modifiers
  */
-Element.prototype.addToParent = function(component) {
+Element.prototype.addElementSibling = function(component) {
   'use strict';
   var elem = this.element.parentElement || this.element;
   elem.appendChild(component);
   return this;
 };
-Element.prototype.removeFromParent = function(component) {
+Element.prototype.removeElementSibling = function(component) {
   'use strict';
   var elem = this.element.parentElement || this.element;
   elem.removeChild(component);
@@ -211,6 +224,19 @@ Element.prototype.addClasses = function(_classList) {
 Element.prototype.clearClasses = function() {
   'use strict';
   this.element.classList = "";
+  return this;
+};
+/*
+ * Abstract Attribute modifiers
+ */
+Element.prototype.setAttribute = function(key, value) {
+  'use strict';
+  this.element.setAttribute(key, value);
+  return this;
+};
+Element.prototype.removeAttribute = function(key) {
+  'use strict';
+  this.element.removeAttribute(key);
   return this;
 };
 

@@ -1,5 +1,5 @@
 /**
- * Options for Header element wrapper
+ * Options for Div element wrapper
  * 
  * @requires {ElementOptions}
  * @augments {ElementOptions}

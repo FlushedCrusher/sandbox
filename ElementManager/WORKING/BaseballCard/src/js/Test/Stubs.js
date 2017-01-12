@@ -75,7 +75,7 @@ var Stubs = {
 				'blueprints': '', // MAPPED
 				'upRightRigSeq': '', // MAPPED
 				'crewComp': '', // MAPPED
-				   
+  
 				'guid': '', // MAPPED
 				'days_deployed': '', // MAPPED			
 				'readiness': '', // MAPPED
@@ -132,7 +132,7 @@ var Stubs = {
 				'blueprints': 'No Data', // MAPPED
 				'upRightRigSeq': 'No Data', // MAPPED
 				'crewComp': 'No Data', // MAPPED
-				   
+  
 				'guid': 'No Data', // MAPPED
 				'days_deployed': 'No Data', // MAPPED			
 				'readiness': 'No Data', // MAPPED
