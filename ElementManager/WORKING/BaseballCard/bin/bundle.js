@@ -47,31 +47,13 @@
 	'use strict'; // eslint-disable-line strict
 
 	__webpack_require__(1);
-	__webpack_require__(7);
-	__webpack_require__(10);
-	__webpack_require__(13);
 
-	__webpack_require__(18);
-	__webpack_require__(20);
-
-	__webpack_require__(22);
-	__webpack_require__(24);
-	__webpack_require__(26);
-
-	var run = __webpack_require__(27);
-	var info = __webpack_require__(28);
+	var run = __webpack_require__(29);
+	var info = __webpack_require__(30);
 
 	angular.module('app',
 	  [
-	    'DivPkg',
-	    'SpanPkg',
-	    'ElementPkg',
-	    'EventsPkg',
-	    'StylePkg',
-	    'BannerPkg',
-	    'TestPkg',
-	    'ConfigPkg',
-	    'AngularHelperPkg'
+	    'StatePkg'
 	  ])
 	  .run([
 	    '$injector',
@@ -92,11 +74,49 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
+	 * StatePkg module definition
+	 */
+	'use strict'; // eslint-disable-line strict
+
+	__webpack_require__(2);
+	__webpack_require__(8);
+	__webpack_require__(11);
+	__webpack_require__(14);
+	__webpack_require__(19);
+	__webpack_require__(21);
+	__webpack_require__(23);
+	__webpack_require__(25);
+	__webpack_require__(27);
+
+	var Info = __webpack_require__(28);
+
+	angular.module('StatePkg', [
+	  'DivPkg',
+	  'SpanPkg',
+	  'ElementPkg',
+	  'EventsPkg',
+	  'StylePkg',
+	  'BannerPkg',
+	  'TestPkg',
+	  'ConfigPkg',
+	  'AngularHelperPkg'
+	])
+	  .service('Info', [
+	    '$injector',
+	    '$compile',
+	    Info
+	  ]);
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
 	 * BannerPkg module definition
 	 */
 
-	var Banner = __webpack_require__(2);
-	var BannerOptions = __webpack_require__(5);
+	var Banner = __webpack_require__(3);
+	var BannerOptions = __webpack_require__(6);
 
 	angular.module('BannerPkg', [])
 	  .factory('Banner', function() {
@@ -109,7 +129,7 @@
 	  });
 
 /***/ },
-/* 2 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -122,8 +142,8 @@
 	 * @returns {Banner}
 	 */
 
-	var Element = __webpack_require__(3);
-	var BannerOptions = __webpack_require__(5);
+	var Element = __webpack_require__(4);
+	var BannerOptions = __webpack_require__(6);
 
 	function Banner(options) {
 	  'use strict';
@@ -160,7 +180,7 @@
 	module.exports = Banner;
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -171,7 +191,7 @@
 	 * @returns {Element}
 	 */
 
-	var EventList = __webpack_require__(4);
+	var EventList = __webpack_require__(5);
 
 	function Element(options) {
 	  'use strict';
@@ -408,7 +428,7 @@
 	module.exports = Element;
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports) {
 
 	/**
@@ -504,7 +524,7 @@
 	module.exports = EventList;
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -515,7 +535,7 @@
 	 * @returns {BannerOptions}
 	 */
 
-	var ElementOptions = __webpack_require__(6);
+	var ElementOptions = __webpack_require__(7);
 
 	function BannerOptions() {
 	  'use strict';
@@ -536,7 +556,7 @@
 	module.exports = BannerOptions;
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports) {
 
 	/**
@@ -612,15 +632,15 @@
 	module.exports = ElementOptions;
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * DivPkg module definition
 	 */
 
-	var Div = __webpack_require__(8);
-	var DivOptions = __webpack_require__(9);
+	var Div = __webpack_require__(9);
+	var DivOptions = __webpack_require__(10);
 
 	angular.module('DivPkg', [])
 	  .factory('Div', function() {
@@ -633,7 +653,7 @@
 	  });
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -646,8 +666,8 @@
 	 * @returns {Div}
 	 */
 
-	var Element = __webpack_require__(3);
-	var DivOptions = __webpack_require__(9);
+	var Element = __webpack_require__(4);
+	var DivOptions = __webpack_require__(10);
 
 	function Div(options) {
 	  'use strict';
@@ -665,7 +685,7 @@
 	Div.prototype = Object.create(Element.prototype);
 	Div.prototype.hasAngularTemplate = function() {
 	  'use strict';
-	  return (this._options.angularTemplate) ? true : false;
+	  return (this._options.angularTemplate) ? true : false; // eslint-disable-line no-unneeded-ternary
 	};
 	Div.prototype.setTextContent = function(content) {
 	  'use strict';
@@ -681,7 +701,7 @@
 	module.exports = Div;
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -692,7 +712,7 @@
 	 * @returns {DivOptions}
 	 */
 
-	var ElementOptions = __webpack_require__(6);
+	var ElementOptions = __webpack_require__(7);
 
 	function DivOptions() {
 	  'use strict';
@@ -704,15 +724,15 @@
 	module.exports = DivOptions;
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * SpanPkg module definition
 	 */
 
-	var Span = __webpack_require__(11);
-	var SpanOptions = __webpack_require__(12);
+	var Span = __webpack_require__(12);
+	var SpanOptions = __webpack_require__(13);
 
 	angular.module('SpanPkg', [])
 	  .factory('Span', function() {
@@ -725,7 +745,7 @@
 	  });
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -738,8 +758,8 @@
 	 * @returns {Span}
 	 */
 
-	var Element = __webpack_require__(3);
-	var SpanOptions = __webpack_require__(12);
+	var Element = __webpack_require__(4);
+	var SpanOptions = __webpack_require__(13);
 
 	function Span(options) {
 	  'use strict';
@@ -773,7 +793,7 @@
 	module.exports = Span;
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -784,7 +804,7 @@
 	 * @returns {SpanOptions}
 	 */
 
-	var ElementOptions = __webpack_require__(6);
+	var ElementOptions = __webpack_require__(7);
 
 	function SpanOptions() {
 	  'use strict';
@@ -796,16 +816,16 @@
 	module.exports = SpanOptions;
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * ElementPkg module definition
 	 */
 
-	var Element = __webpack_require__(3);
-	var ElementFactory = __webpack_require__(14);
-	var ElementManager = __webpack_require__(15);
+	var Element = __webpack_require__(4);
+	var ElementFactory = __webpack_require__(15);
+	var ElementManager = __webpack_require__(16);
 
 	angular.module('ElementPkg', [])
 	  .factory('Element', Element)
@@ -813,7 +833,7 @@
 	  .service('ElementFactory', ElementFactory);
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports) {
 
 	/**
@@ -840,7 +860,7 @@
 	module.exports = ElementFactory;
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -851,9 +871,9 @@
 	 * @returns {ElementManager}
 	 */
 
-	var ElementFactory = __webpack_require__(14);
-	var Guid = __webpack_require__(16);
-	var AngularHelper = __webpack_require__(17);
+	var ElementFactory = __webpack_require__(15);
+	var Guid = __webpack_require__(17);
+	var AngularHelper = __webpack_require__(18);
 
 	function ElementManager() {
 	  'use strict';
@@ -892,14 +912,17 @@
 	  'use strict';
 	  var element = typeof elementOrKey === 'object' ? elementOrKey : this.get(elementOrKey);
 	  this.component = element;
+	  return this;
 	};
 	ElementManager.prototype.addOrReplace = function(key, value) {
 	  'use strict';
 	  this.elements.set(key, value);
+	  return this;
 	};
 	ElementManager.prototype.end = function() {
 	  'use strict';
 	  this.select(null);
+	  return this;
 	};
 	ElementManager.prototype.addToDom = function(component) {
 	  'use strict';
@@ -1005,11 +1028,19 @@
 	  this._build(this, this.elements, this.addToDom);
 	  return this;
 	};
+	/*
+	 * Construct
+	 */
+	ElementManager.prototype.construct = function(key, options) {
+	  'use strict';
+	  var element = this.factory.create(key, options);
+	  return element;
+	};
 
 	module.exports = ElementManager;
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports) {
 
 	/**
@@ -1039,7 +1070,7 @@
 	module.exports = Guid;
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports) {
 
 	/**
@@ -1068,14 +1099,14 @@
 	module.exports = AngularHelper;
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * EventsPkg module definition
 	 */
 
-	var EventOptions = __webpack_require__(19);
+	var EventOptions = __webpack_require__(20);
 
 	angular.module('EventsPkg', [])
 	  .factory('EventOptions', function() {
@@ -1084,7 +1115,7 @@
 	  });
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1094,7 +1125,7 @@
 	 * @returns {EventOptions}
 	 */
 
-	var EventList = __webpack_require__(4);
+	var EventList = __webpack_require__(5);
 
 	function EventOptions() {
 	  'use strict';
@@ -1118,14 +1149,14 @@
 	module.exports = EventOptions;
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * StylePkg module definition
 	 */
 
-	var StyleOptions = __webpack_require__(21);
+	var StyleOptions = __webpack_require__(22);
 
 	angular.module('StylePkg', [])
 	  .factory('StyleOptions', function() {
@@ -1134,7 +1165,7 @@
 	  });
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports) {
 
 	/**
@@ -1159,20 +1190,20 @@
 	module.exports = StyleOptions;
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * TestPkg module definition
 	 */
 
-	var Stubs = __webpack_require__(23);
+	var Stubs = __webpack_require__(24);
 
 	angular.module('TestPkg', [])
 	  .constant('Stubs', Stubs);
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports) {
 
 	/**
@@ -1844,20 +1875,20 @@
 	  module.exports = Stubs;
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * ConfigPkg module definition
 	 */
 
-	var Config = __webpack_require__(25);
+	var Config = __webpack_require__(26);
 
 	angular.module('ConfigPkg', [])
 	  .constant('Config', Config);
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports) {
 
 	/**
@@ -1877,29 +1908,27 @@
 	module.exports = Config;
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * AngularHelperPkg module definition
 	 */
 
-	var AngularHelper = __webpack_require__(17);
+	var AngularHelper = __webpack_require__(18);
 
 	angular.module('AngularHelperPkg', [])
 	  .service('AngularHelper',  AngularHelper);
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports) {
 
 	/**
-	 * Run State Controller
-	 * 
-	 * @returns {run}
+	 * This is where we build out the info state UI
 	 */
 
-	function run($injector, $compile, $rootScope) { // eslint-disable-line no-unused-vars
+	function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
 	  'use strict';
 
 	  var ElementManager = $injector.get('ElementManager');
@@ -1997,13 +2026,18 @@
 	   **************************************** */
 	  var panelBodyOptions = new DivOptions();
 	  var panelBodyStyle = new StyleOptions();
+	  var panelBodyTemplate =
+	    '<!-- Main Baseball Card Pic -->' +
+	    '<img class="ship-pic" ng-src="{{track.image}}" onerror="this.style.display=\'none\'"/>' +
+	    '<!-- End -->';
 	  panelBodyStyle
 	    .set('margin', '0')
 	    .set('padding', '5px 0 0 0');
 	  panelBodyOptions
 	    .addClass('panel-body')
 	    .addClass('main-content')
-	    .setStyle(panelBodyStyle);
+	    .setStyle(panelBodyStyle)
+	    .setAngularTemplate(panelBodyTemplate);
 	  /* ****************************************
 	   *
 	   * Footer
@@ -2021,14 +2055,42 @@
 	   * Save the UI
 	   * 
 	   **************************************** */
+
+	  this.header = ElementManager.construct('Banner', headerOptions);
+	  this.panel = ElementManager.construct('Div', contentOptions);
+	  this.panelHeader = ElementManager.construct('Div', panelHeadingOptions);
+	  this.lastUpdated = ElementManager.construct('Span', lastUpdatedOptions);
+	  this.panelBody = ElementManager.construct('Div', panelBodyOptions);
+	  this.footer = ElementManager.construct('Banner', footerOptions);
+
+	  this.panelHeader.addChild(this.lastUpdated);
+	  this.panel.addChild(this.panelHeader);
+	  this.panel.addChild(this.panelBody);
+
+	}
+
+	module.exports = Info;
+
+/***/ },
+/* 29 */
+/***/ function(module, exports) {
+
+	/**
+	 * Run State Controller
+	 * 
+	 * @returns {run}
+	 */
+
+	function run($injector, $compile, $rootScope) { // eslint-disable-line no-unused-vars
+	  'use strict';
+
+	  var ElementManager = $injector.get('ElementManager');
+	  var Info = $injector.get('Info');
+
 	  ElementManager
-	    .create('Banner', headerOptions)
-	    .create('Div', contentOptions)
-	      .nest('Div', panelHeadingOptions)
-	        .nest('Span', lastUpdatedOptions, true)
-	      .parent()
-	      .nest('Div', panelBodyOptions)
-	    .create('Banner', footerOptions)
+	    .addOrReplace('header', Info.header)
+	    .addOrReplace('panel', Info.panel)
+	    .addOrReplace('footer', Info.footer)
 	    .saveUI('info');
 
 	}
@@ -2036,7 +2098,7 @@
 	module.exports = run;
 
 /***/ },
-/* 28 */
+/* 30 */
 /***/ function(module, exports) {
 
 	/**

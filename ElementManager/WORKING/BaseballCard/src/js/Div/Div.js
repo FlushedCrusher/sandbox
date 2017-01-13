@@ -27,7 +27,7 @@ function Div(options) {
 Div.prototype = Object.create(Element.prototype);
 Div.prototype.hasAngularTemplate = function() {
   'use strict';
-  return (this._options.angularTemplate) ? true : false;
+  return (this._options.angularTemplate) ? true : false; // eslint-disable-line no-unneeded-ternary
 };
 Div.prototype.setTextContent = function(content) {
   'use strict';

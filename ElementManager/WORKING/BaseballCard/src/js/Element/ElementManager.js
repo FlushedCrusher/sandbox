@@ -47,14 +47,17 @@ ElementManager.prototype.select = function(elementOrKey) {
   'use strict';
   var element = typeof elementOrKey === 'object' ? elementOrKey : this.get(elementOrKey);
   this.component = element;
+  return this;
 };
 ElementManager.prototype.addOrReplace = function(key, value) {
   'use strict';
   this.elements.set(key, value);
+  return this;
 };
 ElementManager.prototype.end = function() {
   'use strict';
   this.select(null);
+  return this;
 };
 ElementManager.prototype.addToDom = function(component) {
   'use strict';
@@ -159,6 +162,14 @@ ElementManager.prototype.build = function() {
   this.clearDom();
   this._build(this, this.elements, this.addToDom);
   return this;
+};
+/*
+ * Construct
+ */
+ElementManager.prototype.construct = function(key, options) {
+  'use strict';
+  var element = this.factory.create(key, options);
+  return element;
 };
 
 module.exports = ElementManager;
