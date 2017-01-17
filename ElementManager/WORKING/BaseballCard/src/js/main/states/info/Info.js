@@ -19,6 +19,10 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
   var SpanOptions = $injector.get('SpanOptions');
   ElementManager.register('Span', Span);
 
+  var Img = $injector.get('Img');
+  var ImgOptions = $injector.get('ImgOptions');
+  ElementManager.register('Img', Img);
+
   var StyleOptions = $injector.get('StyleOptions');
 
   /* ****************************************
@@ -35,20 +39,20 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
 
   /* ****************************************
    *
-   * Main Content
+   * Panel Content
    * 
    **************************************** */
-  var contentOptions = new DivOptions();
-  var contentStyle = new StyleOptions();
-  contentStyle
+  var panelOptions = new DivOptions();
+  var panelStyle = new StyleOptions();
+  panelStyle
     .set('margin-left', 'auto')
     .set('margin-right', 'auto')
     .set('max-width', '510px');
-  contentOptions
+  panelOptions
     .addClass('scroll-content')
     .addClass('panel')
     .addClass('panel-default')
-    .setStyle(contentStyle);
+    .setStyle(panelStyle);
 
   /* ****************************************
    *
@@ -131,7 +135,7 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
    **************************************** */
 
   this.header = ElementManager.construct('Banner', headerOptions);
-  this.panel = ElementManager.construct('Div', contentOptions);
+  this.panel = ElementManager.construct('Div', panelOptions);
   this.panelHeader = ElementManager.construct('Div', panelHeadingOptions);
   this.lastUpdated = ElementManager.construct('Span', lastUpdatedOptions);
   this.panelBody = ElementManager.construct('Div', panelBodyOptions);

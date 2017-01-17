@@ -12,6 +12,7 @@ require('../../Style/StylePkg.js');
 require('../../Test/TestPkg.js');
 require('../../Config/ConfigPkg.js');
 require('../../AngularHelper/AngularHelperPkg.js');
+require('../../Img/ImgPkg.js');
 
 var Info = require('./info/Info.js');
 
@@ -24,7 +25,8 @@ angular.module('StatePkg', [
   'BannerPkg',
   'TestPkg',
   'ConfigPkg',
-  'AngularHelperPkg'
+  'AngularHelperPkg',
+  'ImgPkg'
 ])
   .service('Info', [
     '$injector',

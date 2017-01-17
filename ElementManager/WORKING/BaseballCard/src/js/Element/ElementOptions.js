@@ -11,6 +11,7 @@ function ElementOptions() {
   this.template = null;
   this.events = null;
   this.style = null;
+  this.attributes = [];
   this.classList = [];
 }
 ElementOptions.prototype.getTextContent = function() {
@@ -66,6 +67,15 @@ ElementOptions.prototype.addClass = function(_class) {
 ElementOptions.prototype.getClasses = function() {
   'use strict';
   return this.classList;
+};
+ElementOptions.prototype.setAttribute = function(_attribute) {
+  'use strict';
+  this.attributes.push(_attribute);
+  return this;
+};
+ElementOptions.prototype.getAttributes = function() {
+  'use strict';
+  return this.attributes;
 };
 
 module.exports = ElementOptions;

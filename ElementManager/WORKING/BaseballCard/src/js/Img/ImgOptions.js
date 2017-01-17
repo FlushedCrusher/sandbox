@@ -14,5 +14,10 @@ function ImgOptions() {
   this.type = 'img';
 }
 ImgOptions.prototype = Object.create(ElementOptions.prototype);
+ImgOptions.prototype.setAngularSrc = function(src)  {
+  'use strict';
+  this.angularSrc = src;
+  return this;
+};
 
 module.exports = ImgOptions;

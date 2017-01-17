@@ -48,8 +48,8 @@
 
 	__webpack_require__(1);
 
-	var run = __webpack_require__(29);
-	var info = __webpack_require__(30);
+	var run = __webpack_require__(32);
+	var info = __webpack_require__(33);
 
 	angular.module('app',
 	  [
@@ -87,8 +87,9 @@
 	__webpack_require__(23);
 	__webpack_require__(25);
 	__webpack_require__(27);
+	__webpack_require__(28);
 
-	var Info = __webpack_require__(28);
+	var Info = __webpack_require__(31);
 
 	angular.module('StatePkg', [
 	  'DivPkg',
@@ -99,7 +100,8 @@
 	  'BannerPkg',
 	  'TestPkg',
 	  'ConfigPkg',
-	  'AngularHelperPkg'
+	  'AngularHelperPkg',
+	  'ImgPkg'
 	])
 	  .service('Info', [
 	    '$injector',
@@ -211,6 +213,9 @@
 	    this.setStyles(options.style);
 	  }
 	  if(options.classList) {
+	    this.addClasses(options.classList);
+	  }
+	  if(options.attributes) {
 	    this.addClasses(options.classList);
 	  }
 	}
@@ -424,6 +429,14 @@
 	  this.element.removeAttribute(key);
 	  return this;
 	};
+	Element.prototype.setAttributes = function(_attributes) {
+	  'use strict';
+	  var self = this;
+	  _attributes.forEach(function(_attribute) {
+	    self.setAttribute(_attribute.key, _attribute.value);
+	  });
+	  return this;
+	};
 
 	module.exports = Element;
 
@@ -572,6 +585,7 @@
 	  this.template = null;
 	  this.events = null;
 	  this.style = null;
+	  this.attributes = [];
 	  this.classList = [];
 	}
 	ElementOptions.prototype.getTextContent = function() {
@@ -627,6 +641,15 @@
 	ElementOptions.prototype.getClasses = function() {
 	  'use strict';
 	  return this.classList;
+	};
+	ElementOptions.prototype.setAttribute = function(_attribute) {
+	  'use strict';
+	  this.attributes.push(_attribute);
+	  return this;
+	};
+	ElementOptions.prototype.getAttributes = function() {
+	  'use strict';
+	  return this.attributes;
 	};
 
 	module.exports = ElementOptions;
@@ -1900,7 +1923,20 @@
 	var Config = {
 	  baseballcard: {
 	    constants: {
-	      FAKEDATA: true
+	      FAKEDATA: true,
+	      FAKE: {
+	        FLAG_PIC:'../src/js/Test/img/ra-flag.png',
+	        IMAGE: '../src/js/Test/img/ship.jpg',
+	        FLAG: 'RA',
+	        COUNTRY: 'RA',
+	        NAME: 'Millennium Falcon',
+	        HOME_PORT: 'Corellia',
+	        LAST_UPDATE: 1463014800000,
+	        LOCATION: {
+	          lat: 19.203333333333333,
+	          lon: 121.91388888888889
+	        }
+	      }
 	    }
 	  }
 	};
@@ -1922,6 +1958,115 @@
 
 /***/ },
 /* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * ImgPkg module definition
+	 */
+
+	var Img = __webpack_require__(29);
+	var ImgOptions = __webpack_require__(30);
+
+	angular.module('ImgPkg', [])
+	  .factory('Img', function() {
+	    'use strict';
+	    return Img;
+	  })
+	  .factory('ImgOptions',  function() {
+	    'use strict';
+	    return ImgOptions;
+	  });
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Basic Img element wrapper
+	 * 
+	 * @requires {Element}
+	 * @requires {ImgOptions}
+	 * @augments {Element}
+	 * @param {ImgOptions} options
+	 * @returns {Img}
+	 */
+
+	var Element = __webpack_require__(4);
+	var ImgOptions = __webpack_require__(30);
+
+	function Img(options) {
+	  'use strict';
+
+	  this._options = options ? options : new ImgOptions();
+
+	  Element.call(this, this._options);
+
+	  if(this._options.template) {
+	    this.setTemplate(this._options.template);
+	  } else if(this._options.textContent){
+	    this.setTextContent(this._options.textContent);
+	  }
+
+	  if(this._options.src) {
+	    this.setSrc(this._options.src);
+	  }
+	  if(this._options.angularSrc) {
+	    this.setAttribute('ng-src', this._options.angularSrc);
+	  }
+	}
+	Img.prototype = Object.create(Element.prototype);
+	Img.prototype.hasAngularTemplate = function() {
+	  'use strict';
+	  return (this._options.angularTemplate) ? true : false; // eslint-disable-line no-unneeded-ternary
+	};
+	Img.prototype.setTextContent = function(content) {
+	  'use strict';
+	  this.element.textContent = content;
+	  return this;
+	};
+	Img.prototype.setTemplate = function(content) {
+	  'use strict';
+	  this.element.innerHTML = content;
+	  return this;
+	};
+	Img.prototype.setSrc = function(src) {
+	  'use strict';
+	  this.element.src = src;
+	  return this;
+	};
+
+	module.exports = Img;
+
+/***/ },
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Options for Img element wrapper
+	 * 
+	 * @requires {ElementOptions}
+	 * @augments {ElementOptions}
+	 * @returns {ImgOptions}
+	 */
+
+	var ElementOptions = __webpack_require__(7);
+
+	function ImgOptions() {
+	  'use strict';
+	  ElementOptions.call(this);
+	  this.type = 'img';
+	}
+	ImgOptions.prototype = Object.create(ElementOptions.prototype);
+	ImgOptions.prototype.setAngularSrc = function(src)  {
+	  'use strict';
+	  this.angularSrc = src;
+	  return this;
+	};
+
+	module.exports = ImgOptions;
+
+/***/ },
+/* 31 */
 /***/ function(module, exports) {
 
 	/**
@@ -1945,6 +2090,10 @@
 	  var SpanOptions = $injector.get('SpanOptions');
 	  ElementManager.register('Span', Span);
 
+	  var Img = $injector.get('Img');
+	  var ImgOptions = $injector.get('ImgOptions');
+	  ElementManager.register('Img', Img);
+
 	  var StyleOptions = $injector.get('StyleOptions');
 
 	  /* ****************************************
@@ -1961,20 +2110,20 @@
 
 	  /* ****************************************
 	   *
-	   * Main Content
+	   * Panel Content
 	   * 
 	   **************************************** */
-	  var contentOptions = new DivOptions();
-	  var contentStyle = new StyleOptions();
-	  contentStyle
+	  var panelOptions = new DivOptions();
+	  var panelStyle = new StyleOptions();
+	  panelStyle
 	    .set('margin-left', 'auto')
 	    .set('margin-right', 'auto')
 	    .set('max-width', '510px');
-	  contentOptions
+	  panelOptions
 	    .addClass('scroll-content')
 	    .addClass('panel')
 	    .addClass('panel-default')
-	    .setStyle(contentStyle);
+	    .setStyle(panelStyle);
 
 	  /* ****************************************
 	   *
@@ -2057,7 +2206,7 @@
 	   **************************************** */
 
 	  this.header = ElementManager.construct('Banner', headerOptions);
-	  this.panel = ElementManager.construct('Div', contentOptions);
+	  this.panel = ElementManager.construct('Div', panelOptions);
 	  this.panelHeader = ElementManager.construct('Div', panelHeadingOptions);
 	  this.lastUpdated = ElementManager.construct('Span', lastUpdatedOptions);
 	  this.panelBody = ElementManager.construct('Div', panelBodyOptions);
@@ -2072,7 +2221,7 @@
 	module.exports = Info;
 
 /***/ },
-/* 29 */
+/* 32 */
 /***/ function(module, exports) {
 
 	/**
@@ -2098,7 +2247,7 @@
 	module.exports = run;
 
 /***/ },
-/* 30 */
+/* 33 */
 /***/ function(module, exports) {
 
 	/**
@@ -2113,35 +2262,29 @@
 	  var ElementManager = $injector.get('ElementManager');
 	  ElementManager.bind($scope, $compile);
 
-	  var Stubs = $injector.get('Stubs');
-	  $scope.track = Stubs.FULL_TRACKDATA;
-
 	  var Config = $injector.get('Config');
+	  var CONST = Config.baseballcard.constants;
+
+	  $scope.track = {};
 
 	  if(Config.baseballcard.constants.FAKEDATA) {
 	    // Set any variables that need to be tested.
-	    $scope.flag_pic = 'C:/Users/dmontane/Documents/DCGS-N/tmp/img/ra-flag.png';
-	    $scope.track.flag = 'RA';
-	    $scope.country = 'RA';
-	    $scope.track.name = 'Millennium Falcon';
-	    $scope.track.home_port = 'Corellia';
-	    $scope.track.last_update = 1463014800000;
-	    $scope.track.image = 'C:/Users/dmontane/Documents/DCGS-N/tmp/img/ship.jpg';
-	    
-	    var testloc = {
-	      lat: 19.203333333333333,
-	      lon: 121.91388888888889
-	    };
-	    //testloc = getLocation(testloc.lat, testloc.lon);
-	    $scope.track.location = testloc;
+	    $scope.flag_pic = CONST.FAKE.FLAG_PIC;
+	    $scope.track.flag = CONST.FAKE.FLAG;
+	    $scope.country = CONST.FAKE.COUNTRY;
+	    $scope.track.name = CONST.FAKE.NAME;
+	    $scope.track.home_port = CONST.FAKE.HOME_PORT;
+	    $scope.track.last_update = CONST.FAKE.LAST_UPDATE;
+	    $scope.track.image = CONST.FAKE.IMAGE;
+	    $scope.track.location = CONST.FAKE.LOCATION;
 	    
 	    $scope.track.time_delay = 'Calculating time delay...';
 	    var tock = function() {
-	      $scope.track.time_delay = $scope.track.last_update + 1; // getDelay(Date.now() - $scope.track.last_update);
+	      $scope.track.time_delay = $scope.track.last_update + 1;
 	    };			
 	    $interval(tock, 1000);
-	    // $timeout(popData, 500);
 	  }
+	  
 	  ElementManager
 	    .setUI('info')
 	    .build();

@@ -28,6 +28,9 @@ function Element(options) {
   if(options.classList) {
     this.addClasses(options.classList);
   }
+  if(options.attributes) {
+    this.addClasses(options.classList);
+  }
 }
 /*
  * Display modifiers
@@ -237,6 +240,14 @@ Element.prototype.setAttribute = function(key, value) {
 Element.prototype.removeAttribute = function(key) {
   'use strict';
   this.element.removeAttribute(key);
+  return this;
+};
+Element.prototype.setAttributes = function(_attributes) {
+  'use strict';
+  var self = this;
+  _attributes.forEach(function(_attribute) {
+    self.setAttribute(_attribute.key, _attribute.value);
+  });
   return this;
 };
 
