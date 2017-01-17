@@ -27,15 +27,8 @@ function Img(options) {
   if(this._options.src) {
     this.setSrc(this._options.src);
   }
-  if(this._options.angularSrc) {
-    this.setAttribute('ng-src', this._options.angularSrc);
-  }
 }
 Img.prototype = Object.create(Element.prototype);
-Img.prototype.hasAngularTemplate = function() {
-  'use strict';
-  return (this._options.angularTemplate) ? true : false; // eslint-disable-line no-unneeded-ternary
-};
 Img.prototype.setTextContent = function(content) {
   'use strict';
   this.element.textContent = content;

@@ -28,10 +28,6 @@ function Banner(options) {
 
 }
 Banner.prototype = Object.create(Element.prototype);
-Banner.prototype.hasAngularTemplate = function() {
-  'use strict';
-  return (this._options.angularTemplate) ? true : false; // eslint-disable-line no-unneeded-ternary
-};
 Banner.prototype.setTextContent = function(content) {
   'use strict';
   this._p.element.textContent = content;

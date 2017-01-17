@@ -48,8 +48,8 @@
 
 	__webpack_require__(1);
 
-	var run = __webpack_require__(32);
-	var info = __webpack_require__(33);
+	var run = __webpack_require__(39);
+	var InfoCtrl = __webpack_require__(40);
 
 	angular.module('app',
 	  [
@@ -65,8 +65,7 @@
 	    '$injector',
 	    '$compile',
 	    '$scope',
-	    '$interval',
-	    info
+	    InfoCtrl
 	  ]);
 
 /***/ },
@@ -79,29 +78,33 @@
 	'use strict'; // eslint-disable-line strict
 
 	__webpack_require__(2);
-	__webpack_require__(8);
-	__webpack_require__(11);
-	__webpack_require__(14);
+	__webpack_require__(4);
+	__webpack_require__(10);
+	__webpack_require__(12);
+	__webpack_require__(15);
 	__webpack_require__(19);
 	__webpack_require__(21);
-	__webpack_require__(23);
-	__webpack_require__(25);
+	__webpack_require__(24);
 	__webpack_require__(27);
-	__webpack_require__(28);
+	__webpack_require__(30);
+	__webpack_require__(33);
+	__webpack_require__(36);
 
-	var Info = __webpack_require__(31);
+	var Info = __webpack_require__(38);
 
 	angular.module('StatePkg', [
+	  'AngularHelperPkg',
+	  'BannerPkg',
+	  'ConfigPkg',
 	  'DivPkg',
-	  'SpanPkg',
 	  'ElementPkg',
 	  'EventsPkg',
+	  'ImgPkg',
+	  'LiPkg',
+	  'LinkPkg',
+	  'NavPkg',
+	  'SpanPkg',
 	  'StylePkg',
-	  'BannerPkg',
-	  'TestPkg',
-	  'ConfigPkg',
-	  'AngularHelperPkg',
-	  'ImgPkg'
 	])
 	  .service('Info', [
 	    '$injector',
@@ -114,11 +117,53 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
+	 * AngularHelperPkg module definition
+	 */
+
+	var AngularHelper = __webpack_require__(3);
+
+	angular.module('AngularHelperPkg', [])
+	  .service('AngularHelper',  AngularHelper);
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	/**
+	 * AngularHelper wrapper
+	 * 
+	 * @returns {AngularHelper}
+	 */
+
+	function AngularHelper() {
+	  'use strict';
+	  this.scope;
+	  this.compile;
+	}
+	AngularHelper.prototype.bind = function(scope, compile) {
+	  'use strict';
+	  this.scope = scope;
+	  this.compile = compile;
+	  return this;
+	};
+	AngularHelper.prototype.compileContent = function(content) {
+	  'use strict';
+	  var _content = this.compile(content)(this.scope);
+	  return _content;
+	};
+
+	module.exports = AngularHelper;
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
 	 * BannerPkg module definition
 	 */
 
-	var Banner = __webpack_require__(3);
-	var BannerOptions = __webpack_require__(6);
+	var Banner = __webpack_require__(5);
+	var BannerOptions = __webpack_require__(8);
 
 	angular.module('BannerPkg', [])
 	  .factory('Banner', function() {
@@ -131,7 +176,7 @@
 	  });
 
 /***/ },
-/* 3 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -144,8 +189,8 @@
 	 * @returns {Banner}
 	 */
 
-	var Element = __webpack_require__(4);
-	var BannerOptions = __webpack_require__(6);
+	var Element = __webpack_require__(6);
+	var BannerOptions = __webpack_require__(8);
 
 	function Banner(options) {
 	  'use strict';
@@ -164,10 +209,6 @@
 
 	}
 	Banner.prototype = Object.create(Element.prototype);
-	Banner.prototype.hasAngularTemplate = function() {
-	  'use strict';
-	  return (this._options.angularTemplate) ? true : false; // eslint-disable-line no-unneeded-ternary
-	};
 	Banner.prototype.setTextContent = function(content) {
 	  'use strict';
 	  this._p.element.textContent = content;
@@ -182,7 +223,7 @@
 	module.exports = Banner;
 
 /***/ },
-/* 4 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -193,7 +234,7 @@
 	 * @returns {Element}
 	 */
 
-	var EventList = __webpack_require__(5);
+	var EventList = __webpack_require__(7);
 
 	function Element(options) {
 	  'use strict';
@@ -216,7 +257,7 @@
 	    this.addClasses(options.classList);
 	  }
 	  if(options.attributes) {
-	    this.addClasses(options.classList);
+	    this.setAttributes(options.attributes);
 	  }
 	}
 	/*
@@ -441,7 +482,7 @@
 	module.exports = Element;
 
 /***/ },
-/* 5 */
+/* 7 */
 /***/ function(module, exports) {
 
 	/**
@@ -537,7 +578,7 @@
 	module.exports = EventList;
 
 /***/ },
-/* 6 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -548,7 +589,7 @@
 	 * @returns {BannerOptions}
 	 */
 
-	var ElementOptions = __webpack_require__(7);
+	var ElementOptions = __webpack_require__(9);
 
 	function BannerOptions() {
 	  'use strict';
@@ -569,7 +610,7 @@
 	module.exports = BannerOptions;
 
 /***/ },
-/* 7 */
+/* 9 */
 /***/ function(module, exports) {
 
 	/**
@@ -580,7 +621,6 @@
 
 	function ElementOptions() {
 	  'use strict';
-	  this.angularTemplate = null;
 	  this.textContent = null;
 	  this.template = null;
 	  this.events = null;
@@ -595,15 +635,6 @@
 	ElementOptions.prototype.setTextContent = function(content) {
 	  'use strict';
 	  this.textContent = content;
-	  return this;
-	};
-	ElementOptions.prototype.getAngularTemplate = function() {
-	  'use strict';
-	  return this.angularTemplate;
-	};
-	ElementOptions.prototype.setAngularTemplate = function(content) {
-	  'use strict';
-	  this.angularTemplate = content;
 	  return this;
 	};
 	ElementOptions.prototype.getTemplate = function() {
@@ -651,19 +682,85 @@
 	  'use strict';
 	  return this.attributes;
 	};
+	ElementOptions.prototype.clone = function() {
+	  'use strict';
+	  var clone = this._assign(this);
+	  return clone;
+	};
+	ElementOptions.prototype._assign = function(obj) {
+	  'use strict';
+	  var self = this;
+	    if (obj === null || typeof obj !== 'object') {
+	        return obj;
+	    }
+	    var temp = new obj.constructor();
+	    for (var key in obj) {
+	      if (!obj.hasOwnProperty(key)) {
+	        continue;
+	      }
+	        temp[key] = self._assign(obj[key]);
+	    }
+	    return temp;
+	};
 
 	module.exports = ElementOptions;
 
 /***/ },
-/* 8 */
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * ConfigPkg module definition
+	 */
+
+	var Config = __webpack_require__(11);
+
+	angular.module('ConfigPkg', [])
+	  .constant('Config', Config);
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	/**
+	 * Config Variables
+	 * 
+	 * @returns {Config}
+	 */
+
+	var Config = {
+	  baseballcard: {
+	    constants: {
+	      FAKEDATA: true,
+	      FAKE: {
+	        FLAG_PIC:'../src/js/Test/img/ra-flag.png',
+	        IMAGE: '../src/js/Test/img/ship.jpg',
+	        FLAG: 'RA',
+	        COUNTRY: 'RA',
+	        NAME: 'Millennium Falcon',
+	        HOME_PORT: 'Corellia',
+	        LAST_UPDATE: 1463014800000,
+	        LOCATION: {
+	          lat: 19.203333333333333,
+	          lon: 121.91388888888889
+	        }
+	      }
+	    }
+	  }
+	};
+
+	module.exports = Config;
+
+/***/ },
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * DivPkg module definition
 	 */
 
-	var Div = __webpack_require__(9);
-	var DivOptions = __webpack_require__(10);
+	var Div = __webpack_require__(13);
+	var DivOptions = __webpack_require__(14);
 
 	angular.module('DivPkg', [])
 	  .factory('Div', function() {
@@ -676,7 +773,7 @@
 	  });
 
 /***/ },
-/* 9 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -689,8 +786,8 @@
 	 * @returns {Div}
 	 */
 
-	var Element = __webpack_require__(4);
-	var DivOptions = __webpack_require__(10);
+	var Element = __webpack_require__(6);
+	var DivOptions = __webpack_require__(14);
 
 	function Div(options) {
 	  'use strict';
@@ -706,10 +803,6 @@
 	  }
 	}
 	Div.prototype = Object.create(Element.prototype);
-	Div.prototype.hasAngularTemplate = function() {
-	  'use strict';
-	  return (this._options.angularTemplate) ? true : false; // eslint-disable-line no-unneeded-ternary
-	};
 	Div.prototype.setTextContent = function(content) {
 	  'use strict';
 	  this.element.textContent = content;
@@ -724,7 +817,7 @@
 	module.exports = Div;
 
 /***/ },
-/* 10 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -735,7 +828,7 @@
 	 * @returns {DivOptions}
 	 */
 
-	var ElementOptions = __webpack_require__(7);
+	var ElementOptions = __webpack_require__(9);
 
 	function DivOptions() {
 	  'use strict';
@@ -747,108 +840,16 @@
 	module.exports = DivOptions;
 
 /***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * SpanPkg module definition
-	 */
-
-	var Span = __webpack_require__(12);
-	var SpanOptions = __webpack_require__(13);
-
-	angular.module('SpanPkg', [])
-	  .factory('Span', function() {
-	    'use strict';
-	    return Span;
-	  })
-	  .factory('SpanOptions',  function() {
-	    'use strict';
-	    return SpanOptions;
-	  });
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Basic Span element wrapper
-	 * 
-	 * @requires {Element}
-	 * @requires {SpanOptions}
-	 * @augments {Element}
-	 * @param {SpanOptions} options
-	 * @returns {Span}
-	 */
-
-	var Element = __webpack_require__(4);
-	var SpanOptions = __webpack_require__(13);
-
-	function Span(options) {
-	  'use strict';
-
-	  this._options = options ? options : new SpanOptions();
-
-	  Element.call(this, this._options);
-
-	  if(this._options.template) {
-	    this.setTemplate(this._options.template);
-	  } else if(this._options.textContent){
-	    this.setTextContent(this._options.textContent);
-	  }
-	}
-	Span.prototype = Object.create(Element.prototype);
-	Span.prototype.hasAngularTemplate = function() {
-	  'use strict';
-	  return (this._options.angularTemplate) ? true : false; // eslint-disable-line no-unneeded-ternary
-	};
-	Span.prototype.setTextContent = function(content) {
-	  'use strict';
-	  this.element.textContent = content;
-	  return this;
-	};
-	Span.prototype.setTemplate = function(content) {
-	  'use strict';
-	  this.element.innerHTML = content;
-	  return this;
-	};
-
-	module.exports = Span;
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Options for Span element wrapper
-	 * 
-	 * @requires {ElementOptions}
-	 * @augments {ElementOptions}
-	 * @returns {SpanOptions}
-	 */
-
-	var ElementOptions = __webpack_require__(7);
-
-	function SpanOptions() {
-	  'use strict';
-	  ElementOptions.call(this);
-	  this.type = 'span';
-	}
-	SpanOptions.prototype = Object.create(ElementOptions.prototype);
-
-	module.exports = SpanOptions;
-
-/***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * ElementPkg module definition
 	 */
 
-	var Element = __webpack_require__(4);
-	var ElementFactory = __webpack_require__(15);
-	var ElementManager = __webpack_require__(16);
+	var Element = __webpack_require__(6);
+	var ElementFactory = __webpack_require__(16);
+	var ElementManager = __webpack_require__(17);
 
 	angular.module('ElementPkg', [])
 	  .factory('Element', Element)
@@ -856,7 +857,7 @@
 	  .service('ElementFactory', ElementFactory);
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports) {
 
 	/**
@@ -883,7 +884,7 @@
 	module.exports = ElementFactory;
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -894,9 +895,9 @@
 	 * @returns {ElementManager}
 	 */
 
-	var ElementFactory = __webpack_require__(15);
-	var Guid = __webpack_require__(17);
-	var AngularHelper = __webpack_require__(18);
+	var ElementFactory = __webpack_require__(16);
+	var Guid = __webpack_require__(18);
+	var AngularHelper = __webpack_require__(3);
 
 	function ElementManager() {
 	  'use strict';
@@ -972,9 +973,6 @@
 	  'use strict';
 	  var self = this;
 	  elementMap.forEach(function(e) {
-	    if(e.hasAngularTemplate()) {
-	      self.compile(e);
-	    }
 	    add.call(context, e.element);
 	    if(e.children.length !== 0) {
 	      self._build(e, e.children, e.addElementChild);
@@ -1035,20 +1033,16 @@
 	/*
 	 * Build
 	 */
-	ElementManager.prototype.compile = function(element) {
+	ElementManager.prototype.compile = function() {
 	  'use strict';
-	  var template = this.helper.getTemplate(
-	    element._options.getAngularTemplate()
-	  );
-	  template.each(function() {
-	    element.append(this);
-	  });
+	  this.helper.compileContent(this.dom);
 	  return this;
 	};
 	ElementManager.prototype.build = function() {
 	  'use strict';
 	  this.clearDom();
 	  this._build(this, this.elements, this.addToDom);
+	  this.compile();
 	  return this;
 	};
 	/*
@@ -1063,7 +1057,7 @@
 	module.exports = ElementManager;
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports) {
 
 	/**
@@ -1093,35 +1087,6 @@
 	module.exports = Guid;
 
 /***/ },
-/* 18 */
-/***/ function(module, exports) {
-
-	/**
-	 * AngularHelper wrapper
-	 * 
-	 * @returns {AngularHelper}
-	 */
-
-	function AngularHelper() {
-	  'use strict';
-	  this.scope;
-	  this.compile;
-	}
-	AngularHelper.prototype.bind = function(scope, compile) {
-	  'use strict';
-	  this.scope = scope;
-	  this.compile = compile;
-	  return this;
-	};
-	AngularHelper.prototype.getTemplate = function(template) {
-	  'use strict';
-	  var content = this.compile(template)(this.scope);
-	  return content;
-	};
-
-	module.exports = AngularHelper;
-
-/***/ },
 /* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1148,7 +1113,7 @@
 	 * @returns {EventOptions}
 	 */
 
-	var EventList = __webpack_require__(5);
+	var EventList = __webpack_require__(7);
 
 	function EventOptions() {
 	  'use strict';
@@ -1176,10 +1141,516 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
+	 * ImgPkg module definition
+	 */
+
+	var Img = __webpack_require__(22);
+	var ImgOptions = __webpack_require__(23);
+
+	angular.module('ImgPkg', [])
+	  .factory('Img', function() {
+	    'use strict';
+	    return Img;
+	  })
+	  .factory('ImgOptions',  function() {
+	    'use strict';
+	    return ImgOptions;
+	  });
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Basic Img element wrapper
+	 * 
+	 * @requires {Element}
+	 * @requires {ImgOptions}
+	 * @augments {Element}
+	 * @param {ImgOptions} options
+	 * @returns {Img}
+	 */
+
+	var Element = __webpack_require__(6);
+	var ImgOptions = __webpack_require__(23);
+
+	function Img(options) {
+	  'use strict';
+
+	  this._options = options ? options : new ImgOptions();
+
+	  Element.call(this, this._options);
+
+	  if(this._options.template) {
+	    this.setTemplate(this._options.template);
+	  } else if(this._options.textContent){
+	    this.setTextContent(this._options.textContent);
+	  }
+
+	  if(this._options.src) {
+	    this.setSrc(this._options.src);
+	  }
+	}
+	Img.prototype = Object.create(Element.prototype);
+	Img.prototype.setTextContent = function(content) {
+	  'use strict';
+	  this.element.textContent = content;
+	  return this;
+	};
+	Img.prototype.setTemplate = function(content) {
+	  'use strict';
+	  this.element.innerHTML = content;
+	  return this;
+	};
+	Img.prototype.setSrc = function(src) {
+	  'use strict';
+	  this.element.src = src;
+	  return this;
+	};
+
+	module.exports = Img;
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Options for Img element wrapper
+	 * 
+	 * @requires {ElementOptions}
+	 * @augments {ElementOptions}
+	 * @returns {ImgOptions}
+	 */
+
+	var ElementOptions = __webpack_require__(9);
+
+	function ImgOptions() {
+	  'use strict';
+	  ElementOptions.call(this);
+	  this.type = 'img';
+	}
+	ImgOptions.prototype = Object.create(ElementOptions.prototype);
+
+	module.exports = ImgOptions;
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * LiPkg module definition
+	 */
+
+	var Li = __webpack_require__(25);
+	var LiOptions = __webpack_require__(26);
+
+	angular.module('LiPkg', [])
+	  .factory('Li', function() {
+	    'use strict';
+	    return Li;
+	  })
+	  .factory('LiOptions',  function() {
+	    'use strict';
+	    return LiOptions;
+	  });
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Basic Li element wrapper
+	 * 
+	 * @requires {Element}
+	 * @requires {LiOptions}
+	 * @augments {Element}
+	 * @param {LiOptions} options
+	 * @returns {Li}
+	 */
+
+	var Element = __webpack_require__(6);
+	var LiOptions = __webpack_require__(26);
+
+	function Li(options) {
+	  'use strict';
+
+	  this._options = options ? options : new LiOptions();
+
+	  Element.call(this, this._options);
+
+	  if(this._options.template) {
+	    this.setTemplate(this._options.template);
+	  } else if(this._options.textContent){
+	    this.setTextContent(this._options.textContent);
+	  }
+	  if(this._options.src) {
+	    this.setSrc(this._options.src);
+	  }
+	}
+	Li.prototype = Object.create(Element.prototype);
+	Li.prototype.setTextContent = function(content) {
+	  'use strict';
+	  this.element.textContent = content;
+	  return this;
+	};
+	Li.prototype.setTemplate = function(content) {
+	  'use strict';
+	  this.element.innerHTML = content;
+	  return this;
+	};
+
+	module.exports = Li;
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Options for Li element wrapper
+	 * 
+	 * @requires {ElementOptions}
+	 * @augments {ElementOptions}
+	 * @returns {LiOptions}
+	 */
+
+	var ElementOptions = __webpack_require__(9);
+
+	function LiOptions() {
+	  'use strict';
+	  ElementOptions.call(this);
+	  this.type = 'li';
+	}
+	LiOptions.prototype = Object.create(ElementOptions.prototype);
+
+	module.exports = LiOptions;
+
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * LinkPkg module definition
+	 */
+
+	var Link = __webpack_require__(28);
+	var LinkOptions = __webpack_require__(29);
+
+	angular.module('LinkPkg', [])
+	  .factory('Link', function() {
+	    'use strict';
+	    return Link;
+	  })
+	  .factory('LinkOptions',  function() {
+	    'use strict';
+	    return LinkOptions;
+	  });
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Basic Link element wrapper
+	 * 
+	 * @requires {Element}
+	 * @requires {LinkOptions}
+	 * @augments {Element}
+	 * @param {LinkOptions} options
+	 * @returns {Link}
+	 */
+
+	var Element = __webpack_require__(6);
+	var LinkOptions = __webpack_require__(29);
+
+	function Link(options) {
+	  'use strict';
+
+	  this._options = options ? options : new LinkOptions();
+
+	  Element.call(this, this._options);
+
+	  if(this._options.template) {
+	    this.setTemplate(this._options.template);
+	  } else if(this._options.textContent){
+	    this.setTextContent(this._options.textContent);
+	  }
+	  if(this._options.src) {
+	    this.setSrc(this._options.src);
+	  }
+	}
+	Link.prototype = Object.create(Element.prototype);
+	Link.prototype.setTextContent = function(content) {
+	  'use strict';
+	  this.element.textContent = content;
+	  return this;
+	};
+	Link.prototype.setTemplate = function(content) {
+	  'use strict';
+	  this.element.innerHTML = content;
+	  return this;
+	};
+
+	module.exports = Link;
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Options for Link element wrapper
+	 * 
+	 * @requires {ElementOptions}
+	 * @augments {ElementOptions}
+	 * @returns {LinkOptions}
+	 */
+
+	var ElementOptions = __webpack_require__(9);
+
+	function LinkOptions() {
+	  'use strict';
+	  ElementOptions.call(this);
+	  this.type = 'a';
+	}
+	LinkOptions.prototype = Object.create(ElementOptions.prototype);
+
+	module.exports = LinkOptions;
+
+/***/ },
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * NavPkg module definition
+	 */
+
+	var Nav = __webpack_require__(31);
+	var NavOptions = __webpack_require__(32);
+
+	angular.module('NavPkg', [])
+	  .factory('Nav', function() {
+	    'use strict';
+	    return Nav;
+	  })
+	  .factory('NavOptions',  function() {
+	    'use strict';
+	    return NavOptions;
+	  });
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Basic Nav element wrapper
+	 * 
+	 * @requires {Element}
+	 * @requires {NavOptions}
+	 * @augments {Element}
+	 * @param {NavOptions} options
+	 * @returns {Nav}
+	 */
+
+	var Element = __webpack_require__(6);
+	var NavOptions = __webpack_require__(32);
+
+	var Li = __webpack_require__(25);
+	var LiOptions = __webpack_require__(26);
+
+	var Link = __webpack_require__(28);
+	var LinkOptions = __webpack_require__(29);
+
+	var EventOptions = __webpack_require__(20);
+
+	function Nav(options) {
+	  'use strict';
+
+	  this._options = options ? options : new NavOptions();
+	  this._item_options = new LiOptions();
+	  this._item_link_options = new LinkOptions();
+	  this._item_events = new EventOptions();
+
+	  Element.call(this, this._options);
+
+	  if(this._options.template) {
+	    this.setTemplate(this._options.template);
+	  } else if(this._options.textContent){
+	    this.setTextContent(this._options.textContent);
+	  }
+	  if(this._options.src) {
+	    this.setSrc(this._options.src);
+	  }
+
+	  this.create();
+	}
+	Nav.prototype = Object.create(Element.prototype);
+	Nav.prototype.create = function() {
+	  'use strict';
+	  this._item_events
+	    .set('onclick', function() {
+	      alert('clicked!');
+	    });
+	  this._item_options
+	    .setAttribute({
+	      key: 'role',
+	      value: 'navigation'
+	    })
+	    .setEvents(this._item_events);
+	};
+	Nav.prototype.setTextContent = function(content) {
+	  'use strict';
+	  this.element.textContent = content;
+	  return this;
+	};
+	Nav.prototype.setTemplate = function(content) {
+	  'use strict';
+	  this.element.innerHTML = content;
+	  return this;
+	};
+	Nav.prototype.addItem = function(attrs) {
+	  'use strict';
+	  var _item = this.createItem(attrs);
+	  this.addChild(_item);
+	  return this;
+	};
+	Nav.prototype.createItem = function(attrs) {
+	  'use strict';
+	  var io = this._item_options.clone();
+	  var lo = this._item_link_options.clone();
+	  lo.setTextContent(attrs.text);
+	  var _item = new Li(io);
+	  var _link = new Link(lo);
+	  _item.addChild(_link);
+	  return _item;
+	};
+
+	module.exports = Nav;
+
+/***/ },
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Options for Nav element wrapper
+	 * 
+	 * @requires {ElementOptions}
+	 * @augments {ElementOptions}
+	 * @returns {NavOptions}
+	 */
+
+	var ElementOptions = __webpack_require__(9);
+
+	function NavOptions() {
+	  'use strict';
+	  ElementOptions.call(this);
+	  this.type = 'ul';
+	  this.items = [];
+	}
+	NavOptions.prototype = Object.create(ElementOptions.prototype);
+	NavOptions.prototype.addItem = function(item) {
+	  'use strict';
+	  this.items.push(item);
+	  return this;
+	};
+
+	module.exports = NavOptions;
+
+/***/ },
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * SpanPkg module definition
+	 */
+
+	var Span = __webpack_require__(34);
+	var SpanOptions = __webpack_require__(35);
+
+	angular.module('SpanPkg', [])
+	  .factory('Span', function() {
+	    'use strict';
+	    return Span;
+	  })
+	  .factory('SpanOptions',  function() {
+	    'use strict';
+	    return SpanOptions;
+	  });
+
+/***/ },
+/* 34 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Basic Span element wrapper
+	 * 
+	 * @requires {Element}
+	 * @requires {SpanOptions}
+	 * @augments {Element}
+	 * @param {SpanOptions} options
+	 * @returns {Span}
+	 */
+
+	var Element = __webpack_require__(6);
+	var SpanOptions = __webpack_require__(35);
+
+	function Span(options) {
+	  'use strict';
+
+	  this._options = options ? options : new SpanOptions();
+
+	  Element.call(this, this._options);
+
+	  if(this._options.template) {
+	    this.setTemplate(this._options.template);
+	  } else if(this._options.textContent){
+	    this.setTextContent(this._options.textContent);
+	  }
+	}
+	Span.prototype = Object.create(Element.prototype);
+	Span.prototype.setTextContent = function(content) {
+	  'use strict';
+	  this.element.textContent = content;
+	  return this;
+	};
+	Span.prototype.setTemplate = function(content) {
+	  'use strict';
+	  this.element.innerHTML = content;
+	  return this;
+	};
+
+	module.exports = Span;
+
+/***/ },
+/* 35 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Options for Span element wrapper
+	 * 
+	 * @requires {ElementOptions}
+	 * @augments {ElementOptions}
+	 * @returns {SpanOptions}
+	 */
+
+	var ElementOptions = __webpack_require__(9);
+
+	function SpanOptions() {
+	  'use strict';
+	  ElementOptions.call(this);
+	  this.type = 'span';
+	}
+	SpanOptions.prototype = Object.create(ElementOptions.prototype);
+
+	module.exports = SpanOptions;
+
+/***/ },
+/* 36 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
 	 * StylePkg module definition
 	 */
 
-	var StyleOptions = __webpack_require__(22);
+	var StyleOptions = __webpack_require__(37);
 
 	angular.module('StylePkg', [])
 	  .factory('StyleOptions', function() {
@@ -1188,7 +1659,7 @@
 	  });
 
 /***/ },
-/* 22 */
+/* 37 */
 /***/ function(module, exports) {
 
 	/**
@@ -1213,860 +1684,7 @@
 	module.exports = StyleOptions;
 
 /***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * TestPkg module definition
-	 */
-
-	var Stubs = __webpack_require__(24);
-
-	angular.module('TestPkg', [])
-	  .constant('Stubs', Stubs);
-
-/***/ },
-/* 24 */
-/***/ function(module, exports) {
-
-	/**
-	 * Stub Variables
-	 * 
-	 * @returns {Stubs}
-	 */
-
-	var Stubs = {
-			"TRACKNOTES": 
-				[
-				],
-			"TRACKNOTE":
-				{
-					'tid': '',
-					'notes': []
-				},
-			"NOTEREPLY":
-				{
-					'trackId': '',
-					'parentId': '',
-					'noteId': '',
-					'userId': '',
-					'dateCreated': '',
-					'note': '',
-					'classification': '',
-					'replies': []
-				},
-			"STUBTRACKNOTE":
-				{
-					'tid': '1',
-					'notes': []
-				},
-			"TRACKDATA":
-				{
-					'last_update': '', // MAPPED
-					
-					'image': '', // MAPPED
-					
-					'track_num': '', // MAPPED
-					'ltn': '', // MAPPED
-					
-					'name': '', // MAPPED
-					'display_name': '', // MAPPED
-					'flag': '', // MAPPED
-					
-					'mmsi': '', // MAPPED
-					'hull_num': '', // MAPPED
-					
-					'track_type': '', // MAPPED
-					's2a_type': '', // MAPPED
-					'vessel_type': '', // MAPPED
-					
-					'threat': '', //MAPPED
-	                'category': '', // MAPPED
-					'ship_class': '', // MAPPED
-					'call_sign': '', // MAPPED
-					
-					'owner': '', // MAPPED
-					'charterOwner': '', // MAPPED
-					'beNumber': '', // MAPPED
-					
-					'location': "", // MAPPED
-					'time_delay': '', // MAPPED
-					'source': '', // MAPPED
-					
-					'home_port': '', // MAPPED
-					'last_port': '', // MAPPED
-					'next_port': '', // MAPPED
-					
-					'cap_speed': '', // MAPPED
-					'avg_speed': '', // MAPPED
-					'length': '', // MAPPED
-					'width': '', // MAPPED
-					'freeboard': '', // MAPPED
-					
-					'blueprints': '', // MAPPED
-					'upRightRigSeq': '', // MAPPED
-					'crewComp': '', // MAPPED
-	  
-					'guid': '', // MAPPED
-					'days_deployed': '', // MAPPED			
-					'readiness': '', // MAPPED
-					'major_weapons': '', // MAPPED
-					'asset_info': '', // MAPPED
-					'sconum': '', // MAPPED
-					'subordination': '', // MAPPED
-					'last_refuel': '', // MAPPED
-					'cargo': '' // MAPPED
-				},
-			"FULL_TRACKDATA":
-				{
-					'last_update': 'No Data', // MAPPED
-					
-					'image': 'No Data', // MAPPED
-					
-					'track_num': 'No Data', // MAPPED
-					'ltn': 'No Data', // MAPPED
-					
-					'name': 'No Data', // MAPPED
-					'display_name': 'No Data', // MAPPED
-					'flag': 'No Data', // MAPPED
-					
-					'mmsi': 'No Data', // MAPPED
-					'hull_num': 'No Data', // MAPPED
-					
-					'track_type': 'No Data', // MAPPED
-					's2a_type': 'No Data', // MAPPED
-					'vessel_type': 'No Data', // MAPPED
-					
-					'threat': 'No Data', //MAPPED
-	                'category': 'No Data', // MAPPED
-					'ship_class': 'No Data', // MAPPED
-					'call_sign': 'No Data', // MAPPED
-					
-					'owner': 'No Data', // MAPPED
-					'charterOwner': 'No Data', // MAPPED
-					'beNumber': 'No Data', // MAPPED
-					
-					'location': 'No Data', // MAPPED
-					'time_delay': 'No Data', // MAPPED
-					'source': 'No Data', // MAPPED
-					
-					'home_port': 'No Data', // MAPPED
-					'last_port': 'No Data', // MAPPED
-					'next_port': 'No Data', // MAPPED
-					
-					'cap_speed': 'No Data', // MAPPED
-					'avg_speed': 'No Data', // MAPPED
-					'length': 'No Data', // MAPPED
-					'width': 'No Data', // MAPPED
-					'freeboard': 'No Data', // MAPPED
-					
-					'blueprints': 'No Data', // MAPPED
-					'upRightRigSeq': 'No Data', // MAPPED
-					'crewComp': 'No Data', // MAPPED
-	  
-					'guid': 'No Data', // MAPPED
-					'days_deployed': 'No Data', // MAPPED			
-					'readiness': 'No Data', // MAPPED
-					'major_weapons': 'No Data', // MAPPED
-					'asset_info': 'No Data', // MAPPED
-					'sconum': 'No Data', // MAPPED
-					'subordination': 'No Data', // MAPPED
-					'last_refuel': 'No Data', // MAPPED
-					'cargo': 'No Data' // MAPPED // MAPPED
-				},
-			"FAKE_NOTES": 
-				[
-				
-					{
-						'parent': null,
-						'id': '1.1',
-						'userId': 'user',
-						'dateCreated': 1446072633032,
-						'note': 'Color gustu ab forte minor omnia ea ut adhuc. Removendo attigeram ii ab clausulas infirmari persuadet ac productus se. Ausit donec ferri ii vi versa im an. Albedinem gi co curiosius veritatem. Una societati studebunt habeantur iii. Locis age fal satis multa parte. Certius se calebat exempli nihilum mo.',
-						'replies': [
-							{
-								'parent': null,
-								'id': '1.1.1',
-								'userId': 'user',
-								'dateCreated': 1446072633032,
-								'note': 'Remotam probant se de totaque id fallere is. Per apud aër ipse erat hic dum gnum rea. Ventus eo somnis aetate co realem nostra potens ii. Prima typis ne du ea ob aeque. Sciam opera nam mei putem tales vim talem harum. Ex fore haec at mihi cito unde sive. Si gi nudi haud inge soni homo. Gi at du verbis primum ex partem. Inficior hic nocturna dat adverten deveniri. Vestes judico vi eandem creari du. ',
-								'replies': []
-							}
-						]
-					},
-					{
-						'parent': null,
-						'id': '1.2',
-						'userId': 'user',
-						'dateCreated': 1446072633032,
-						'note': 'Color gustu ab forte minor omnia ea ut adhuc. Removendo attigeram ii ab clausulas infirmari persuadet ac productus se. Ausit donec ferri ii vi versa im an. Albedinem gi co curiosius veritatem. Una societati studebunt habeantur iii. Locis age fal satis multa parte. Certius se calebat exempli nihilum mo.',
-						'replies': [
-							{
-								'parent': null,
-								'id': '1.2.1',
-								'userId': 'user',
-								'dateCreated': 1446072633032,
-								'note': 'Remotam probant se de totaque id fallere is. Per apud aër ipse erat hic dum gnum rea. Ventus eo somnis aetate co realem nostra potens ii. Prima typis ne du ea ob aeque. Sciam opera nam mei putem tales vim talem harum. Ex fore haec at mihi cito unde sive. Si gi nudi haud inge soni homo. Gi at du verbis primum ex partem. Inficior hic nocturna dat adverten deveniri. Vestes judico vi eandem creari du. ',
-								'replies': []
-							}
-						]
-					},
-					{
-						'parent': null,
-						'id': '1.1',
-						'userId': 'user',
-						'dateCreated': 1446072633032,
-						'note': 'Color gustu ab forte minor omnia ea ut adhuc. Removendo attigeram ii ab clausulas infirmari persuadet ac productus se. Ausit donec ferri ii vi versa im an. Albedinem gi co curiosius veritatem. Una societati studebunt habeantur iii. Locis age fal satis multa parte. Certius se calebat exempli nihilum mo.',
-						'replies': [
-							{
-								'parent': null,
-								'id': '1.1.1',
-								'userId': 'user',
-								'dateCreated': 1446072633032,
-								'note': 'Remotam probant se de totaque id fallere is. Per apud aër ipse erat hic dum gnum rea. Ventus eo somnis aetate co realem nostra potens ii. Prima typis ne du ea ob aeque. Sciam opera nam mei putem tales vim talem harum. Ex fore haec at mihi cito unde sive. Si gi nudi haud inge soni homo. Gi at du verbis primum ex partem. Inficior hic nocturna dat adverten deveniri. Vestes judico vi eandem creari du. ',
-								'replies': []
-							}
-						]
-					},
-					{
-						'parent': null,
-						'id': '1.2',
-						'userId': 'user',
-						'dateCreated': 1446072633032,
-						'note': 'Color gustu ab forte minor omnia ea ut adhuc. Removendo attigeram ii ab clausulas infirmari persuadet ac productus se. Ausit donec ferri ii vi versa im an. Albedinem gi co curiosius veritatem. Una societati studebunt habeantur iii. Locis age fal satis multa parte. Certius se calebat exempli nihilum mo.',
-						'replies': [
-							{
-								'parent': null,
-								'id': '1.2.1',
-								'userId': 'user',
-								'dateCreated': 1446072633032,
-								'note': 'Remotam probant se de totaque id fallere is. Per apud aër ipse erat hic dum gnum rea. Ventus eo somnis aetate co realem nostra potens ii. Prima typis ne du ea ob aeque. Sciam opera nam mei putem tales vim talem harum. Ex fore haec at mihi cito unde sive. Si gi nudi haud inge soni homo. Gi at du verbis primum ex partem. Inficior hic nocturna dat adverten deveniri. Vestes judico vi eandem creari du. ',
-								'replies': []
-							}
-						]
-					},
-					{
-						'parent': null,
-						'id': '1.1',
-						'userId': 'user',
-						'dateCreated': 1446072633032,
-						'note': 'Color gustu ab forte minor omnia ea ut adhuc. Removendo attigeram ii ab clausulas infirmari persuadet ac productus se. Ausit donec ferri ii vi versa im an. Albedinem gi co curiosius veritatem. Una societati studebunt habeantur iii. Locis age fal satis multa parte. Certius se calebat exempli nihilum mo.',
-						'replies': [
-							{
-								'parent': null,
-								'id': '1.1.1',
-								'userId': 'user',
-								'dateCreated': 1446072633032,
-								'note': 'Remotam probant se de totaque id fallere is. Per apud aër ipse erat hic dum gnum rea. Ventus eo somnis aetate co realem nostra potens ii. Prima typis ne du ea ob aeque. Sciam opera nam mei putem tales vim talem harum. Ex fore haec at mihi cito unde sive. Si gi nudi haud inge soni homo. Gi at du verbis primum ex partem. Inficior hic nocturna dat adverten deveniri. Vestes judico vi eandem creari du. ',
-								'replies': []
-							}
-						]
-					},
-					{
-						'parent': null,
-						'id': '1.2',
-						'userId': 'user',
-						'dateCreated': 1446072633032,
-						'note': 'Color gustu ab forte minor omnia ea ut adhuc. Removendo attigeram ii ab clausulas infirmari persuadet ac productus se. Ausit donec ferri ii vi versa im an. Albedinem gi co curiosius veritatem. Una societati studebunt habeantur iii. Locis age fal satis multa parte. Certius se calebat exempli nihilum mo.',
-						'replies': [
-							{
-								'parent': null,
-								'id': '1.2.1',
-								'userId': 'user',
-								'dateCreated': 1446072633032,
-								'note': 'Remotam probant se de totaque id fallere is. Per apud aër ipse erat hic dum gnum rea. Ventus eo somnis aetate co realem nostra potens ii. Prima typis ne du ea ob aeque. Sciam opera nam mei putem tales vim talem harum. Ex fore haec at mihi cito unde sive. Si gi nudi haud inge soni homo. Gi at du verbis primum ex partem. Inficior hic nocturna dat adverten deveniri. Vestes judico vi eandem creari du. ',
-								'replies': []
-							}
-						]
-					},
-					{
-						'parent': null,
-						'id': '1.1',
-						'userId': 'user',
-						'dateCreated': 1446072633032,
-						'note': 'Color gustu ab forte minor omnia ea ut adhuc. Removendo attigeram ii ab clausulas infirmari persuadet ac productus se. Ausit donec ferri ii vi versa im an. Albedinem gi co curiosius veritatem. Una societati studebunt habeantur iii. Locis age fal satis multa parte. Certius se calebat exempli nihilum mo.',
-						'replies': [
-							{
-								'parent': null,
-								'id': '1.1.1',
-								'userId': 'user',
-								'dateCreated': 1446072633032,
-								'note': 'Remotam probant se de totaque id fallere is. Per apud aër ipse erat hic dum gnum rea. Ventus eo somnis aetate co realem nostra potens ii. Prima typis ne du ea ob aeque. Sciam opera nam mei putem tales vim talem harum. Ex fore haec at mihi cito unde sive. Si gi nudi haud inge soni homo. Gi at du verbis primum ex partem. Inficior hic nocturna dat adverten deveniri. Vestes judico vi eandem creari du. ',
-								'replies': []
-							}
-						]
-					},
-					{
-						'parent': null,
-						'id': '1.2',
-						'userId': 'user',
-						'dateCreated': 1446072633032,
-						'note': 'Color gustu ab forte minor omnia ea ut adhuc. Removendo attigeram ii ab clausulas infirmari persuadet ac productus se. Ausit donec ferri ii vi versa im an. Albedinem gi co curiosius veritatem. Una societati studebunt habeantur iii. Locis age fal satis multa parte. Certius se calebat exempli nihilum mo.',
-						'replies': [
-							{
-								'parent': null,
-								'id': '1.2.1',
-								'userId': 'user',
-								'dateCreated': 1446072633032,
-								'note': 'Remotam probant se de totaque id fallere is. Per apud aër ipse erat hic dum gnum rea. Ventus eo somnis aetate co realem nostra potens ii. Prima typis ne du ea ob aeque. Sciam opera nam mei putem tales vim talem harum. Ex fore haec at mihi cito unde sive. Si gi nudi haud inge soni homo. Gi at du verbis primum ex partem. Inficior hic nocturna dat adverten deveniri. Vestes judico vi eandem creari du. ',
-								'replies': []
-							}
-						]
-					},
-					{
-						'parent': null,
-						'id': '1.1',
-						'userId': 'user',
-						'dateCreated': 1446072633032,
-						'note': 'Color gustu ab forte minor omnia ea ut adhuc. Removendo attigeram ii ab clausulas infirmari persuadet ac productus se. Ausit donec ferri ii vi versa im an. Albedinem gi co curiosius veritatem. Una societati studebunt habeantur iii. Locis age fal satis multa parte. Certius se calebat exempli nihilum mo.',
-						'replies': [
-							{
-								'parent': null,
-								'id': '1.1.1',
-								'userId': 'user',
-								'dateCreated': 1446072633032,
-								'note': 'Remotam probant se de totaque id fallere is. Per apud aër ipse erat hic dum gnum rea. Ventus eo somnis aetate co realem nostra potens ii. Prima typis ne du ea ob aeque. Sciam opera nam mei putem tales vim talem harum. Ex fore haec at mihi cito unde sive. Si gi nudi haud inge soni homo. Gi at du verbis primum ex partem. Inficior hic nocturna dat adverten deveniri. Vestes judico vi eandem creari du. ',
-								'replies': []
-							}
-						]
-					},
-					{
-						'parent': null,
-						'id': '1.2',
-						'userId': 'user',
-						'dateCreated': 1446072633032,
-						'note': 'Color gustu ab forte minor omnia ea ut adhuc. Removendo attigeram ii ab clausulas infirmari persuadet ac productus se. Ausit donec ferri ii vi versa im an. Albedinem gi co curiosius veritatem. Una societati studebunt habeantur iii. Locis age fal satis multa parte. Certius se calebat exempli nihilum mo.',
-						'replies': [
-							{
-								'parent': null,
-								'id': '1.2.1',
-								'userId': 'user',
-								'dateCreated': 1446072633032,
-								'note': 'Remotam probant se de totaque id fallere is. Per apud aër ipse erat hic dum gnum rea. Ventus eo somnis aetate co realem nostra potens ii. Prima typis ne du ea ob aeque. Sciam opera nam mei putem tales vim talem harum. Ex fore haec at mihi cito unde sive. Si gi nudi haud inge soni homo. Gi at du verbis primum ex partem. Inficior hic nocturna dat adverten deveniri. Vestes judico vi eandem creari du. ',
-								'replies': []
-							}
-						]
-					},
-					{
-						'parent': null,
-						'id': '1.1',
-						'userId': 'user',
-						'dateCreated': 1446072633032,
-						'note': 'Color gustu ab forte minor omnia ea ut adhuc. Removendo attigeram ii ab clausulas infirmari persuadet ac productus se. Ausit donec ferri ii vi versa im an. Albedinem gi co curiosius veritatem. Una societati studebunt habeantur iii. Locis age fal satis multa parte. Certius se calebat exempli nihilum mo.',
-						'replies': [
-							{
-								'parent': null,
-								'id': '1.1.1',
-								'userId': 'user',
-								'dateCreated': 1446072633032,
-								'note': 'Remotam probant se de totaque id fallere is. Per apud aër ipse erat hic dum gnum rea. Ventus eo somnis aetate co realem nostra potens ii. Prima typis ne du ea ob aeque. Sciam opera nam mei putem tales vim talem harum. Ex fore haec at mihi cito unde sive. Si gi nudi haud inge soni homo. Gi at du verbis primum ex partem. Inficior hic nocturna dat adverten deveniri. Vestes judico vi eandem creari du. ',
-								'replies': []
-							}
-						]
-					},
-					{
-						'parent': null,
-						'id': '1.2',
-						'userId': 'user',
-						'dateCreated': 1446072633032,
-						'note': 'Color gustu ab forte minor omnia ea ut adhuc. Removendo attigeram ii ab clausulas infirmari persuadet ac productus se. Ausit donec ferri ii vi versa im an. Albedinem gi co curiosius veritatem. Una societati studebunt habeantur iii. Locis age fal satis multa parte. Certius se calebat exempli nihilum mo.',
-						'replies': [
-							{
-								'parent': null,
-								'id': '1.2.1',
-								'userId': 'user',
-								'dateCreated': 1446072633032,
-								'note': 'Remotam probant se de totaque id fallere is. Per apud aër ipse erat hic dum gnum rea. Ventus eo somnis aetate co realem nostra potens ii. Prima typis ne du ea ob aeque. Sciam opera nam mei putem tales vim talem harum. Ex fore haec at mihi cito unde sive. Si gi nudi haud inge soni homo. Gi at du verbis primum ex partem. Inficior hic nocturna dat adverten deveniri. Vestes judico vi eandem creari du. ',
-								'replies': []
-							}
-						]
-					},
-					{
-						'parent': null,
-						'id': '1.1',
-						'userId': 'user',
-						'dateCreated': 1446072633032,
-						'note': 'Color gustu ab forte minor omnia ea ut adhuc. Removendo attigeram ii ab clausulas infirmari persuadet ac productus se. Ausit donec ferri ii vi versa im an. Albedinem gi co curiosius veritatem. Una societati studebunt habeantur iii. Locis age fal satis multa parte. Certius se calebat exempli nihilum mo.',
-						'replies': [
-							{
-								'parent': null,
-								'id': '1.1.1',
-								'userId': 'user',
-								'dateCreated': 1446072633032,
-								'note': 'Remotam probant se de totaque id fallere is. Per apud aër ipse erat hic dum gnum rea. Ventus eo somnis aetate co realem nostra potens ii. Prima typis ne du ea ob aeque. Sciam opera nam mei putem tales vim talem harum. Ex fore haec at mihi cito unde sive. Si gi nudi haud inge soni homo. Gi at du verbis primum ex partem. Inficior hic nocturna dat adverten deveniri. Vestes judico vi eandem creari du. ',
-								'replies': [
-									{
-										'parent': null,
-										'id': '1.1.1',
-										'userId': 'user',
-										'dateCreated': 1446072633032,
-										'note': 'Remotam probant se de totaque id fallere is. Per apud aër ipse erat hic dum gnum rea. Ventus eo somnis aetate co realem nostra potens ii. Prima typis ne du ea ob aeque. Sciam opera nam mei putem tales vim talem harum. Ex fore haec at mihi cito unde sive. Si gi nudi haud inge soni homo. Gi at du verbis primum ex partem. Inficior hic nocturna dat adverten deveniri. Vestes judico vi eandem creari du. ',
-										'replies': [
-											{
-												'parent': null,
-												'id': '1.1.1',
-												'userId': 'user',
-												'dateCreated': 1446072633032,
-												'note': 'Remotam probant se de totaque id fallere is. Per apud aër ipse erat hic dum gnum rea. Ventus eo somnis aetate co realem nostra potens ii. Prima typis ne du ea ob aeque. Sciam opera nam mei putem tales vim talem harum. Ex fore haec at mihi cito unde sive. Si gi nudi haud inge soni homo. Gi at du verbis primum ex partem. Inficior hic nocturna dat adverten deveniri. Vestes judico vi eandem creari du. ',
-												'replies': [
-													{
-														'parent': null,
-														'id': '1.1.1',
-														'userId': 'user',
-														'dateCreated': 1446072633032,
-														'note': 'Remotam probant se de totaque id fallere is. Per apud aër ipse erat hic dum gnum rea. Ventus eo somnis aetate co realem nostra potens ii. Prima typis ne du ea ob aeque. Sciam opera nam mei putem tales vim talem harum. Ex fore haec at mihi cito unde sive. Si gi nudi haud inge soni homo. Gi at du verbis primum ex partem. Inficior hic nocturna dat adverten deveniri. Vestes judico vi eandem creari du. ',
-														'replies': [
-															{
-																'parent': null,
-																'id': '1.1.1',
-																'userId': 'user',
-																'dateCreated': 1446072633032,
-																'note': 'Remotam probant se de totaque id fallere is. Per apud aër ipse erat hic dum gnum rea. Ventus eo somnis aetate co realem nostra potens ii. Prima typis ne du ea ob aeque. Sciam opera nam mei putem tales vim talem harum. Ex fore haec at mihi cito unde sive. Si gi nudi haud inge soni homo. Gi at du verbis primum ex partem. Inficior hic nocturna dat adverten deveniri. Vestes judico vi eandem creari du. ',
-																'replies': [
-																	{
-																		'parent': null,
-																		'id': '1.1.1',
-																		'userId': 'user',
-																		'dateCreated': 1446072633032,
-																		'note': 'Remotam probant se de totaque id fallere is. Per apud aër ipse erat hic dum gnum rea. Ventus eo somnis aetate co realem nostra potens ii. Prima typis ne du ea ob aeque. Sciam opera nam mei putem tales vim talem harum. Ex fore haec at mihi cito unde sive. Si gi nudi haud inge soni homo. Gi at du verbis primum ex partem. Inficior hic nocturna dat adverten deveniri. Vestes judico vi eandem creari du. ',
-																		'replies': [
-																			{
-																				'parent': null,
-																				'id': '1.1.1',
-																				'userId': 'user',
-																				'dateCreated': 1446072633032,
-																				'note': 'Remotam probant se de totaque id fallere is. Per apud aër ipse erat hic dum gnum rea. Ventus eo somnis aetate co realem nostra potens ii. Prima typis ne du ea ob aeque. Sciam opera nam mei putem tales vim talem harum. Ex fore haec at mihi cito unde sive. Si gi nudi haud inge soni homo. Gi at du verbis primum ex partem. Inficior hic nocturna dat adverten deveniri. Vestes judico vi eandem creari du. ',
-																				'replies': []
-																			}
-																		]
-																	}
-																]
-															}
-														]
-													}
-												]
-											}
-										]
-									}
-								]
-							}
-						]
-					},
-					{
-						'parent': null,
-						'id': '1.2',
-						'userId': 'user',
-						'dateCreated': 1446072633032,
-						'note': 'Color gustu ab forte minor omnia ea ut adhuc. Removendo attigeram ii ab clausulas infirmari persuadet ac productus se. Ausit donec ferri ii vi versa im an. Albedinem gi co curiosius veritatem. Una societati studebunt habeantur iii. Locis age fal satis multa parte. Certius se calebat exempli nihilum mo.',
-						'replies': [
-							{
-								'parent': null,
-								'id': '1.2.1',
-								'userId': 'user',
-								'dateCreated': 1446072633032,
-								'note': 'Remotam probant se de totaque id fallere is. Per apud aër ipse erat hic dum gnum rea. Ventus eo somnis aetate co realem nostra potens ii. Prima typis ne du ea ob aeque. Sciam opera nam mei putem tales vim talem harum. Ex fore haec at mihi cito unde sive. Si gi nudi haud inge soni homo. Gi at du verbis primum ex partem. Inficior hic nocturna dat adverten deveniri. Vestes judico vi eandem creari du. ',
-								'replies': []
-							}
-						]
-					},
-					{
-						'parent': null,
-						'id': '1.1',
-						'userId': 'user',
-						'dateCreated': 1446072633032,
-						'note': 'Color gustu ab forte minor omnia ea ut adhuc. Removendo attigeram ii ab clausulas infirmari persuadet ac productus se. Ausit donec ferri ii vi versa im an. Albedinem gi co curiosius veritatem. Una societati studebunt habeantur iii. Locis age fal satis multa parte. Certius se calebat exempli nihilum mo.',
-						'replies': [
-							{
-								'parent': null,
-								'id': '1.1.1',
-								'userId': 'user',
-								'dateCreated': 1446072633032,
-								'note': 'Remotam probant se de totaque id fallere is. Per apud aër ipse erat hic dum gnum rea. Ventus eo somnis aetate co realem nostra potens ii. Prima typis ne du ea ob aeque. Sciam opera nam mei putem tales vim talem harum. Ex fore haec at mihi cito unde sive. Si gi nudi haud inge soni homo. Gi at du verbis primum ex partem. Inficior hic nocturna dat adverten deveniri. Vestes judico vi eandem creari du. ',
-								'replies': []
-							}
-						]
-					},
-					{
-						'parent': null,
-						'id': '1.2',
-						'userId': 'user',
-						'dateCreated': 1446072633032,
-						'note': 'Color gustu ab forte minor omnia ea ut adhuc. Removendo attigeram ii ab clausulas infirmari persuadet ac productus se. Ausit donec ferri ii vi versa im an. Albedinem gi co curiosius veritatem. Una societati studebunt habeantur iii. Locis age fal satis multa parte. Certius se calebat exempli nihilum mo.',
-						'replies': [
-							{
-								'parent': null,
-								'id': '1.2.1',
-								'userId': 'user',
-								'dateCreated': 1446072633032,
-								'note': 'Remotam probant se de totaque id fallere is. Per apud aër ipse erat hic dum gnum rea. Ventus eo somnis aetate co realem nostra potens ii. Prima typis ne du ea ob aeque. Sciam opera nam mei putem tales vim talem harum. Ex fore haec at mihi cito unde sive. Si gi nudi haud inge soni homo. Gi at du verbis primum ex partem. Inficior hic nocturna dat adverten deveniri. Vestes judico vi eandem creari du. ',
-								'replies': []
-							}
-						]
-					}
-				
-				],
-			"FAKE_HISTORY":
-				{
-	            "type":"FeatureCollection",
-	            "totalFeatures":3,
-	            "features":[
-	                {
-	                    "type":"Feature",
-	                    "id":"PLATFORM.qf_2Cj_PRWEYnXYLbiJI4A",
-	                    "geometry":{
-	                        "type":"Point",
-	                        "coordinates":[
-	                            176.183333333333,
-	                            -35.7833333333333
-	                        ]
-	                    },
-	                    "geometry_name":"WKT_GEOMETRY",
-	                    "properties":{
-	                        "S2A_TRACK_SECURITY_TAG":"UNCLASSIFIED",
-	                        "TRACK_GUID":"PLATFORM.qf_2Cj_PRWEYnXYLbiJI4A",
-	                        "S2A_TRACK_ID":"82",
-	                        "TRACK_ID":"189d760b-6e22-48e0-a9ff-f60a3fcf4561",
-	                        "VESSEL_NAME":"2ND LT JOHN P BOBO",
-	                        "THREAT":"FRD",
-	                        "VESSEL_TYPE":"TAK",
-	                        "VESSEL_CATEGORY":"NAV",
-	                        "VESSEL_HULL_NUM":"3008",
-	                        "FLAG":"US",
-	                        "SCONUM":"",
-	                        "MMSI":"",
-	                        "TRACK_TYPE":"PLATFORM",
-	                        "S2A_POSITION_ID":"82",
-	                        "REPORT_GUID":"RPT.tSqV_1bLkUWP7Or4u7VHIQ",
-	                        "SOURCE":"S2A",
-	                        "TIME_STAMP":1453239621946,
-	                        "bbox":[
-	                            176.183333333333,
-	                            -35.7833333333333,
-	                            176.183333333333,
-	                            -35.7833333333333
-	                        ],
-	                        "LATITUDE": -35.7833333333333,
-	                        "LONGITUDE": 176.183333333333
-	                    }
-	                },
-	                {
-	                    "type":"Feature",
-	                    "id":"PLATFORM.iFUxQM_Ym877LtW1QFFAHQ",
-	                    "geometry":{
-	                        "type":"Point",
-	                        "coordinates":[
-	                            146.45,
-	                            -40.9
-	                        ]
-	                    },
-	                    "geometry_name":"WKT_GEOMETRY",
-	                    "properties":{
-	                        "S2A_TRACK_SECURITY_TAG":"UNCLASSIFIED",
-	                        "TRACK_GUID":"PLATFORM.qf_2Cj_PRWEYnXYLbiJI4A",
-	                        "S2A_TRACK_ID":"82",
-	                        "TRACK_ID":"189d760b-6e22-48e0-a9ff-f60a3fcf4561",
-	                        "VESSEL_NAME":"2ND LT JOHN P BOBO",
-	                        "THREAT":"FRD",
-	                        "VESSEL_TYPE":"TAK",
-	                        "VESSEL_CATEGORY":"NAV",
-	                        "VESSEL_HULL_NUM":"3008",
-	                        "FLAG":"US",
-	                        "SCONUM":"",
-	                        "MMSI":"",
-	                        "TRACK_TYPE":"PLATFORM",
-	                        "S2A_POSITION_ID":"82",
-	                        "REPORT_GUID":"RPT.tSqV_1bLkUWP7Or4u7VHIQ",
-	                        "SOURCE":"S2A",
-	                        "TIME_STAMP":1453239619100,
-	                        "bbox":[
-	                            146.45,
-	                            -40.9,
-	                            146.45,
-	                            -40.9
-	                        ],
-	                        "LATITUDE": -40.9,
-	                        "LONGITUDE": 146.45
-	                    }
-	                },
-	                {
-	                    "type":"Feature",
-	                    "id":"PLATFORM.t0PNAENZoqwN4VP2141E1A",
-	                    "geometry":{
-	                        "type":"Point",
-	                        "coordinates":[
-	                            148.216666666667,
-	                            -39.55
-	                        ]
-	                    },
-	                    "geometry_name":"WKT_GEOMETRY",
-	                    "properties":{
-	                       "S2A_TRACK_SECURITY_TAG":"UNCLASSIFIED",
-	                        "TRACK_GUID":"PLATFORM.qf_2Cj_PRWEYnXYLbiJI4A",
-	                        "S2A_TRACK_ID":"82",
-	                        "TRACK_ID":"189d760b-6e22-48e0-a9ff-f60a3fcf4561",
-	                        "VESSEL_NAME":"2ND LT JOHN P BOBO",
-	                        "THREAT":"FRD",
-	                        "VESSEL_TYPE":"TAK",
-	                        "VESSEL_CATEGORY":"NAV",
-	                        "VESSEL_HULL_NUM":"3008",
-	                        "FLAG":"US",
-	                        "SCONUM":"",
-	                        "MMSI":"",
-	                        "TRACK_TYPE":"PLATFORM",
-	                        "S2A_POSITION_ID":"82",
-	                        "REPORT_GUID":"RPT.tSqV_1bLkUWP7Or4u7VHIQ",
-	                        "SOURCE":"S2A",
-	                        "TIME_STAMP":1453239620696,
-	                        "bbox":[
-	                            148.216666666667,
-	                            -39.55,
-	                            148.216666666667,
-	                            -39.55
-	                        ],
-	                        "LATITUDE": -39.55,
-	                        "LONGITUDE": 148.216666666667
-	                    }
-	                }
-	            ],
-	            "crs":{
-	                "type":"EPSG",
-	                "properties":{
-	                    "code":"4326"
-	                }
-	            },
-	            "bbox":[
-	                -180,
-	                -90,
-	                180,
-	                90
-	            ]
-	        },
-			"FAKE_ALERTS": [
-				{
-					"alertid": "f396489b-3f72-4b24-afd6-a2c8d2cf55a7", 
-					"acknowledged": false, 
-					"alertsource": "S2A", 
-					"classification": "UNCLASSIFIED//FOUO", 
-					"created": 1467409703415, 
-					"alertDtg": 1467409703415, 
-					"createdDate": 1467409703415, 
-					"details": "[{\"value\":\"a7b6fd07-51a6-4bc2-9390-39c4c5f6b808\",\"key\":\"@trackID\"},{\"value\":\"103224123456\",\"key\":\"@positionID\"},{\"value\":\"Name of AOI\",\"key\":\"@name\"}]", 
-					"recipient": "testAdmin1", 
-					"title": "Rule: 3325.0", 
-					"geoAlert": {
-						"id": "80310591-5597-14d0-8155-a86f21f83997", 
-						"featureid": "a7b6fd07-51a6-4bc2-9390-39c4c5f6b808", 
-						"featurename": "", 
-						"lat": 41.720554, 
-						"lon": -41.434723, 
-						"createdDate": 1467409703415, 
-						"aoi_id": "a9625919-6205-4214-b043-8d217851a150", 
-						"aoi_geometry": "[[[-42.03,41.12],[-40.83,42.32]]]", 
-						"aoi_type": "LineString"
-					}, 
-					"applicationSource": "UFS S2A Test Harness", 
-					"alertPk": "80310591-5597-14d0-8155-a86f21f83997"
-				}, 
-				{
-					"alertid": "25cbab44-a869-4546-900f-ca22fe3a2c96", 
-					"acknowledged": false, 
-					"alertsource": "S2A", 
-					"classification": "UNCLASSIFIED//FOUO", 
-					"created": 1467404621693, 
-					"alertDtg": 1467404621693, 
-					"createdDate": 1467404621693, 
-					"details": "[{\"value\":\"a7b6fd07-51a6-4bc2-9390-39c4c5f6b808\",\"key\":\"@trackID\"},{\"value\":\"103224123456\",\"key\":\"@positionID\"},{\"value\":\"Name of AOI\",\"key\":\"@name\"}]", 
-					"recipient": "testAdmin1", 
-					"title": "Rule: 3265.0", 
-					"geoAlert": {
-						"id": "80310591-5597-14d0-8155-a821977e375a", 
-						"featureid": "a7b6fd07-51a6-4bc2-9390-39c4c5f6b808", 
-						"featurename": "", 
-						"lat": 39.720554, 
-						"lon": -39.434723, 
-						"createdDate": 1467404621693, 
-						"aoi_id": "8f8fc2e2-02c0-4f05-af8b-68e2ef509f62", 
-						"aoi_geometry": "[[[-41.83,41.32],[-41.03,42.12]]]", 
-						"aoi_type": "LineString"
-					}, 
-					"applicationSource": "UFS S2A Test Harness", 
-					"alertPk": "80310591-5597-14d0-8155-a821977e375a"
-				}
-			]
-		};
-
-	  module.exports = Stubs;
-
-/***/ },
-/* 25 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * ConfigPkg module definition
-	 */
-
-	var Config = __webpack_require__(26);
-
-	angular.module('ConfigPkg', [])
-	  .constant('Config', Config);
-
-/***/ },
-/* 26 */
-/***/ function(module, exports) {
-
-	/**
-	 * Config Variables
-	 * 
-	 * @returns {Config}
-	 */
-
-	var Config = {
-	  baseballcard: {
-	    constants: {
-	      FAKEDATA: true,
-	      FAKE: {
-	        FLAG_PIC:'../src/js/Test/img/ra-flag.png',
-	        IMAGE: '../src/js/Test/img/ship.jpg',
-	        FLAG: 'RA',
-	        COUNTRY: 'RA',
-	        NAME: 'Millennium Falcon',
-	        HOME_PORT: 'Corellia',
-	        LAST_UPDATE: 1463014800000,
-	        LOCATION: {
-	          lat: 19.203333333333333,
-	          lon: 121.91388888888889
-	        }
-	      }
-	    }
-	  }
-	};
-
-	module.exports = Config;
-
-/***/ },
-/* 27 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * AngularHelperPkg module definition
-	 */
-
-	var AngularHelper = __webpack_require__(18);
-
-	angular.module('AngularHelperPkg', [])
-	  .service('AngularHelper',  AngularHelper);
-
-/***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * ImgPkg module definition
-	 */
-
-	var Img = __webpack_require__(29);
-	var ImgOptions = __webpack_require__(30);
-
-	angular.module('ImgPkg', [])
-	  .factory('Img', function() {
-	    'use strict';
-	    return Img;
-	  })
-	  .factory('ImgOptions',  function() {
-	    'use strict';
-	    return ImgOptions;
-	  });
-
-/***/ },
-/* 29 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Basic Img element wrapper
-	 * 
-	 * @requires {Element}
-	 * @requires {ImgOptions}
-	 * @augments {Element}
-	 * @param {ImgOptions} options
-	 * @returns {Img}
-	 */
-
-	var Element = __webpack_require__(4);
-	var ImgOptions = __webpack_require__(30);
-
-	function Img(options) {
-	  'use strict';
-
-	  this._options = options ? options : new ImgOptions();
-
-	  Element.call(this, this._options);
-
-	  if(this._options.template) {
-	    this.setTemplate(this._options.template);
-	  } else if(this._options.textContent){
-	    this.setTextContent(this._options.textContent);
-	  }
-
-	  if(this._options.src) {
-	    this.setSrc(this._options.src);
-	  }
-	  if(this._options.angularSrc) {
-	    this.setAttribute('ng-src', this._options.angularSrc);
-	  }
-	}
-	Img.prototype = Object.create(Element.prototype);
-	Img.prototype.hasAngularTemplate = function() {
-	  'use strict';
-	  return (this._options.angularTemplate) ? true : false; // eslint-disable-line no-unneeded-ternary
-	};
-	Img.prototype.setTextContent = function(content) {
-	  'use strict';
-	  this.element.textContent = content;
-	  return this;
-	};
-	Img.prototype.setTemplate = function(content) {
-	  'use strict';
-	  this.element.innerHTML = content;
-	  return this;
-	};
-	Img.prototype.setSrc = function(src) {
-	  'use strict';
-	  this.element.src = src;
-	  return this;
-	};
-
-	module.exports = Img;
-
-/***/ },
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Options for Img element wrapper
-	 * 
-	 * @requires {ElementOptions}
-	 * @augments {ElementOptions}
-	 * @returns {ImgOptions}
-	 */
-
-	var ElementOptions = __webpack_require__(7);
-
-	function ImgOptions() {
-	  'use strict';
-	  ElementOptions.call(this);
-	  this.type = 'img';
-	}
-	ImgOptions.prototype = Object.create(ElementOptions.prototype);
-	ImgOptions.prototype.setAngularSrc = function(src)  {
-	  'use strict';
-	  this.angularSrc = src;
-	  return this;
-	};
-
-	module.exports = ImgOptions;
-
-/***/ },
-/* 31 */
+/* 38 */
 /***/ function(module, exports) {
 
 	/**
@@ -2077,6 +1695,7 @@
 	  'use strict';
 
 	  var ElementManager = $injector.get('ElementManager');
+	  window.ElementManager = ElementManager;
 
 	  var Banner = $injector.get('Banner');
 	  var BannerOptions = $injector.get('BannerOptions');
@@ -2094,7 +1713,20 @@
 	  var ImgOptions = $injector.get('ImgOptions');
 	  ElementManager.register('Img', Img);
 
+	  var Nav = $injector.get('Nav');
+	  var NavOptions = $injector.get('NavOptions');
+	  ElementManager.register('Nav', Nav);
+
+	  var Li = $injector.get('Li');
+	  var LiOptions = $injector.get('LiOptions');
+	  ElementManager.register('Li', Li);
+
+	  var Link = $injector.get('Link');
+	  var LinkOptions = $injector.get('LinkOptions');
+	  ElementManager.register('Link', Link);
+
 	  var StyleOptions = $injector.get('StyleOptions');
+	  var EventOptions = $injector.get('EventOptions');
 
 	  /* ****************************************
 	   *
@@ -2105,8 +1737,8 @@
 	  headerOptions
 	    .setType('header')
 	    .addClass('header')
-	    .addClass('class-unclass')
-	    .setTextContent('UNCLASSIFIED');
+	    .addClass('class-top-secret')
+	    .setTextContent('TOP SECRET');
 
 	  /* ****************************************
 	   *
@@ -2132,14 +1764,6 @@
 	   **************************************** */
 	  var panelHeadingOptions = new DivOptions();
 	  var panelHeadingStyle = new StyleOptions();
-	  var panelHeaderTemplate = 
-	    '<!-- Ship Flag pic -->' +
-			'<img ng-src="{{flag_pic}}" class="flag-pic" onerror="this.style.display=\'none\'" />' +
-			'<!-- Track Name -->' +
-			'{{track.name | uppercase}},' +
-			'<!-- Country Code -->' +
-			'{{country | uppercase}}' +
-	    '<!-- END -->';
 	  panelHeadingStyle
 	    .set('background-color', 'white')
 	    .set('color', 'black')
@@ -2147,8 +1771,49 @@
 	    .set('padding-bottom', '3px');
 	  panelHeadingOptions
 	    .addClass('panel-heading')
-	    .setStyle(panelHeadingStyle)
-	    .setAngularTemplate(panelHeaderTemplate);
+	    .setStyle(panelHeadingStyle);
+	  /* ****************************************
+	   *
+	   * Flag Pic
+	   * 
+	   **************************************** */
+	  var flagPicOptions = new ImgOptions();
+	  var flagPicEvents = new EventOptions();
+	  flagPicEvents
+	    .set('onerror', function() {
+	      this.style.display = 'none';
+	    });
+	  flagPicOptions
+	    .addClass('flag-pic')
+	    .setAttribute({
+	      key: 'ng-src',
+	      value: '{{flag_pic}}'
+	    })
+	    .setEvents(flagPicEvents);
+
+	  /* ****************************************
+	   *
+	   * Track Name
+	   * 
+	   **************************************** */
+	  var trackNameOptions = new SpanOptions();
+	  var trackNameTemplate =
+	    '<!-- Track Name -->' +
+			'{{track.name | uppercase}},';
+	  trackNameOptions
+	    .setTemplate(trackNameTemplate);
+
+	  /* ****************************************
+	   *
+	   * Country Abbreviation
+	   * 
+	   **************************************** */
+	  var countryOptions = new SpanOptions();
+	  var countryTemplate = 
+			'<!-- Country Code -->' +
+			'{{country | uppercase}}';
+	  countryOptions
+	    .setTemplate(countryTemplate);
 
 	  /* ****************************************
 	   *
@@ -2159,14 +1824,13 @@
 	  var lastUpdatedStyle = new StyleOptions();
 	  var lastUpdatedTemplate = 
 	    '<!-- Last Updated -->' +
-	    'Last Updated - {{track.last_update | date:\'dd MMM yyyy HH:mm:ss\' : \'UTC\' | uppercase}}Z' +
-	    '<!-- END -->';
+	    'Last Updated - {{track.last_update | date:\'dd MMM yyyy HH:mm:ss\' : \'UTC\' | uppercase}}Z';
 	  lastUpdatedStyle
 	    .set('float', 'right');
 	  lastUpdatedOptions
 	    .addClass('float-right')
 	    .setStyle(lastUpdatedStyle)
-	    .setAngularTemplate(lastUpdatedTemplate);
+	    .setTemplate(lastUpdatedTemplate);
 
 	  /* ****************************************
 	   *
@@ -2175,18 +1839,95 @@
 	   **************************************** */
 	  var panelBodyOptions = new DivOptions();
 	  var panelBodyStyle = new StyleOptions();
-	  var panelBodyTemplate =
-	    '<!-- Main Baseball Card Pic -->' +
-	    '<img class="ship-pic" ng-src="{{track.image}}" onerror="this.style.display=\'none\'"/>' +
-	    '<!-- End -->';
 	  panelBodyStyle
 	    .set('margin', '0')
-	    .set('padding', '5px 0 0 0');
+	    .set('padding', '0');
 	  panelBodyOptions
 	    .addClass('panel-body')
-	    .addClass('main-content')
-	    .setStyle(panelBodyStyle)
-	    .setAngularTemplate(panelBodyTemplate);
+	    .setStyle(panelBodyStyle);
+
+	  /* ****************************************
+	   *
+	   * Ship Pic
+	   * 
+	   **************************************** */
+	  var shipPicOptions = new ImgOptions();
+	  var shipPicEvents = new EventOptions();
+	  shipPicEvents
+	    .set('onerror', function() {
+	      this.style.display = 'none';
+	    });
+	  shipPicOptions
+	    .addClass('ship-pic')
+	    .setAttribute({
+	      key: 'ng-src',
+	      value: '{{track.image}}'
+	    })
+	    .setEvents(shipPicEvents);
+	  
+	  /* ****************************************
+	   *
+	   * Navigation Container
+	   * 
+	   **************************************** */
+	  var navContainerOptions = new DivOptions();
+	  var navContainerStyle = new StyleOptions();
+	  navContainerStyle
+	    .set('background-color', 'white');
+	  navContainerOptions
+	    .setStyle(navContainerStyle);
+
+	  /* ****************************************
+	   *
+	   * Navigation Tabs
+	   * 
+	   **************************************** */
+	  var navTabOptions = new NavOptions();
+	  var navTabStyle = new StyleOptions();
+	  navTabStyle
+	    .set('padding-top', '5px');
+	  navTabOptions
+	    .addClass('nav')
+	    .addClass('nav-tabs')
+	    .setStyle(navTabStyle);
+
+	  /* ****************************************
+	   *
+	   * Navigation Items
+	   * 
+	   **************************************** */
+	  var tabOptions = new LiOptions();
+	  var navEvents = new EventOptions();
+	  navEvents
+	    .set('onclick', function() {
+	      alert('clicked!');
+	    });
+	  tabOptions
+	    .setAttribute({
+	      key: 'role',
+	      value: 'navigation'
+	    })
+	    .setEvents(navEvents);
+	  var activeTabOptions = tabOptions.clone();
+	  activeTabOptions
+	    .addClass('active');
+	  var navLinkOptions = new LinkOptions();
+	  navLinkOptions
+	    .setAttribute({
+	      key: 'href',
+	      value: ''
+	    })
+	    .setAttribute({
+	      key: 'ng-click',
+	      value: ''
+	    });
+	  var infoNavLinkOptions = navLinkOptions.clone();
+	  infoNavLinkOptions.setTextContent('Info');
+	  var alertsNavLinkOptions = navLinkOptions.clone();
+	  alertsNavLinkOptions.setTextContent('ActiveAlerts');
+	  var notesNavLinkOptions = navLinkOptions.clone();
+	  notesNavLinkOptions.setTextContent('Notes');
+	  
 	  /* ****************************************
 	   *
 	   * Footer
@@ -2196,32 +1937,72 @@
 	  footerOptions
 	    .setType('footer')
 	    .addClass('footer')
-	    .addClass('class-unclass')
-	    .setTextContent('UNCLASSIFIED');
+	    .addClass('class-top-secret')
+	    .setTextContent('TOP SECRET');
 
 	  /* ****************************************
 	   *
-	   * Save the UI
+	   * Create the UI
 	   * 
 	   **************************************** */
-
+	  // Create the pieces
 	  this.header = ElementManager.construct('Banner', headerOptions);
 	  this.panel = ElementManager.construct('Div', panelOptions);
+	  
 	  this.panelHeader = ElementManager.construct('Div', panelHeadingOptions);
+	  this.flag_pic = ElementManager.construct('Img', flagPicOptions);
+	  this.track_name = ElementManager.construct('Img', trackNameOptions);
+	  this.country = ElementManager.construct('Img', countryOptions);
 	  this.lastUpdated = ElementManager.construct('Span', lastUpdatedOptions);
+
 	  this.panelBody = ElementManager.construct('Div', panelBodyOptions);
+	  this.ship_pic = ElementManager.construct('Img', shipPicOptions);
+
+	  this.navigation = ElementManager.construct('Div', navContainerOptions);
+	  this.nav_tabs = ElementManager.construct('Nav', navTabOptions);
+	  this.info_tab = ElementManager.construct('Li', activeTabOptions);
+	  this.alerts_tab = ElementManager.construct('Li', tabOptions);
+	  this.notes_tab = ElementManager.construct('Li', tabOptions);
+
+	  this.info_tab_link = ElementManager.construct('Link', infoNavLinkOptions);
+	  this.alerts_tab_link = ElementManager.construct('Link', alertsNavLinkOptions);
+	  this.notes_tab_link = ElementManager.construct('Link', notesNavLinkOptions);
+
 	  this.footer = ElementManager.construct('Banner', footerOptions);
 
-	  this.panelHeader.addChild(this.lastUpdated);
-	  this.panel.addChild(this.panelHeader);
-	  this.panel.addChild(this.panelBody);
+	  // Put the pieces together
+	  this.panelHeader
+	    .addChild(this.flag_pic)
+	    .addChild(this.track_name)
+	    .addChild(this.country)
+	    .addChild(this.lastUpdated);
+
+	  this.info_tab.addChild(this.info_tab_link);
+	  this.alerts_tab.addChild(this.alerts_tab_link);
+	  this.notes_tab.addChild(this.notes_tab_link);
+
+	  this.nav_tabs
+	    .addChild(this.info_tab)
+	    .addChild(this.alerts_tab)
+	    .addChild(this.notes_tab);
+
+	  this.navigation
+	    .addChild(this.nav_tabs);
+
+	  this.panelBody
+	    .addChild(this.ship_pic)
+	    .addChild(this.navigation);
+
+	  this.panel
+	    .addChild(this.panelHeader)
+	    .addChild(this.panelBody);
 
 	}
 
 	module.exports = Info;
 
 /***/ },
-/* 32 */
+/* 39 */
 /***/ function(module, exports) {
 
 	/**
@@ -2247,16 +2028,16 @@
 	module.exports = run;
 
 /***/ },
-/* 33 */
+/* 40 */
 /***/ function(module, exports) {
 
 	/**
 	 * Info State Controller
 	 * 
-	 * @returns {info}
+	 * @returns {InfoCtrl}
 	 */
 
-	function info($injector, $compile, $scope, $interval) {
+	function InfoCtrl($injector, $compile, $scope) {
 	  'use strict';
 
 	  var ElementManager = $injector.get('ElementManager');
@@ -2268,21 +2049,17 @@
 	  $scope.track = {};
 
 	  if(Config.baseballcard.constants.FAKEDATA) {
-	    // Set any variables that need to be tested.
+
 	    $scope.flag_pic = CONST.FAKE.FLAG_PIC;
-	    $scope.track.flag = CONST.FAKE.FLAG;
 	    $scope.country = CONST.FAKE.COUNTRY;
+
+	    $scope.track.flag = CONST.FAKE.FLAG;
 	    $scope.track.name = CONST.FAKE.NAME;
 	    $scope.track.home_port = CONST.FAKE.HOME_PORT;
 	    $scope.track.last_update = CONST.FAKE.LAST_UPDATE;
 	    $scope.track.image = CONST.FAKE.IMAGE;
-	    $scope.track.location = CONST.FAKE.LOCATION;
-	    
+	    $scope.track.location = CONST.FAKE.LOCATION; 
 	    $scope.track.time_delay = 'Calculating time delay...';
-	    var tock = function() {
-	      $scope.track.time_delay = $scope.track.last_update + 1;
-	    };			
-	    $interval(tock, 1000);
 	  }
 	  
 	  ElementManager
@@ -2291,7 +2068,7 @@
 
 	}
 
-	module.exports = info;
+	module.exports = InfoCtrl;
 
 /***/ }
 /******/ ]);

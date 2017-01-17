@@ -6,7 +6,6 @@
 
 function ElementOptions() {
   'use strict';
-  this.angularTemplate = null;
   this.textContent = null;
   this.template = null;
   this.events = null;
@@ -21,15 +20,6 @@ ElementOptions.prototype.getTextContent = function() {
 ElementOptions.prototype.setTextContent = function(content) {
   'use strict';
   this.textContent = content;
-  return this;
-};
-ElementOptions.prototype.getAngularTemplate = function() {
-  'use strict';
-  return this.angularTemplate;
-};
-ElementOptions.prototype.setAngularTemplate = function(content) {
-  'use strict';
-  this.angularTemplate = content;
   return this;
 };
 ElementOptions.prototype.getTemplate = function() {
@@ -76,6 +66,26 @@ ElementOptions.prototype.setAttribute = function(_attribute) {
 ElementOptions.prototype.getAttributes = function() {
   'use strict';
   return this.attributes;
+};
+ElementOptions.prototype.clone = function() {
+  'use strict';
+  var clone = this._assign(this);
+  return clone;
+};
+ElementOptions.prototype._assign = function(obj) {
+  'use strict';
+  var self = this;
+    if (obj === null || typeof obj !== 'object') {
+        return obj;
+    }
+    var temp = new obj.constructor();
+    for (var key in obj) {
+      if (!obj.hasOwnProperty(key)) {
+        continue;
+      }
+        temp[key] = self._assign(obj[key]);
+    }
+    return temp;
 };
 
 module.exports = ElementOptions;

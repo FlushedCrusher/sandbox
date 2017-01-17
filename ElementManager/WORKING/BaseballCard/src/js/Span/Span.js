@@ -25,10 +25,6 @@ function Span(options) {
   }
 }
 Span.prototype = Object.create(Element.prototype);
-Span.prototype.hasAngularTemplate = function() {
-  'use strict';
-  return (this._options.angularTemplate) ? true : false; // eslint-disable-line no-unneeded-ternary
-};
 Span.prototype.setTextContent = function(content) {
   'use strict';
   this.element.textContent = content;

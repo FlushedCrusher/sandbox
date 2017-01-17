@@ -84,9 +84,6 @@ ElementManager.prototype._build = function(context, elementMap, add) {
   'use strict';
   var self = this;
   elementMap.forEach(function(e) {
-    if(e.hasAngularTemplate()) {
-      self.compile(e);
-    }
     add.call(context, e.element);
     if(e.children.length !== 0) {
       self._build(e, e.children, e.addElementChild);
@@ -147,20 +144,16 @@ ElementManager.prototype.clearUICache = function() {
 /*
  * Build
  */
-ElementManager.prototype.compile = function(element) {
+ElementManager.prototype.compile = function() {
   'use strict';
-  var template = this.helper.getTemplate(
-    element._options.getAngularTemplate()
-  );
-  template.each(function() {
-    element.append(this);
-  });
+  this.helper.compileContent(this.dom);
   return this;
 };
 ElementManager.prototype.build = function() {
   'use strict';
   this.clearDom();
   this._build(this, this.elements, this.addToDom);
+  this.compile();
   return this;
 };
 /*

@@ -1,20 +1,20 @@
 /**
- * Basic Div element wrapper
+ * Basic Li element wrapper
  * 
  * @requires {Element}
- * @requires {DivOptions}
+ * @requires {LiOptions}
  * @augments {Element}
- * @param {DivOptions} options
- * @returns {Div}
+ * @param {LiOptions} options
+ * @returns {Li}
  */
 
 var Element = require('../Element/Element.js');
-var DivOptions = require('./DivOptions.js');
+var LiOptions = require('./LiOptions.js');
 
-function Div(options) {
+function Li(options) {
   'use strict';
 
-  this._options = options ? options : new DivOptions();
+  this._options = options ? options : new LiOptions();
 
   Element.call(this, this._options);
 
@@ -23,17 +23,20 @@ function Div(options) {
   } else if(this._options.textContent){
     this.setTextContent(this._options.textContent);
   }
+  if(this._options.src) {
+    this.setSrc(this._options.src);
+  }
 }
-Div.prototype = Object.create(Element.prototype);
-Div.prototype.setTextContent = function(content) {
+Li.prototype = Object.create(Element.prototype);
+Li.prototype.setTextContent = function(content) {
   'use strict';
   this.element.textContent = content;
   return this;
 };
-Div.prototype.setTemplate = function(content) {
+Li.prototype.setTemplate = function(content) {
   'use strict';
   this.element.innerHTML = content;
   return this;
 };
 
-module.exports = Div;
+module.exports = Li;

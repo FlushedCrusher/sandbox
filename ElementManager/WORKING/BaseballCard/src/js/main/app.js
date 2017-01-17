@@ -3,7 +3,7 @@
 require('./states/StatePkg.js');
 
 var run = require('./run.js');
-var info = require('./controllers/info.js');
+var InfoCtrl = require('./controllers/InfoCtrl.js');
 
 angular.module('app',
   [
@@ -19,6 +19,5 @@ angular.module('app',
     '$injector',
     '$compile',
     '$scope',
-    '$interval',
-    info
+    InfoCtrl
   ]);

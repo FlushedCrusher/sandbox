@@ -3,30 +3,34 @@
  */
 'use strict'; // eslint-disable-line strict
 
+require('../../AngularHelper/AngularHelperPkg.js');
 require('../../Banner/BannerPkg.js');
+require('../../Config/ConfigPkg.js');
 require('../../Div/DivPkg.js');
-require('../../Span/SpanPkg.js');
 require('../../Element/ElementPkg.js');
 require('../../Events/EventsPkg.js');
-require('../../Style/StylePkg.js');
-require('../../Test/TestPkg.js');
-require('../../Config/ConfigPkg.js');
-require('../../AngularHelper/AngularHelperPkg.js');
 require('../../Img/ImgPkg.js');
+require('../../Li/LiPkg.js');
+require('../../Link/LinkPkg.js');
+require('../../Nav/NavPkg.js');
+require('../../Span/SpanPkg.js');
+require('../../Style/StylePkg.js');
 
 var Info = require('./info/Info.js');
 
 angular.module('StatePkg', [
+  'AngularHelperPkg',
+  'BannerPkg',
+  'ConfigPkg',
   'DivPkg',
-  'SpanPkg',
   'ElementPkg',
   'EventsPkg',
+  'ImgPkg',
+  'LiPkg',
+  'LinkPkg',
+  'NavPkg',
+  'SpanPkg',
   'StylePkg',
-  'BannerPkg',
-  'TestPkg',
-  'ConfigPkg',
-  'AngularHelperPkg',
-  'ImgPkg'
 ])
   .service('Info', [
     '$injector',

@@ -29,7 +29,7 @@ function Element(options) {
     this.addClasses(options.classList);
   }
   if(options.attributes) {
-    this.addClasses(options.classList);
+    this.setAttributes(options.attributes);
   }
 }
 /*

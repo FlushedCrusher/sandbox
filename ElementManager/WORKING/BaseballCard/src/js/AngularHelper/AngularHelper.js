@@ -15,10 +15,10 @@ AngularHelper.prototype.bind = function(scope, compile) {
   this.compile = compile;
   return this;
 };
-AngularHelper.prototype.getTemplate = function(template) {
+AngularHelper.prototype.compileContent = function(content) {
   'use strict';
-  var content = this.compile(template)(this.scope);
-  return content;
+  var _content = this.compile(content)(this.scope);
+  return _content;
 };
 
 module.exports = AngularHelper;
