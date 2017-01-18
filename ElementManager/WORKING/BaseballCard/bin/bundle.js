@@ -684,10 +684,10 @@
 	};
 	ElementOptions.prototype.clone = function() {
 	  'use strict';
-	  var clone = this._assign(this);
+	  var clone = this._clone(this);
 	  return clone;
 	};
-	ElementOptions.prototype._assign = function(obj) {
+	ElementOptions.prototype._clone = function(obj) {
 	  'use strict';
 	  var self = this;
 	    if (obj === null || typeof obj !== 'object') {
@@ -698,7 +698,7 @@
 	      if (!obj.hasOwnProperty(key)) {
 	        continue;
 	      }
-	        temp[key] = self._assign(obj[key]);
+	        temp[key] = self._clone(obj[key]);
 	    }
 	    return temp;
 	};
@@ -1133,6 +1133,26 @@
 	  }
 	  return this;
 	};
+	EventOptions.prototype.clone = function() {
+	  'use strict';
+	  var clone = this._clone(this);
+	  return clone;
+	};
+	EventOptions.prototype._clone = function(obj) {
+	  'use strict';
+	  var self = this;
+	    if (obj === null || typeof obj !== 'object') {
+	        return obj;
+	    }
+	    var temp = new obj.constructor();
+	    for (var key in obj) {
+	      if (!obj.hasOwnProperty(key)) {
+	        continue;
+	      }
+	        temp[key] = self._clone(obj[key]);
+	    }
+	    return temp;
+	};
 
 	module.exports = EventOptions;
 
@@ -1485,16 +1505,16 @@
 	Nav.prototype = Object.create(Element.prototype);
 	Nav.prototype.create = function() {
 	  'use strict';
-	  this._item_events
-	    .set('onclick', function() {
-	      alert('clicked!');
-	    });
 	  this._item_options
 	    .setAttribute({
 	      key: 'role',
 	      value: 'navigation'
-	    })
-	    .setEvents(this._item_events);
+	    });
+	  this._item_link_options
+	    .setAttribute({
+	      key: 'href',
+	      value: ''
+	    });
 	};
 	Nav.prototype.setTextContent = function(content) {
 	  'use strict';
@@ -1506,6 +1526,14 @@
 	  this.element.innerHTML = content;
 	  return this;
 	};
+	Nav.prototype.addItems = function(items) {
+	  'use strict';
+	  var self = this;
+	  items.forEach(function(attrs) {
+	    self.addItem(attrs);
+	  });
+	  return this;
+	};
 	Nav.prototype.addItem = function(attrs) {
 	  'use strict';
 	  var _item = this.createItem(attrs);
@@ -1514,15 +1542,39 @@
 	};
 	Nav.prototype.createItem = function(attrs) {
 	  'use strict';
-	  var io = this._item_options.clone();
-	  var lo = this._item_link_options.clone();
-	  lo.setTextContent(attrs.text);
-	  var _item = new Li(io);
-	  var _link = new Link(lo);
+	  var itemOptions = this._item_options.clone();
+	  var linkOptions = this._item_link_options.clone();
+	  var events = this._item_events.clone();
+
+	  events
+	    .set('onclick', attrs.onClick || function() { alert('Nav Item clicked.'); });
+	  linkOptions
+	    .setTextContent(attrs.text || 'Unnamed')
+	    .setAttribute({
+	      key: 'ng-click',
+	      value: attrs.ngClick || ''
+	    })
+	    .setAttribute({
+	      key: 'data-index',
+	      value: this.children.length
+	    })
+	    .setEvents(events); 
+	  if(attrs.active) {
+	    itemOptions.addClass('active');
+	  }
+	  var _item = new Li(itemOptions);
+	  var _link = new Link(linkOptions);
 	  _item.addChild(_link);
 	  return _item;
 	};
-
+	Nav.prototype.setActive = function(item) {
+	  'use strict';
+	  var _item = this.children[item.dataset.index];
+	  this.children.forEach(function(child) {
+	    child.removeClass('active');
+	  });
+	  _item.addClass('active');
+	};
 	module.exports = Nav;
 
 /***/ },
@@ -1695,7 +1747,10 @@
 	  'use strict';
 
 	  var ElementManager = $injector.get('ElementManager');
+	  /* ********** */
 	  window.ElementManager = ElementManager;
+	  var self = this;
+	  /* ********** */
 
 	  var Banner = $injector.get('Banner');
 	  var BannerOptions = $injector.get('BannerOptions');
@@ -1717,14 +1772,6 @@
 	  var NavOptions = $injector.get('NavOptions');
 	  ElementManager.register('Nav', Nav);
 
-	  var Li = $injector.get('Li');
-	  var LiOptions = $injector.get('LiOptions');
-	  ElementManager.register('Li', Li);
-
-	  var Link = $injector.get('Link');
-	  var LinkOptions = $injector.get('LinkOptions');
-	  ElementManager.register('Link', Link);
-
 	  var StyleOptions = $injector.get('StyleOptions');
 	  var EventOptions = $injector.get('EventOptions');
 
@@ -1742,6 +1789,15 @@
 
 	  /* ****************************************
 	   *
+	   * Scroll Content
+	   * 
+	   **************************************** */
+	  var scrollOptions = new DivOptions();
+	  scrollOptions
+	    .addClass('scroll-content');
+	    
+	  /* ****************************************
+	   *
 	   * Panel Content
 	   * 
 	   **************************************** */
@@ -1752,7 +1808,7 @@
 	    .set('margin-right', 'auto')
 	    .set('max-width', '510px');
 	  panelOptions
-	    .addClass('scroll-content')
+	    //.addClass('scroll-content')
 	    .addClass('panel')
 	    .addClass('panel-default')
 	    .setStyle(panelStyle);
@@ -1893,41 +1949,17 @@
 
 	  /* ****************************************
 	   *
-	   * Navigation Items
+	   * Tab Content
 	   * 
 	   **************************************** */
-	  var tabOptions = new LiOptions();
-	  var navEvents = new EventOptions();
-	  navEvents
-	    .set('onclick', function() {
-	      alert('clicked!');
-	    });
-	  tabOptions
-	    .setAttribute({
-	      key: 'role',
-	      value: 'navigation'
-	    })
-	    .setEvents(navEvents);
-	  var activeTabOptions = tabOptions.clone();
-	  activeTabOptions
-	    .addClass('active');
-	  var navLinkOptions = new LinkOptions();
-	  navLinkOptions
-	    .setAttribute({
-	      key: 'href',
-	      value: ''
-	    })
-	    .setAttribute({
-	      key: 'ng-click',
-	      value: ''
-	    });
-	  var infoNavLinkOptions = navLinkOptions.clone();
-	  infoNavLinkOptions.setTextContent('Info');
-	  var alertsNavLinkOptions = navLinkOptions.clone();
-	  alertsNavLinkOptions.setTextContent('ActiveAlerts');
-	  var notesNavLinkOptions = navLinkOptions.clone();
-	  notesNavLinkOptions.setTextContent('Notes');
-	  
+	  var tabContentOptions = new DivOptions();
+	  var tabContentStyle = new StyleOptions();
+	  tabContentStyle
+	    .set('background', '#eeeeee')
+	    .set('height', '100%');
+	  tabContentOptions
+	    .setStyle(tabContentStyle);
+
 	  /* ****************************************
 	   *
 	   * Footer
@@ -1948,27 +1980,45 @@
 	  // Create the pieces
 	  this.header = ElementManager.construct('Banner', headerOptions);
 	  this.panel = ElementManager.construct('Div', panelOptions);
-	  
 	  this.panelHeader = ElementManager.construct('Div', panelHeadingOptions);
 	  this.flag_pic = ElementManager.construct('Img', flagPicOptions);
 	  this.track_name = ElementManager.construct('Img', trackNameOptions);
 	  this.country = ElementManager.construct('Img', countryOptions);
 	  this.lastUpdated = ElementManager.construct('Span', lastUpdatedOptions);
-
+	  this.scroll = ElementManager.construct('Div', scrollOptions);
 	  this.panelBody = ElementManager.construct('Div', panelBodyOptions);
 	  this.ship_pic = ElementManager.construct('Img', shipPicOptions);
-
 	  this.navigation = ElementManager.construct('Div', navContainerOptions);
 	  this.nav_tabs = ElementManager.construct('Nav', navTabOptions);
-	  this.info_tab = ElementManager.construct('Li', activeTabOptions);
-	  this.alerts_tab = ElementManager.construct('Li', tabOptions);
-	  this.notes_tab = ElementManager.construct('Li', tabOptions);
-
-	  this.info_tab_link = ElementManager.construct('Link', infoNavLinkOptions);
-	  this.alerts_tab_link = ElementManager.construct('Link', alertsNavLinkOptions);
-	  this.notes_tab_link = ElementManager.construct('Link', notesNavLinkOptions);
-
+	  this.tab_content = ElementManager.construct('Div', tabContentOptions);
 	  this.footer = ElementManager.construct('Banner', footerOptions);
+
+	  this.nav_tabs
+	    .addItems([
+	      {
+	        text: 'Track Info',
+	        ngClick: '',
+	        active: true,
+	        onClick: function() {
+	          console.debug('Clicked - Info');
+	          self.nav_tabs.setActive(this);
+	        }
+	      }, {
+	        text: 'Active Alerts',
+	        ngClick: '',
+	        onClick: function() {
+	          console.debug('Clicked - Alerts');
+	          self.nav_tabs.setActive(this);
+	        }
+	      }, {
+	        text: 'Notes',
+	        ngClick: '',
+	        onClick: function() {
+	          console.debug('Clicked - Notes');
+	          self.nav_tabs.setActive(this);
+	        }
+	      }
+	    ]);
 
 	  // Put the pieces together
 	  this.panelHeader
@@ -1977,25 +2027,20 @@
 	    .addChild(this.country)
 	    .addChild(this.lastUpdated);
 
-	  this.info_tab.addChild(this.info_tab_link);
-	  this.alerts_tab.addChild(this.alerts_tab_link);
-	  this.notes_tab.addChild(this.notes_tab_link);
-
-	  this.nav_tabs
-	    .addChild(this.info_tab)
-	    .addChild(this.alerts_tab)
-	    .addChild(this.notes_tab);
-
 	  this.navigation
 	    .addChild(this.nav_tabs);
 
 	  this.panelBody
 	    .addChild(this.ship_pic)
-	    .addChild(this.navigation);
+	    .addChild(this.navigation)
+	    .addChild(this.tab_content);
 
 	  this.panel
 	    .addChild(this.panelHeader)
 	    .addChild(this.panelBody);
+
+	  this.scroll
+	    .addChild(this.panel);
 
 	}
 
@@ -2019,7 +2064,7 @@
 
 	  ElementManager
 	    .addOrReplace('header', Info.header)
-	    .addOrReplace('panel', Info.panel)
+	    .addOrReplace('content', Info.scroll)
 	    .addOrReplace('footer', Info.footer)
 	    .saveUI('info');
 

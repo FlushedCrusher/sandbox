@@ -43,16 +43,16 @@ function Nav(options) {
 Nav.prototype = Object.create(Element.prototype);
 Nav.prototype.create = function() {
   'use strict';
-  this._item_events
-    .set('onclick', function() {
-      alert('clicked!');
-    });
   this._item_options
     .setAttribute({
       key: 'role',
       value: 'navigation'
-    })
-    .setEvents(this._item_events);
+    });
+  this._item_link_options
+    .setAttribute({
+      key: 'href',
+      value: ''
+    });
 };
 Nav.prototype.setTextContent = function(content) {
   'use strict';
@@ -64,6 +64,14 @@ Nav.prototype.setTemplate = function(content) {
   this.element.innerHTML = content;
   return this;
 };
+Nav.prototype.addItems = function(items) {
+  'use strict';
+  var self = this;
+  items.forEach(function(attrs) {
+    self.addItem(attrs);
+  });
+  return this;
+};
 Nav.prototype.addItem = function(attrs) {
   'use strict';
   var _item = this.createItem(attrs);
@@ -72,13 +80,37 @@ Nav.prototype.addItem = function(attrs) {
 };
 Nav.prototype.createItem = function(attrs) {
   'use strict';
-  var io = this._item_options.clone();
-  var lo = this._item_link_options.clone();
-  lo.setTextContent(attrs.text);
-  var _item = new Li(io);
-  var _link = new Link(lo);
+  var itemOptions = this._item_options.clone();
+  var linkOptions = this._item_link_options.clone();
+  var events = this._item_events.clone();
+
+  events
+    .set('onclick', attrs.onClick || function() { alert('Nav Item clicked.'); });
+  linkOptions
+    .setTextContent(attrs.text || 'Unnamed')
+    .setAttribute({
+      key: 'ng-click',
+      value: attrs.ngClick || ''
+    })
+    .setAttribute({
+      key: 'data-index',
+      value: this.children.length
+    })
+    .setEvents(events); 
+  if(attrs.active) {
+    itemOptions.addClass('active');
+  }
+  var _item = new Li(itemOptions);
+  var _link = new Link(linkOptions);
   _item.addChild(_link);
   return _item;
 };
-
+Nav.prototype.setActive = function(item) {
+  'use strict';
+  var _item = this.children[item.dataset.index];
+  this.children.forEach(function(child) {
+    child.removeClass('active');
+  });
+  _item.addClass('active');
+};
 module.exports = Nav;

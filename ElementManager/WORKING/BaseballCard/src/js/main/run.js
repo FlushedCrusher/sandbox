@@ -12,7 +12,7 @@ function run($injector, $compile, $rootScope) { // eslint-disable-line no-unused
 
   ElementManager
     .addOrReplace('header', Info.header)
-    .addOrReplace('panel', Info.panel)
+    .addOrReplace('content', Info.scroll)
     .addOrReplace('footer', Info.footer)
     .saveUI('info');
 

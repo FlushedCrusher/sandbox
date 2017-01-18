@@ -18,3 +18,11 @@ html {
   -webkit-filter: grayscale(1);
   /* Google Chrome, Safari 6+ & Opera 15+ */
 }
+.nav-tabs > li.active > a, .nav-tabs > li:active {
+  background: #eeeeee !important;
+  background: -webkit-linear-gradient(#fefefe, #eeeeee) !important;
+  background: -o-linear-gradient(#fefefe, #eeeeee) !important;
+  background: -moz-linear-gradient(#fefefe, #eeeeee) !important;
+  background: linear-gradient(#fefefe, #eeeeee) !important;
+  border-bottom-color: #eeeeee !important;
+}

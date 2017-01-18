@@ -69,10 +69,10 @@ ElementOptions.prototype.getAttributes = function() {
 };
 ElementOptions.prototype.clone = function() {
   'use strict';
-  var clone = this._assign(this);
+  var clone = this._clone(this);
   return clone;
 };
-ElementOptions.prototype._assign = function(obj) {
+ElementOptions.prototype._clone = function(obj) {
   'use strict';
   var self = this;
     if (obj === null || typeof obj !== 'object') {
@@ -83,7 +83,7 @@ ElementOptions.prototype._assign = function(obj) {
       if (!obj.hasOwnProperty(key)) {
         continue;
       }
-        temp[key] = self._assign(obj[key]);
+        temp[key] = self._clone(obj[key]);
     }
     return temp;
 };
