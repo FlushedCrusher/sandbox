@@ -5,11 +5,9 @@
 function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
   'use strict';
 
-  var ElementManager = $injector.get('ElementManager');
-  /* ********** */
-  window.ElementManager = ElementManager;
   var self = this;
-  /* ********** */
+
+  var ElementManager = $injector.get('ElementManager');
 
   var Banner = $injector.get('Banner');
   var BannerOptions = $injector.get('BannerOptions');
@@ -31,13 +29,15 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
   var NavOptions = $injector.get('NavOptions');
   ElementManager.register('Nav', Nav);
 
+  var GlyphBtn = $injector.get('GlyphBtn');
+  var GlyphBtnOptions = $injector.get('GlyphBtnOptions');
+  ElementManager.register('GlyphBtn', GlyphBtn);
+
   var StyleOptions = $injector.get('StyleOptions');
   var EventOptions = $injector.get('EventOptions');
 
   /* ****************************************
-   *
    * Header
-   * 
    **************************************** */
   var headerOptions = new BannerOptions();
   headerOptions
@@ -47,18 +47,14 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
     .setTextContent('TOP SECRET');
 
   /* ****************************************
-   *
    * Scroll Content
-   * 
    **************************************** */
   var scrollOptions = new DivOptions();
   scrollOptions
     .addClass('scroll-content');
     
   /* ****************************************
-   *
    * Panel Content
-   * 
    **************************************** */
   var panelOptions = new DivOptions();
   var panelStyle = new StyleOptions();
@@ -73,9 +69,7 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
     .setStyle(panelStyle);
 
   /* ****************************************
-   *
    * Panel Heading
-   * 
    **************************************** */
   var panelHeadingOptions = new DivOptions();
   var panelHeadingStyle = new StyleOptions();
@@ -88,9 +82,7 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
     .addClass('panel-heading')
     .setStyle(panelHeadingStyle);
   /* ****************************************
-   *
    * Flag Pic
-   * 
    **************************************** */
   var flagPicOptions = new ImgOptions();
   var flagPicEvents = new EventOptions();
@@ -107,21 +99,17 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
     .setEvents(flagPicEvents);
 
   /* ****************************************
-   *
    * Track Name
-   * 
    **************************************** */
   var trackNameOptions = new SpanOptions();
   var trackNameTemplate =
     '<!-- Track Name -->' +
-		'{{track.name | uppercase}},';
+		' {{track.name | uppercase}}, ';
   trackNameOptions
     .setTemplate(trackNameTemplate);
 
   /* ****************************************
-   *
    * Country Abbreviation
-   * 
    **************************************** */
   var countryOptions = new SpanOptions();
   var countryTemplate = 
@@ -131,9 +119,7 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
     .setTemplate(countryTemplate);
 
   /* ****************************************
-   *
    * Last Updated Info
-   * 
    **************************************** */
   var lastUpdatedOptions = new SpanOptions();
   var lastUpdatedStyle = new StyleOptions();
@@ -148,9 +134,7 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
     .setTemplate(lastUpdatedTemplate);
 
   /* ****************************************
-   *
    * Panel Body
-   * 
    **************************************** */
   var panelBodyOptions = new DivOptions();
   var panelBodyStyle = new StyleOptions();
@@ -162,9 +146,7 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
     .setStyle(panelBodyStyle);
 
   /* ****************************************
-   *
    * Ship Pic
-   * 
    **************************************** */
   var shipPicOptions = new ImgOptions();
   var shipPicEvents = new EventOptions();
@@ -181,9 +163,7 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
     .setEvents(shipPicEvents);
   
   /* ****************************************
-   *
    * Navigation Container
-   * 
    **************************************** */
   var navContainerOptions = new DivOptions();
   var navContainerStyle = new StyleOptions();
@@ -193,9 +173,7 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
     .setStyle(navContainerStyle);
 
   /* ****************************************
-   *
    * Navigation Tabs
-   * 
    **************************************** */
   var navTabOptions = new NavOptions();
   var navTabStyle = new StyleOptions();
@@ -207,22 +185,81 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
     .setStyle(navTabStyle);
 
   /* ****************************************
-   *
+  * Nav-Button Group
+  ***************************************** */
+  // <div class="btn-group pad-right float-right" role="group" aria-label="..."></div>
+  var navBtnGroupOptions = new DivOptions();
+  var navBtnGroupStyle = new StyleOptions();
+  navBtnGroupStyle
+    .set('float', 'right')
+    .set('padding-right', '10px');
+  navBtnGroupOptions
+    .addClass('btn-group')
+    .setAttribute({
+      key: 'role',
+      value: 'group'
+    })
+    .setAttribute({
+      key: 'aria-label',
+      value: '...'
+    })
+    .setStyle(navBtnGroupStyle);
+
+  /* ****************************************
+   * Refresh Button
+   **************************************** */
+  var refreshBtnOptions = new GlyphBtnOptions();
+  var refreshBtnEvents = new EventOptions();
+  refreshBtnEvents
+    .set('onclick', function() {
+      console.debug('Refresh button clicked.');
+    });
+  refreshBtnOptions
+    .setAttribute({
+      key: 'href',
+      value: ''
+    })
+    .setEvents(refreshBtnEvents);
+
+  /* ****************************************
+   * Watchlist Button
+   **************************************** */
+  var watchBtnOptions = new GlyphBtnOptions();
+  var watchBtnEvents = new EventOptions();
+  watchBtnEvents
+    .set('onclick', function() {
+      console.debug('Watch List toggle button clicked.');
+    });
+  watchBtnOptions
+    .setAttribute({
+      key: 'href',
+      value: ''
+    })
+    .setEvents(watchBtnEvents);
+
+  /* ****************************************
    * Tab Content
-   * 
    **************************************** */
   var tabContentOptions = new DivOptions();
   var tabContentStyle = new StyleOptions();
   tabContentStyle
     .set('background', '#eeeeee')
-    .set('height', '100%');
+    .set('padding', '3px');
   tabContentOptions
     .setStyle(tabContentStyle);
 
   /* ****************************************
-   *
+   * Info Row
+   **************************************** */
+  var infoRowOptions = new DivOptions();
+  var infoRowStyle = new StyleOptions();
+  infoRowStyle
+    .set('padding', '4px 3px 4px 3px');
+  infoRowOptions
+    .setStyle(infoRowStyle);
+
+  /* ****************************************
    * Footer
-   * 
    **************************************** */
   var footerOptions = new BannerOptions();
   footerOptions
@@ -232,9 +269,7 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
     .setTextContent('TOP SECRET');
 
   /* ****************************************
-   *
    * Create the UI
-   * 
    **************************************** */
   // Create the pieces
   this.header = ElementManager.construct('Banner', headerOptions);
@@ -249,7 +284,13 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
   this.ship_pic = ElementManager.construct('Img', shipPicOptions);
   this.navigation = ElementManager.construct('Div', navContainerOptions);
   this.nav_tabs = ElementManager.construct('Nav', navTabOptions);
+  this.nav_btns = ElementManager.construct('Div', navBtnGroupOptions);
+  this.refresh_btn = ElementManager.construct('GlyphBtn', refreshBtnOptions);
+  this.watch_btn = ElementManager.construct('GlyphBtn', watchBtnOptions);
   this.tab_content = ElementManager.construct('Div', tabContentOptions);
+  this.row_one = ElementManager.construct('Div', infoRowOptions);
+  this.row_two = ElementManager.construct('Div', infoRowOptions);
+  this.row_three = ElementManager.construct('Div', infoRowOptions);
   this.footer = ElementManager.construct('Banner', footerOptions);
 
   this.nav_tabs
@@ -279,6 +320,76 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
       }
     ]);
 
+  var btn_style = [
+    {
+      key: 'padding-top',
+      value: '10px'
+    }, {
+      key: 'padding-right',
+      value: '10px'
+    }, {
+      key: 'font-size',
+      value: '15px'
+    }, {
+      key: 'color',
+      value: 'gray'
+    }
+  ];
+  var btn_events = [
+    {
+      key: 'onmouseover',
+      value: function() {
+        this.classList.add('btn-hover');
+      }
+    }, {
+      key: 'onmouseout',
+      value: function() {
+        this.classList.remove('btn-hover');
+      }
+    }, {
+      key: 'onclick',
+      value: function() {
+        console.debug('This is an unscoped click event.');
+      }
+    }
+  ];
+  this.refresh_btn
+    .create({
+      add: [
+        {
+          key: 'uib-tooltip',
+          value: 'Refresh'
+        }
+      ],
+      style: btn_style,
+      events: btn_events,
+      icon_package: 'glyphicon',
+      icon: 'glyphicon-refresh'
+    });
+
+  this.watch_btn
+    .create({
+      add: [
+        {
+          key: 'uib-tooltip',
+          value: 'Add to Watch List'
+        }
+      ],
+      style: btn_style,
+      events: btn_events,
+      callback: function () {
+        if(this.hasClass('glyphicon-eye-close')) {
+          this.removeClass('glyphicon-eye-close');
+          this.addClass('glyphicon-eye-open');
+        } else {
+          this.addClass('glyphicon-eye-close');
+          this.removeClass('glyphicon-eye-open');
+        }
+      },
+      icon_package: 'glyphicon',
+      icon: 'glyphicon-eye-close'
+    });
+
   // Put the pieces together
   this.panelHeader
     .addChild(this.flag_pic)
@@ -286,8 +397,20 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
     .addChild(this.country)
     .addChild(this.lastUpdated);
 
+  this.nav_btns
+    .addChild(this.refresh_btn)
+    .addChild(this.watch_btn);
+
+  this.nav_tabs
+    .addChild(this.nav_btns);
+
   this.navigation
     .addChild(this.nav_tabs);
+
+  this.tab_content
+    .addChild(this.row_one)
+    .addChild(this.row_two)
+    .addChild(this.row_three);
 
   this.panelBody
     .addChild(this.ship_pic)

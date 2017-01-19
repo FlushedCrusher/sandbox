@@ -206,6 +206,10 @@ Element.prototype.clearStyles = function() {
 /*
  * Class modifiers
  */
+Element.prototype.hasClass = function(_class) {
+  'use strict';
+  return this.element.classList.contains(_class);
+};
 Element.prototype.addClass = function(_class) {
   'use strict';
   this.element.classList.add(_class);

@@ -23,9 +23,6 @@ function Li(options) {
   } else if(this._options.textContent){
     this.setTextContent(this._options.textContent);
   }
-  if(this._options.src) {
-    this.setSrc(this._options.src);
-  }
 }
 Li.prototype = Object.create(Element.prototype);
 Li.prototype.setTextContent = function(content) {

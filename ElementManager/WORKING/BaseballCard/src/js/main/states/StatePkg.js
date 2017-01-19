@@ -9,6 +9,7 @@ require('../../Config/ConfigPkg.js');
 require('../../Div/DivPkg.js');
 require('../../Element/ElementPkg.js');
 require('../../Events/EventsPkg.js');
+require('../../GlyphBtn/GlyphBtnPkg.js');
 require('../../Img/ImgPkg.js');
 require('../../Li/LiPkg.js');
 require('../../Link/LinkPkg.js');
@@ -25,6 +26,7 @@ angular.module('StatePkg', [
   'DivPkg',
   'ElementPkg',
   'EventsPkg',
+  'GlyphBtnPkg',
   'ImgPkg',
   'LiPkg',
   'LinkPkg',

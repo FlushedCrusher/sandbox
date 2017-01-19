@@ -34,9 +34,6 @@ function Nav(options) {
   } else if(this._options.textContent){
     this.setTextContent(this._options.textContent);
   }
-  if(this._options.src) {
-    this.setSrc(this._options.src);
-  }
 
   this.create();
 }
@@ -82,9 +79,9 @@ Nav.prototype.createItem = function(attrs) {
   'use strict';
   var itemOptions = this._item_options.clone();
   var linkOptions = this._item_link_options.clone();
-  var events = this._item_events.clone();
+  var linkEvents = this._item_events.clone();
 
-  events
+  linkEvents
     .set('onclick', attrs.onClick || function() { alert('Nav Item clicked.'); });
   linkOptions
     .setTextContent(attrs.text || 'Unnamed')
@@ -96,7 +93,7 @@ Nav.prototype.createItem = function(attrs) {
       key: 'data-index',
       value: this.children.length
     })
-    .setEvents(events); 
+    .setEvents(linkEvents); 
   if(attrs.active) {
     itemOptions.addClass('active');
   }
@@ -109,6 +106,9 @@ Nav.prototype.setActive = function(item) {
   'use strict';
   var _item = this.children[item.dataset.index];
   this.children.forEach(function(child) {
+    if(child._options.type !== 'li') {
+      return;
+    }
     child.removeClass('active');
   });
   _item.addClass('active');

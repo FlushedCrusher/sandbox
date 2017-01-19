@@ -26,3 +26,6 @@ html {
   background: linear-gradient(#fefefe, #eeeeee) !important;
   border-bottom-color: #eeeeee !important;
 }
+.btn-hover {
+  color: #a6a6a6 !important;
+}

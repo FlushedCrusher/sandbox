@@ -48,8 +48,8 @@
 
 	__webpack_require__(1);
 
-	var run = __webpack_require__(39);
-	var InfoCtrl = __webpack_require__(40);
+	var run = __webpack_require__(42);
+	var InfoCtrl = __webpack_require__(43);
 
 	angular.module('app',
 	  [
@@ -84,13 +84,14 @@
 	__webpack_require__(15);
 	__webpack_require__(19);
 	__webpack_require__(21);
-	__webpack_require__(24);
 	__webpack_require__(27);
 	__webpack_require__(30);
 	__webpack_require__(33);
 	__webpack_require__(36);
+	__webpack_require__(39);
+	__webpack_require__(40);
 
-	var Info = __webpack_require__(38);
+	var Info = __webpack_require__(41);
 
 	angular.module('StatePkg', [
 	  'AngularHelperPkg',
@@ -99,6 +100,7 @@
 	  'DivPkg',
 	  'ElementPkg',
 	  'EventsPkg',
+	  'GlyphBtnPkg',
 	  'ImgPkg',
 	  'LiPkg',
 	  'LinkPkg',
@@ -434,6 +436,10 @@
 	/*
 	 * Class modifiers
 	 */
+	Element.prototype.hasClass = function(_class) {
+	  'use strict';
+	  return this.element.classList.contains(_class);
+	};
 	Element.prototype.addClass = function(_class) {
 	  'use strict';
 	  this.element.classList.add(_class);
@@ -1161,11 +1167,256 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
+	 * GlyphBtnPkg module definition
+	 */
+
+	var GlyphBtn = __webpack_require__(22);
+	var GlyphBtnOptions = __webpack_require__(23);
+
+	angular.module('GlyphBtnPkg', [])
+	  .factory('GlyphBtn', function() {
+	    'use strict';
+	    return GlyphBtn;
+	  })
+	  .factory('GlyphBtnOptions',  function() {
+	    'use strict';
+	    return GlyphBtnOptions;
+	  });
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Basic GlyphBtn element wrapper
+	 * 
+	 * @requires {Element}
+	 * @requires {GlyphBtnOptions}
+	 * @augments {Element}
+	 * @param {GlyphBtnOptions} options
+	 * @returns {GlyphBtn}
+	 */
+
+	var Element = __webpack_require__(6);
+	var GlyphBtnOptions = __webpack_require__(23);
+
+	var Span = __webpack_require__(24);
+	var SpanOptions = __webpack_require__(25);
+
+	var StyleOptions = __webpack_require__(26);
+	var EventOptions = __webpack_require__(20);
+
+	function GlyphBtn(options) {
+	  'use strict';
+
+	  this._options = options ? options : new GlyphBtnOptions();
+	  this._icon_options = new SpanOptions();
+	  this._icon_style = new StyleOptions();
+	  this._icon_events = new EventOptions();
+
+	  Element.call(this, this._options);
+
+	  if(this._options.template) {
+	    this.setTemplate(this._options.template);
+	  } else if(this._options.textContent){
+	    this.setTextContent(this._options.textContent);
+	  }
+	}
+	GlyphBtn.prototype = Object.create(Element.prototype);
+	GlyphBtn.prototype.create = function(attrs) {
+	  'use strict';
+	  if(attrs.add) {
+	    this.setIconAttributes(attrs.add);
+	  }
+	  if(attrs.style) {
+	    this.setIconStyle(attrs.style);
+	  }
+	  if(attrs.events) {
+	    this.setIconEvents(attrs.events);
+	  }
+	  if(attrs.callback) {
+	    this.setScopedCallback(attrs.callback);
+	  }
+	  this._icon_options
+	    .addClass(attrs.icon_package)
+	    .addClass(attrs.icon)
+	    .setStyle(this._icon_style)
+	    .setEvents(this._icon_events);
+	  var _icon = new Span(this._icon_options);
+	  this.addChild(_icon);
+	  return this;
+	};
+	GlyphBtn.prototype.setIconAttributes = function(_attrs) {
+	  'use strict';
+	  var self = this;
+	  _attrs.forEach(function(_attr) {
+	    self._icon_options.setAttribute(_attr);
+	  });
+	};
+	GlyphBtn.prototype.setIconStyle = function(_styles) {
+	  'use strict';
+	  var self = this;
+	  _styles.forEach(function(_style) {
+	    self._icon_style.set(_style.key, _style.value);
+	  });
+	};
+	GlyphBtn.prototype.setIconEvents = function(_events) {
+	  'use strict';
+	  var self = this;
+	  _events.forEach(function(_event) {
+	     self._icon_events.set(_event.key, _event.value);
+	  });
+	};
+	GlyphBtn.prototype.setScopedCallback = function(_callback) {
+	  'use strict';
+	  var self = this;
+	  var unscoped = this._icon_events.get('onclick');
+	  var newAction = function() {
+	    if(unscoped) {
+	      unscoped();
+	    }
+	    _callback.call(self.children[0]);
+	  };
+	  this._icon_events.set('onclick', newAction);
+	};
+	GlyphBtn.prototype.setTextContent = function(content) {
+	  'use strict';
+	  this.element.textContent = content;
+	  return this;
+	};
+	GlyphBtn.prototype.setTemplate = function(content) {
+	  'use strict';
+	  this.element.innerHTML = content;
+	  return this;
+	};
+
+	module.exports = GlyphBtn;
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Options for GlyphBtn element wrapper
+	 * 
+	 * @requires {ElementOptions}
+	 * @augments {ElementOptions}
+	 * @returns {GlyphBtnOptions}
+	 */
+
+	var ElementOptions = __webpack_require__(9);
+
+	function GlyphBtnOptions() {
+	  'use strict';
+	  ElementOptions.call(this);
+	  this.type = 'a';
+	}
+	GlyphBtnOptions.prototype = Object.create(ElementOptions.prototype);
+
+	module.exports = GlyphBtnOptions;
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Basic Span element wrapper
+	 * 
+	 * @requires {Element}
+	 * @requires {SpanOptions}
+	 * @augments {Element}
+	 * @param {SpanOptions} options
+	 * @returns {Span}
+	 */
+
+	var Element = __webpack_require__(6);
+	var SpanOptions = __webpack_require__(25);
+
+	function Span(options) {
+	  'use strict';
+
+	  this._options = options ? options : new SpanOptions();
+
+	  Element.call(this, this._options);
+
+	  if(this._options.template) {
+	    this.setTemplate(this._options.template);
+	  } else if(this._options.textContent){
+	    this.setTextContent(this._options.textContent);
+	  }
+	}
+	Span.prototype = Object.create(Element.prototype);
+	Span.prototype.setTextContent = function(content) {
+	  'use strict';
+	  this.element.textContent = content;
+	  return this;
+	};
+	Span.prototype.setTemplate = function(content) {
+	  'use strict';
+	  this.element.innerHTML = content;
+	  return this;
+	};
+
+	module.exports = Span;
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Options for Span element wrapper
+	 * 
+	 * @requires {ElementOptions}
+	 * @augments {ElementOptions}
+	 * @returns {SpanOptions}
+	 */
+
+	var ElementOptions = __webpack_require__(9);
+
+	function SpanOptions() {
+	  'use strict';
+	  ElementOptions.call(this);
+	  this.type = 'span';
+	}
+	SpanOptions.prototype = Object.create(ElementOptions.prototype);
+
+	module.exports = SpanOptions;
+
+/***/ },
+/* 26 */
+/***/ function(module, exports) {
+
+	/**
+	 * Style options object
+	 * 
+	 * @returns {StyleOptions}
+	 */
+
+	function StyleOptions() {
+	  'use strict';
+	}
+	StyleOptions.prototype.get = function(key) {
+	  'use strict';
+	  var style = this[key];
+	  return style;
+	};
+	StyleOptions.prototype.set = function(key, style) {
+	  'use strict';
+	  this[key] = style;
+	  return this;
+	};
+	module.exports = StyleOptions;
+
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
 	 * ImgPkg module definition
 	 */
 
-	var Img = __webpack_require__(22);
-	var ImgOptions = __webpack_require__(23);
+	var Img = __webpack_require__(28);
+	var ImgOptions = __webpack_require__(29);
 
 	angular.module('ImgPkg', [])
 	  .factory('Img', function() {
@@ -1178,7 +1429,7 @@
 	  });
 
 /***/ },
-/* 22 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1192,7 +1443,7 @@
 	 */
 
 	var Element = __webpack_require__(6);
-	var ImgOptions = __webpack_require__(23);
+	var ImgOptions = __webpack_require__(29);
 
 	function Img(options) {
 	  'use strict';
@@ -1231,7 +1482,7 @@
 	module.exports = Img;
 
 /***/ },
-/* 23 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1254,15 +1505,15 @@
 	module.exports = ImgOptions;
 
 /***/ },
-/* 24 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * LiPkg module definition
 	 */
 
-	var Li = __webpack_require__(25);
-	var LiOptions = __webpack_require__(26);
+	var Li = __webpack_require__(31);
+	var LiOptions = __webpack_require__(32);
 
 	angular.module('LiPkg', [])
 	  .factory('Li', function() {
@@ -1275,7 +1526,7 @@
 	  });
 
 /***/ },
-/* 25 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1289,7 +1540,7 @@
 	 */
 
 	var Element = __webpack_require__(6);
-	var LiOptions = __webpack_require__(26);
+	var LiOptions = __webpack_require__(32);
 
 	function Li(options) {
 	  'use strict';
@@ -1302,9 +1553,6 @@
 	    this.setTemplate(this._options.template);
 	  } else if(this._options.textContent){
 	    this.setTextContent(this._options.textContent);
-	  }
-	  if(this._options.src) {
-	    this.setSrc(this._options.src);
 	  }
 	}
 	Li.prototype = Object.create(Element.prototype);
@@ -1322,7 +1570,7 @@
 	module.exports = Li;
 
 /***/ },
-/* 26 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1345,15 +1593,15 @@
 	module.exports = LiOptions;
 
 /***/ },
-/* 27 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * LinkPkg module definition
 	 */
 
-	var Link = __webpack_require__(28);
-	var LinkOptions = __webpack_require__(29);
+	var Link = __webpack_require__(34);
+	var LinkOptions = __webpack_require__(35);
 
 	angular.module('LinkPkg', [])
 	  .factory('Link', function() {
@@ -1366,7 +1614,7 @@
 	  });
 
 /***/ },
-/* 28 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1380,7 +1628,7 @@
 	 */
 
 	var Element = __webpack_require__(6);
-	var LinkOptions = __webpack_require__(29);
+	var LinkOptions = __webpack_require__(35);
 
 	function Link(options) {
 	  'use strict';
@@ -1413,7 +1661,7 @@
 	module.exports = Link;
 
 /***/ },
-/* 29 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1436,15 +1684,15 @@
 	module.exports = LinkOptions;
 
 /***/ },
-/* 30 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * NavPkg module definition
 	 */
 
-	var Nav = __webpack_require__(31);
-	var NavOptions = __webpack_require__(32);
+	var Nav = __webpack_require__(37);
+	var NavOptions = __webpack_require__(38);
 
 	angular.module('NavPkg', [])
 	  .factory('Nav', function() {
@@ -1457,7 +1705,7 @@
 	  });
 
 /***/ },
-/* 31 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1471,13 +1719,13 @@
 	 */
 
 	var Element = __webpack_require__(6);
-	var NavOptions = __webpack_require__(32);
+	var NavOptions = __webpack_require__(38);
 
-	var Li = __webpack_require__(25);
-	var LiOptions = __webpack_require__(26);
+	var Li = __webpack_require__(31);
+	var LiOptions = __webpack_require__(32);
 
-	var Link = __webpack_require__(28);
-	var LinkOptions = __webpack_require__(29);
+	var Link = __webpack_require__(34);
+	var LinkOptions = __webpack_require__(35);
 
 	var EventOptions = __webpack_require__(20);
 
@@ -1495,9 +1743,6 @@
 	    this.setTemplate(this._options.template);
 	  } else if(this._options.textContent){
 	    this.setTextContent(this._options.textContent);
-	  }
-	  if(this._options.src) {
-	    this.setSrc(this._options.src);
 	  }
 
 	  this.create();
@@ -1544,9 +1789,9 @@
 	  'use strict';
 	  var itemOptions = this._item_options.clone();
 	  var linkOptions = this._item_link_options.clone();
-	  var events = this._item_events.clone();
+	  var linkEvents = this._item_events.clone();
 
-	  events
+	  linkEvents
 	    .set('onclick', attrs.onClick || function() { alert('Nav Item clicked.'); });
 	  linkOptions
 	    .setTextContent(attrs.text || 'Unnamed')
@@ -1558,7 +1803,7 @@
 	      key: 'data-index',
 	      value: this.children.length
 	    })
-	    .setEvents(events); 
+	    .setEvents(linkEvents); 
 	  if(attrs.active) {
 	    itemOptions.addClass('active');
 	  }
@@ -1571,6 +1816,9 @@
 	  'use strict';
 	  var _item = this.children[item.dataset.index];
 	  this.children.forEach(function(child) {
+	    if(child._options.type !== 'li') {
+	      return;
+	    }
 	    child.removeClass('active');
 	  });
 	  _item.addClass('active');
@@ -1578,7 +1826,7 @@
 	module.exports = Nav;
 
 /***/ },
-/* 32 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1607,15 +1855,15 @@
 	module.exports = NavOptions;
 
 /***/ },
-/* 33 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * SpanPkg module definition
 	 */
 
-	var Span = __webpack_require__(34);
-	var SpanOptions = __webpack_require__(35);
+	var Span = __webpack_require__(24);
+	var SpanOptions = __webpack_require__(25);
 
 	angular.module('SpanPkg', [])
 	  .factory('Span', function() {
@@ -1628,81 +1876,14 @@
 	  });
 
 /***/ },
-/* 34 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Basic Span element wrapper
-	 * 
-	 * @requires {Element}
-	 * @requires {SpanOptions}
-	 * @augments {Element}
-	 * @param {SpanOptions} options
-	 * @returns {Span}
-	 */
-
-	var Element = __webpack_require__(6);
-	var SpanOptions = __webpack_require__(35);
-
-	function Span(options) {
-	  'use strict';
-
-	  this._options = options ? options : new SpanOptions();
-
-	  Element.call(this, this._options);
-
-	  if(this._options.template) {
-	    this.setTemplate(this._options.template);
-	  } else if(this._options.textContent){
-	    this.setTextContent(this._options.textContent);
-	  }
-	}
-	Span.prototype = Object.create(Element.prototype);
-	Span.prototype.setTextContent = function(content) {
-	  'use strict';
-	  this.element.textContent = content;
-	  return this;
-	};
-	Span.prototype.setTemplate = function(content) {
-	  'use strict';
-	  this.element.innerHTML = content;
-	  return this;
-	};
-
-	module.exports = Span;
-
-/***/ },
-/* 35 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Options for Span element wrapper
-	 * 
-	 * @requires {ElementOptions}
-	 * @augments {ElementOptions}
-	 * @returns {SpanOptions}
-	 */
-
-	var ElementOptions = __webpack_require__(9);
-
-	function SpanOptions() {
-	  'use strict';
-	  ElementOptions.call(this);
-	  this.type = 'span';
-	}
-	SpanOptions.prototype = Object.create(ElementOptions.prototype);
-
-	module.exports = SpanOptions;
-
-/***/ },
-/* 36 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * StylePkg module definition
 	 */
 
-	var StyleOptions = __webpack_require__(37);
+	var StyleOptions = __webpack_require__(26);
 
 	angular.module('StylePkg', [])
 	  .factory('StyleOptions', function() {
@@ -1711,32 +1892,7 @@
 	  });
 
 /***/ },
-/* 37 */
-/***/ function(module, exports) {
-
-	/**
-	 * Style options object
-	 * 
-	 * @returns {StyleOptions}
-	 */
-
-	function StyleOptions() {
-	  'use strict';
-	}
-	StyleOptions.prototype.get = function(key) {
-	  'use strict';
-	  var style = this[key];
-	  return style;
-	};
-	StyleOptions.prototype.set = function(key, style) {
-	  'use strict';
-	  this[key] = style;
-	  return this;
-	};
-	module.exports = StyleOptions;
-
-/***/ },
-/* 38 */
+/* 41 */
 /***/ function(module, exports) {
 
 	/**
@@ -1746,11 +1902,9 @@
 	function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
 	  'use strict';
 
-	  var ElementManager = $injector.get('ElementManager');
-	  /* ********** */
-	  window.ElementManager = ElementManager;
 	  var self = this;
-	  /* ********** */
+
+	  var ElementManager = $injector.get('ElementManager');
 
 	  var Banner = $injector.get('Banner');
 	  var BannerOptions = $injector.get('BannerOptions');
@@ -1772,13 +1926,15 @@
 	  var NavOptions = $injector.get('NavOptions');
 	  ElementManager.register('Nav', Nav);
 
+	  var GlyphBtn = $injector.get('GlyphBtn');
+	  var GlyphBtnOptions = $injector.get('GlyphBtnOptions');
+	  ElementManager.register('GlyphBtn', GlyphBtn);
+
 	  var StyleOptions = $injector.get('StyleOptions');
 	  var EventOptions = $injector.get('EventOptions');
 
 	  /* ****************************************
-	   *
 	   * Header
-	   * 
 	   **************************************** */
 	  var headerOptions = new BannerOptions();
 	  headerOptions
@@ -1788,18 +1944,14 @@
 	    .setTextContent('TOP SECRET');
 
 	  /* ****************************************
-	   *
 	   * Scroll Content
-	   * 
 	   **************************************** */
 	  var scrollOptions = new DivOptions();
 	  scrollOptions
 	    .addClass('scroll-content');
 	    
 	  /* ****************************************
-	   *
 	   * Panel Content
-	   * 
 	   **************************************** */
 	  var panelOptions = new DivOptions();
 	  var panelStyle = new StyleOptions();
@@ -1814,9 +1966,7 @@
 	    .setStyle(panelStyle);
 
 	  /* ****************************************
-	   *
 	   * Panel Heading
-	   * 
 	   **************************************** */
 	  var panelHeadingOptions = new DivOptions();
 	  var panelHeadingStyle = new StyleOptions();
@@ -1829,9 +1979,7 @@
 	    .addClass('panel-heading')
 	    .setStyle(panelHeadingStyle);
 	  /* ****************************************
-	   *
 	   * Flag Pic
-	   * 
 	   **************************************** */
 	  var flagPicOptions = new ImgOptions();
 	  var flagPicEvents = new EventOptions();
@@ -1848,21 +1996,17 @@
 	    .setEvents(flagPicEvents);
 
 	  /* ****************************************
-	   *
 	   * Track Name
-	   * 
 	   **************************************** */
 	  var trackNameOptions = new SpanOptions();
 	  var trackNameTemplate =
 	    '<!-- Track Name -->' +
-			'{{track.name | uppercase}},';
+			' {{track.name | uppercase}}, ';
 	  trackNameOptions
 	    .setTemplate(trackNameTemplate);
 
 	  /* ****************************************
-	   *
 	   * Country Abbreviation
-	   * 
 	   **************************************** */
 	  var countryOptions = new SpanOptions();
 	  var countryTemplate = 
@@ -1872,9 +2016,7 @@
 	    .setTemplate(countryTemplate);
 
 	  /* ****************************************
-	   *
 	   * Last Updated Info
-	   * 
 	   **************************************** */
 	  var lastUpdatedOptions = new SpanOptions();
 	  var lastUpdatedStyle = new StyleOptions();
@@ -1889,9 +2031,7 @@
 	    .setTemplate(lastUpdatedTemplate);
 
 	  /* ****************************************
-	   *
 	   * Panel Body
-	   * 
 	   **************************************** */
 	  var panelBodyOptions = new DivOptions();
 	  var panelBodyStyle = new StyleOptions();
@@ -1903,9 +2043,7 @@
 	    .setStyle(panelBodyStyle);
 
 	  /* ****************************************
-	   *
 	   * Ship Pic
-	   * 
 	   **************************************** */
 	  var shipPicOptions = new ImgOptions();
 	  var shipPicEvents = new EventOptions();
@@ -1922,9 +2060,7 @@
 	    .setEvents(shipPicEvents);
 	  
 	  /* ****************************************
-	   *
 	   * Navigation Container
-	   * 
 	   **************************************** */
 	  var navContainerOptions = new DivOptions();
 	  var navContainerStyle = new StyleOptions();
@@ -1934,9 +2070,7 @@
 	    .setStyle(navContainerStyle);
 
 	  /* ****************************************
-	   *
 	   * Navigation Tabs
-	   * 
 	   **************************************** */
 	  var navTabOptions = new NavOptions();
 	  var navTabStyle = new StyleOptions();
@@ -1948,22 +2082,81 @@
 	    .setStyle(navTabStyle);
 
 	  /* ****************************************
-	   *
+	  * Nav-Button Group
+	  ***************************************** */
+	  // <div class="btn-group pad-right float-right" role="group" aria-label="..."></div>
+	  var navBtnGroupOptions = new DivOptions();
+	  var navBtnGroupStyle = new StyleOptions();
+	  navBtnGroupStyle
+	    .set('float', 'right')
+	    .set('padding-right', '10px');
+	  navBtnGroupOptions
+	    .addClass('btn-group')
+	    .setAttribute({
+	      key: 'role',
+	      value: 'group'
+	    })
+	    .setAttribute({
+	      key: 'aria-label',
+	      value: '...'
+	    })
+	    .setStyle(navBtnGroupStyle);
+
+	  /* ****************************************
+	   * Refresh Button
+	   **************************************** */
+	  var refreshBtnOptions = new GlyphBtnOptions();
+	  var refreshBtnEvents = new EventOptions();
+	  refreshBtnEvents
+	    .set('onclick', function() {
+	      console.debug('Refresh button clicked.');
+	    });
+	  refreshBtnOptions
+	    .setAttribute({
+	      key: 'href',
+	      value: ''
+	    })
+	    .setEvents(refreshBtnEvents);
+
+	  /* ****************************************
+	   * Watchlist Button
+	   **************************************** */
+	  var watchBtnOptions = new GlyphBtnOptions();
+	  var watchBtnEvents = new EventOptions();
+	  watchBtnEvents
+	    .set('onclick', function() {
+	      console.debug('Watch List toggle button clicked.');
+	    });
+	  watchBtnOptions
+	    .setAttribute({
+	      key: 'href',
+	      value: ''
+	    })
+	    .setEvents(watchBtnEvents);
+
+	  /* ****************************************
 	   * Tab Content
-	   * 
 	   **************************************** */
 	  var tabContentOptions = new DivOptions();
 	  var tabContentStyle = new StyleOptions();
 	  tabContentStyle
 	    .set('background', '#eeeeee')
-	    .set('height', '100%');
+	    .set('padding', '3px');
 	  tabContentOptions
 	    .setStyle(tabContentStyle);
 
 	  /* ****************************************
-	   *
+	   * Info Row
+	   **************************************** */
+	  var infoRowOptions = new DivOptions();
+	  var infoRowStyle = new StyleOptions();
+	  infoRowStyle
+	    .set('padding', '4px 3px 4px 3px');
+	  infoRowOptions
+	    .setStyle(infoRowStyle);
+
+	  /* ****************************************
 	   * Footer
-	   * 
 	   **************************************** */
 	  var footerOptions = new BannerOptions();
 	  footerOptions
@@ -1973,9 +2166,7 @@
 	    .setTextContent('TOP SECRET');
 
 	  /* ****************************************
-	   *
 	   * Create the UI
-	   * 
 	   **************************************** */
 	  // Create the pieces
 	  this.header = ElementManager.construct('Banner', headerOptions);
@@ -1990,7 +2181,13 @@
 	  this.ship_pic = ElementManager.construct('Img', shipPicOptions);
 	  this.navigation = ElementManager.construct('Div', navContainerOptions);
 	  this.nav_tabs = ElementManager.construct('Nav', navTabOptions);
+	  this.nav_btns = ElementManager.construct('Div', navBtnGroupOptions);
+	  this.refresh_btn = ElementManager.construct('GlyphBtn', refreshBtnOptions);
+	  this.watch_btn = ElementManager.construct('GlyphBtn', watchBtnOptions);
 	  this.tab_content = ElementManager.construct('Div', tabContentOptions);
+	  this.row_one = ElementManager.construct('Div', infoRowOptions);
+	  this.row_two = ElementManager.construct('Div', infoRowOptions);
+	  this.row_three = ElementManager.construct('Div', infoRowOptions);
 	  this.footer = ElementManager.construct('Banner', footerOptions);
 
 	  this.nav_tabs
@@ -2020,6 +2217,76 @@
 	      }
 	    ]);
 
+	  var btn_style = [
+	    {
+	      key: 'padding-top',
+	      value: '10px'
+	    }, {
+	      key: 'padding-right',
+	      value: '10px'
+	    }, {
+	      key: 'font-size',
+	      value: '15px'
+	    }, {
+	      key: 'color',
+	      value: 'gray'
+	    }
+	  ];
+	  var btn_events = [
+	    {
+	      key: 'onmouseover',
+	      value: function() {
+	        this.classList.add('btn-hover');
+	      }
+	    }, {
+	      key: 'onmouseout',
+	      value: function() {
+	        this.classList.remove('btn-hover');
+	      }
+	    }, {
+	      key: 'onclick',
+	      value: function() {
+	        console.debug('This is an unscoped click event.');
+	      }
+	    }
+	  ];
+	  this.refresh_btn
+	    .create({
+	      add: [
+	        {
+	          key: 'uib-tooltip',
+	          value: 'Refresh'
+	        }
+	      ],
+	      style: btn_style,
+	      events: btn_events,
+	      icon_package: 'glyphicon',
+	      icon: 'glyphicon-refresh'
+	    });
+
+	  this.watch_btn
+	    .create({
+	      add: [
+	        {
+	          key: 'uib-tooltip',
+	          value: 'Add to Watch List'
+	        }
+	      ],
+	      style: btn_style,
+	      events: btn_events,
+	      callback: function () {
+	        if(this.hasClass('glyphicon-eye-close')) {
+	          this.removeClass('glyphicon-eye-close');
+	          this.addClass('glyphicon-eye-open');
+	        } else {
+	          this.addClass('glyphicon-eye-close');
+	          this.removeClass('glyphicon-eye-open');
+	        }
+	      },
+	      icon_package: 'glyphicon',
+	      icon: 'glyphicon-eye-close'
+	    });
+
 	  // Put the pieces together
 	  this.panelHeader
 	    .addChild(this.flag_pic)
@@ -2027,8 +2294,20 @@
 	    .addChild(this.country)
 	    .addChild(this.lastUpdated);
 
+	  this.nav_btns
+	    .addChild(this.refresh_btn)
+	    .addChild(this.watch_btn);
+
+	  this.nav_tabs
+	    .addChild(this.nav_btns);
+
 	  this.navigation
 	    .addChild(this.nav_tabs);
+
+	  this.tab_content
+	    .addChild(this.row_one)
+	    .addChild(this.row_two)
+	    .addChild(this.row_three);
 
 	  this.panelBody
 	    .addChild(this.ship_pic)
@@ -2047,7 +2326,7 @@
 	module.exports = Info;
 
 /***/ },
-/* 39 */
+/* 42 */
 /***/ function(module, exports) {
 
 	/**
@@ -2073,7 +2352,7 @@
 	module.exports = run;
 
 /***/ },
-/* 40 */
+/* 43 */
 /***/ function(module, exports) {
 
 	/**
