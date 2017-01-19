@@ -2,7 +2,7 @@
  * This is where we build out the info state UI
  */
 
-function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
+function Info($injector) {
   'use strict';
 
   var self = this;
@@ -21,57 +21,22 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
   var ImgOptions = $injector.get('ImgOptions');
   ElementManager.register('Img', Img);
 
-  var Nav = $injector.get('Nav');
-  var NavOptions = $injector.get('NavOptions');
-  ElementManager.register('Nav', Nav);
-
-  var GlyphBtn = $injector.get('GlyphBtn');
-  var GlyphBtnOptions = $injector.get('GlyphBtnOptions');
-  ElementManager.register('GlyphBtn', GlyphBtn);
-
   var StyleOptions = $injector.get('StyleOptions');
   var EventOptions = $injector.get('EventOptions');
 
   /* ****************************************
-   * Header
+   * Templeted Components
    **************************************** */
   var Header = $injector.get('Header');
+  var Scrollable = $injector.get('Scrollable');
+  var Panel = $injector.get('Panel');
+  var PanelHeader = $injector.get('PanelHeader');
+  var PanelBody = $injector.get('PanelBody');
+  var NavContainer = $injector.get('NavContainer');
+  var NavTabs = $injector.get('NavTabs');
+  var NavBtns = $injector.get('NavBtns');
+  var Glyph = $injector.get('Glyph');
 
-  /* ****************************************
-   * Scroll Content
-   **************************************** */
-  var scrollOptions = new DivOptions();
-  scrollOptions
-    .addClass('scroll-content');
-    
-  /* ****************************************
-   * Panel Content
-   **************************************** */
-  var panelOptions = new DivOptions();
-  var panelStyle = new StyleOptions();
-  panelStyle
-    .set('margin-left', 'auto')
-    .set('margin-right', 'auto')
-    .set('max-width', '510px');
-  panelOptions
-    //.addClass('scroll-content')
-    .addClass('panel')
-    .addClass('panel-default')
-    .setStyle(panelStyle);
-
-  /* ****************************************
-   * Panel Heading
-   **************************************** */
-  var panelHeadingOptions = new DivOptions();
-  var panelHeadingStyle = new StyleOptions();
-  panelHeadingStyle
-    .set('background-color', 'white')
-    .set('color', 'black')
-    .set('padding-top', '3px')
-    .set('padding-bottom', '3px');
-  panelHeadingOptions
-    .addClass('panel-heading')
-    .setStyle(panelHeadingStyle);
   /* ****************************************
    * Flag Pic
    **************************************** */
@@ -125,18 +90,6 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
     .setTemplate(lastUpdatedTemplate);
 
   /* ****************************************
-   * Panel Body
-   **************************************** */
-  var panelBodyOptions = new DivOptions();
-  var panelBodyStyle = new StyleOptions();
-  panelBodyStyle
-    .set('margin', '0')
-    .set('padding', '0');
-  panelBodyOptions
-    .addClass('panel-body')
-    .setStyle(panelBodyStyle);
-
-  /* ****************************************
    * Ship Pic
    **************************************** */
   var shipPicOptions = new ImgOptions();
@@ -152,81 +105,6 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
       value: '{{track.image}}'
     })
     .setEvents(shipPicEvents);
-  
-  /* ****************************************
-   * Navigation Container
-   **************************************** */
-  var navContainerOptions = new DivOptions();
-  var navContainerStyle = new StyleOptions();
-  navContainerStyle
-    .set('background-color', 'white');
-  navContainerOptions
-    .setStyle(navContainerStyle);
-
-  /* ****************************************
-   * Navigation Tabs
-   **************************************** */
-  var navTabOptions = new NavOptions();
-  var navTabStyle = new StyleOptions();
-  navTabStyle
-    .set('padding-top', '5px');
-  navTabOptions
-    .addClass('nav')
-    .addClass('nav-tabs')
-    .setStyle(navTabStyle);
-
-  /* ****************************************
-  * Nav-Button Group
-  ***************************************** */
-  // <div class="btn-group pad-right float-right" role="group" aria-label="..."></div>
-  var navBtnGroupOptions = new DivOptions();
-  var navBtnGroupStyle = new StyleOptions();
-  navBtnGroupStyle
-    .set('float', 'right')
-    .set('padding-right', '10px');
-  navBtnGroupOptions
-    .addClass('btn-group')
-    .setAttribute({
-      key: 'role',
-      value: 'group'
-    })
-    .setAttribute({
-      key: 'aria-label',
-      value: '...'
-    })
-    .setStyle(navBtnGroupStyle);
-
-  /* ****************************************
-   * Refresh Button
-   **************************************** */
-  var refreshBtnOptions = new GlyphBtnOptions();
-  var refreshBtnEvents = new EventOptions();
-  refreshBtnEvents
-    .set('onclick', function() {
-      console.debug('Refresh button clicked.');
-    });
-  refreshBtnOptions
-    .setAttribute({
-      key: 'href',
-      value: ''
-    })
-    .setEvents(refreshBtnEvents);
-
-  /* ****************************************
-   * Watchlist Button
-   **************************************** */
-  var watchBtnOptions = new GlyphBtnOptions();
-  var watchBtnEvents = new EventOptions();
-  watchBtnEvents
-    .set('onclick', function() {
-      console.debug('Watch List toggle button clicked.');
-    });
-  watchBtnOptions
-    .setAttribute({
-      key: 'href',
-      value: ''
-    })
-    .setEvents(watchBtnEvents);
 
   /* ****************************************
    * Tab Content
@@ -251,33 +129,33 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
 
   /* ****************************************
    * Footer
-   **************************************** */
-  
+   **************************************** */ 
   var Footer = $injector.get('Footer');
+
   /* ****************************************
    * Create the UI
    **************************************** */
   // Create the pieces
-  this.header = ElementManager.construct('Banner', headerOptions);
-  this.panel = ElementManager.construct('Div', panelOptions);
-  this.panelHeader = ElementManager.construct('Div', panelHeadingOptions);
+  this.header = Header.component;
+  this.panel = Panel.component;
+  this.panelHeader = PanelHeader.component;
   this.flag_pic = ElementManager.construct('Img', flagPicOptions);
   this.track_name = ElementManager.construct('Img', trackNameOptions);
   this.country = ElementManager.construct('Img', countryOptions);
   this.lastUpdated = ElementManager.construct('Span', lastUpdatedOptions);
-  this.scroll = ElementManager.construct('Div', scrollOptions);
-  this.panelBody = ElementManager.construct('Div', panelBodyOptions);
+  this.scroll = Scrollable.component;
+  this.panelBody = PanelBody.component;
   this.ship_pic = ElementManager.construct('Img', shipPicOptions);
-  this.navigation = ElementManager.construct('Div', navContainerOptions);
-  this.nav_tabs = ElementManager.construct('Nav', navTabOptions);
-  this.nav_btns = ElementManager.construct('Div', navBtnGroupOptions);
-  this.refresh_btn = ElementManager.construct('GlyphBtn', refreshBtnOptions);
-  this.watch_btn = ElementManager.construct('GlyphBtn', watchBtnOptions);
+  this.navigation = NavContainer.component;
+  this.nav_tabs = NavTabs.component;
+  this.nav_btns = NavBtns.component;
+  this.refresh_btn = Glyph.new();
+  this.watch_btn = Glyph.new();
   this.tab_content = ElementManager.construct('Div', tabContentOptions);
   this.row_one = ElementManager.construct('Div', infoRowOptions);
   this.row_two = ElementManager.construct('Div', infoRowOptions);
   this.row_three = ElementManager.construct('Div', infoRowOptions);
-  this.footer = ElementManager.construct('Banner', footerOptions);
+  this.footer = Footer.component;
 
   this.nav_tabs
     .addItems([

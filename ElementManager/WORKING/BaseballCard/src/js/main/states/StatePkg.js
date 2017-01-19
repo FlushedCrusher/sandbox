@@ -3,12 +3,9 @@
  */
 'use strict'; // eslint-disable-line strict
 
-require('../../AngularHelper/AngularHelperPkg.js');
 require('../../Banner/BannerPkg.js');
 require('../../Config/ConfigPkg.js');
 require('../../Div/DivPkg.js');
-require('../../Element/ElementPkg.js');
-require('../../Events/EventsPkg.js');
 require('../../GlyphBtn/GlyphBtnPkg.js');
 require('../../Img/ImgPkg.js');
 require('../../Li/LiPkg.js');
@@ -17,17 +14,22 @@ require('../../Nav/NavPkg.js');
 require('../../Span/SpanPkg.js');
 require('../../Style/StylePkg.js');
 
+require('../../AngularHelper/AngularHelperPkg.js');
+require('../../Element/ElementPkg.js');
+require('../../Events/EventsPkg.js');
+
 require('./templates/Classification/ClassificationPkg.js');
+require('./templates/Glyph/GlyphPkg.js');
+require('./templates/Panel/PanelPkg.js');
+require('./templates/Scrollable/ScrollablePkg.js');
+require('./templates/Navigation/NavigationPkg.js');
 
 var Info = require('./info/Info.js');
 
 angular.module('StatePkg', [
-  'AngularHelperPkg',
   'BannerPkg',
   'ConfigPkg',
   'DivPkg',
-  'ElementPkg',
-  'EventsPkg',
   'GlyphBtnPkg',
   'ImgPkg',
   'LiPkg',
@@ -35,10 +37,18 @@ angular.module('StatePkg', [
   'NavPkg',
   'SpanPkg',
   'StylePkg',
-  'ClassificationPkg'
+
+  'AngularHelperPkg',
+  'ElementPkg',
+  'EventsPkg',
+
+  'ClassificationPkg',
+  'GlyphPkg',
+  'PanelPkg',
+  'ScrollablePkg',
+  'NavigationPkg'
 ])
   .service('Info', [
     '$injector',
-    '$compile',
     Info
   ]);

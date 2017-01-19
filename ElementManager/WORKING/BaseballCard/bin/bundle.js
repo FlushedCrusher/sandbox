@@ -48,8 +48,8 @@
 
 	__webpack_require__(1);
 
-	var run = __webpack_require__(45);
-	var InfoCtrl = __webpack_require__(46);
+	var run = __webpack_require__(57);
+	var InfoCtrl = __webpack_require__(58);
 
 	angular.module('app',
 	  [
@@ -78,30 +78,32 @@
 	'use strict'; // eslint-disable-line strict
 
 	__webpack_require__(2);
-	__webpack_require__(4);
+	__webpack_require__(8);
 	__webpack_require__(10);
-	__webpack_require__(12);
-	__webpack_require__(15);
-	__webpack_require__(19);
-	__webpack_require__(21);
-	__webpack_require__(27);
-	__webpack_require__(30);
+	__webpack_require__(13);
+	__webpack_require__(20);
+	__webpack_require__(23);
+	__webpack_require__(26);
+	__webpack_require__(29);
+	__webpack_require__(32);
 	__webpack_require__(33);
+
+	__webpack_require__(34);
 	__webpack_require__(36);
-	__webpack_require__(39);
 	__webpack_require__(40);
 
 	__webpack_require__(41);
+	__webpack_require__(44);
+	__webpack_require__(46);
+	__webpack_require__(50);
+	__webpack_require__(52);
 
-	var Info = __webpack_require__(44);
+	var Info = __webpack_require__(56);
 
 	angular.module('StatePkg', [
-	  'AngularHelperPkg',
 	  'BannerPkg',
 	  'ConfigPkg',
 	  'DivPkg',
-	  'ElementPkg',
-	  'EventsPkg',
 	  'GlyphBtnPkg',
 	  'ImgPkg',
 	  'LiPkg',
@@ -109,11 +111,19 @@
 	  'NavPkg',
 	  'SpanPkg',
 	  'StylePkg',
-	  'ClassificationPkg'
+
+	  'AngularHelperPkg',
+	  'ElementPkg',
+	  'EventsPkg',
+
+	  'ClassificationPkg',
+	  'GlyphPkg',
+	  'PanelPkg',
+	  'ScrollablePkg',
+	  'NavigationPkg'
 	])
 	  .service('Info', [
 	    '$injector',
-	    '$compile',
 	    Info
 	  ]);
 
@@ -122,53 +132,11 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * AngularHelperPkg module definition
-	 */
-
-	var AngularHelper = __webpack_require__(3);
-
-	angular.module('AngularHelperPkg', [])
-	  .service('AngularHelper',  AngularHelper);
-
-/***/ },
-/* 3 */
-/***/ function(module, exports) {
-
-	/**
-	 * AngularHelper wrapper
-	 * 
-	 * @returns {AngularHelper}
-	 */
-
-	function AngularHelper() {
-	  'use strict';
-	  this.scope;
-	  this.compile;
-	}
-	AngularHelper.prototype.bind = function(scope, compile) {
-	  'use strict';
-	  this.scope = scope;
-	  this.compile = compile;
-	  return this;
-	};
-	AngularHelper.prototype.compileContent = function(content) {
-	  'use strict';
-	  var _content = this.compile(content)(this.scope);
-	  return _content;
-	};
-
-	module.exports = AngularHelper;
-
-/***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
 	 * BannerPkg module definition
 	 */
 
-	var Banner = __webpack_require__(5);
-	var BannerOptions = __webpack_require__(8);
+	var Banner = __webpack_require__(3);
+	var BannerOptions = __webpack_require__(6);
 
 	angular.module('BannerPkg', [])
 	  .factory('Banner', function() {
@@ -181,7 +149,7 @@
 	  });
 
 /***/ },
-/* 5 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -194,8 +162,8 @@
 	 * @returns {Banner}
 	 */
 
-	var Element = __webpack_require__(6);
-	var BannerOptions = __webpack_require__(8);
+	var Element = __webpack_require__(4);
+	var BannerOptions = __webpack_require__(6);
 
 	function Banner(options) {
 	  'use strict';
@@ -228,7 +196,7 @@
 	module.exports = Banner;
 
 /***/ },
-/* 6 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -239,7 +207,7 @@
 	 * @returns {Element}
 	 */
 
-	var EventList = __webpack_require__(7);
+	var EventList = __webpack_require__(5);
 
 	function Element(options) {
 	  'use strict';
@@ -491,7 +459,7 @@
 	module.exports = Element;
 
 /***/ },
-/* 7 */
+/* 5 */
 /***/ function(module, exports) {
 
 	/**
@@ -587,7 +555,7 @@
 	module.exports = EventList;
 
 /***/ },
-/* 8 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -598,7 +566,7 @@
 	 * @returns {BannerOptions}
 	 */
 
-	var ElementOptions = __webpack_require__(9);
+	var ElementOptions = __webpack_require__(7);
 
 	function BannerOptions() {
 	  'use strict';
@@ -619,7 +587,7 @@
 	module.exports = BannerOptions;
 
 /***/ },
-/* 9 */
+/* 7 */
 /***/ function(module, exports) {
 
 	/**
@@ -715,20 +683,20 @@
 	module.exports = ElementOptions;
 
 /***/ },
-/* 10 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * ConfigPkg module definition
 	 */
 
-	var Config = __webpack_require__(11);
+	var Config = __webpack_require__(9);
 
 	angular.module('ConfigPkg', [])
 	  .constant('Config', Config);
 
 /***/ },
-/* 11 */
+/* 9 */
 /***/ function(module, exports) {
 
 	/**
@@ -761,15 +729,15 @@
 	module.exports = Config;
 
 /***/ },
-/* 12 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * DivPkg module definition
 	 */
 
-	var Div = __webpack_require__(13);
-	var DivOptions = __webpack_require__(14);
+	var Div = __webpack_require__(11);
+	var DivOptions = __webpack_require__(12);
 
 	angular.module('DivPkg', [])
 	  .factory('Div', function() {
@@ -782,7 +750,7 @@
 	  });
 
 /***/ },
-/* 13 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -795,8 +763,8 @@
 	 * @returns {Div}
 	 */
 
-	var Element = __webpack_require__(6);
-	var DivOptions = __webpack_require__(14);
+	var Element = __webpack_require__(4);
+	var DivOptions = __webpack_require__(12);
 
 	function Div(options) {
 	  'use strict';
@@ -826,7 +794,7 @@
 	module.exports = Div;
 
 /***/ },
-/* 14 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -837,7 +805,7 @@
 	 * @returns {DivOptions}
 	 */
 
-	var ElementOptions = __webpack_require__(9);
+	var ElementOptions = __webpack_require__(7);
 
 	function DivOptions() {
 	  'use strict';
@@ -849,16 +817,841 @@
 	module.exports = DivOptions;
 
 /***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * GlyphBtnPkg module definition
+	 */
+
+	var GlyphBtn = __webpack_require__(14);
+	var GlyphBtnOptions = __webpack_require__(15);
+
+	angular.module('GlyphBtnPkg', [])
+	  .factory('GlyphBtn', function() {
+	    'use strict';
+	    return GlyphBtn;
+	  })
+	  .factory('GlyphBtnOptions',  function() {
+	    'use strict';
+	    return GlyphBtnOptions;
+	  });
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Basic GlyphBtn element wrapper
+	 * 
+	 * @requires {Element}
+	 * @requires {GlyphBtnOptions}
+	 * @augments {Element}
+	 * @param {GlyphBtnOptions} options
+	 * @returns {GlyphBtn}
+	 */
+
+	var Element = __webpack_require__(4);
+	var GlyphBtnOptions = __webpack_require__(15);
+
+	var Span = __webpack_require__(16);
+	var SpanOptions = __webpack_require__(17);
+
+	var StyleOptions = __webpack_require__(18);
+	var EventOptions = __webpack_require__(19);
+
+	function GlyphBtn(options) {
+	  'use strict';
+
+	  this._options = options ? options : new GlyphBtnOptions();
+	  this._icon_options = new SpanOptions();
+	  this._icon_style = new StyleOptions();
+	  this._icon_events = new EventOptions();
+
+	  Element.call(this, this._options);
+
+	  if(this._options.template) {
+	    this.setTemplate(this._options.template);
+	  } else if(this._options.textContent){
+	    this.setTextContent(this._options.textContent);
+	  }
+	}
+	GlyphBtn.prototype = Object.create(Element.prototype);
+	GlyphBtn.prototype.create = function(attrs) {
+	  'use strict';
+	  if(attrs.add) {
+	    this.setIconAttributes(attrs.add);
+	  }
+	  if(attrs.style) {
+	    this.setIconStyle(attrs.style);
+	  }
+	  if(attrs.events) {
+	    this.setIconEvents(attrs.events);
+	  }
+	  if(attrs.callback) {
+	    this.setScopedCallback(attrs.callback);
+	  }
+	  this._icon_options
+	    .addClass(attrs.icon_package)
+	    .addClass(attrs.icon)
+	    .setStyle(this._icon_style)
+	    .setEvents(this._icon_events);
+	  var _icon = new Span(this._icon_options);
+	  this.addChild(_icon);
+	  return this;
+	};
+	GlyphBtn.prototype.setIconAttributes = function(_attrs) {
+	  'use strict';
+	  var self = this;
+	  _attrs.forEach(function(_attr) {
+	    self._icon_options.setAttribute(_attr);
+	  });
+	};
+	GlyphBtn.prototype.setIconStyle = function(_styles) {
+	  'use strict';
+	  var self = this;
+	  _styles.forEach(function(_style) {
+	    self._icon_style.set(_style.key, _style.value);
+	  });
+	};
+	GlyphBtn.prototype.setIconEvents = function(_events) {
+	  'use strict';
+	  var self = this;
+	  _events.forEach(function(_event) {
+	     self._icon_events.set(_event.key, _event.value);
+	  });
+	};
+	GlyphBtn.prototype.setScopedCallback = function(_callback) {
+	  'use strict';
+	  var self = this;
+	  var unscoped = this._icon_events.get('onclick');
+	  var newAction = function() {
+	    if(unscoped) {
+	      unscoped();
+	    }
+	    _callback.call(self.children[0]);
+	  };
+	  this._icon_events.set('onclick', newAction);
+	};
+	GlyphBtn.prototype.setTextContent = function(content) {
+	  'use strict';
+	  this.element.textContent = content;
+	  return this;
+	};
+	GlyphBtn.prototype.setTemplate = function(content) {
+	  'use strict';
+	  this.element.innerHTML = content;
+	  return this;
+	};
+
+	module.exports = GlyphBtn;
+
+/***/ },
 /* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Options for GlyphBtn element wrapper
+	 * 
+	 * @requires {ElementOptions}
+	 * @augments {ElementOptions}
+	 * @returns {GlyphBtnOptions}
+	 */
+
+	var ElementOptions = __webpack_require__(7);
+
+	function GlyphBtnOptions() {
+	  'use strict';
+	  ElementOptions.call(this);
+	  this.type = 'a';
+	}
+	GlyphBtnOptions.prototype = Object.create(ElementOptions.prototype);
+
+	module.exports = GlyphBtnOptions;
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Basic Span element wrapper
+	 * 
+	 * @requires {Element}
+	 * @requires {SpanOptions}
+	 * @augments {Element}
+	 * @param {SpanOptions} options
+	 * @returns {Span}
+	 */
+
+	var Element = __webpack_require__(4);
+	var SpanOptions = __webpack_require__(17);
+
+	function Span(options) {
+	  'use strict';
+
+	  this._options = options ? options : new SpanOptions();
+
+	  Element.call(this, this._options);
+
+	  if(this._options.template) {
+	    this.setTemplate(this._options.template);
+	  } else if(this._options.textContent){
+	    this.setTextContent(this._options.textContent);
+	  }
+	}
+	Span.prototype = Object.create(Element.prototype);
+	Span.prototype.setTextContent = function(content) {
+	  'use strict';
+	  this.element.textContent = content;
+	  return this;
+	};
+	Span.prototype.setTemplate = function(content) {
+	  'use strict';
+	  this.element.innerHTML = content;
+	  return this;
+	};
+
+	module.exports = Span;
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Options for Span element wrapper
+	 * 
+	 * @requires {ElementOptions}
+	 * @augments {ElementOptions}
+	 * @returns {SpanOptions}
+	 */
+
+	var ElementOptions = __webpack_require__(7);
+
+	function SpanOptions() {
+	  'use strict';
+	  ElementOptions.call(this);
+	  this.type = 'span';
+	}
+	SpanOptions.prototype = Object.create(ElementOptions.prototype);
+
+	module.exports = SpanOptions;
+
+/***/ },
+/* 18 */
+/***/ function(module, exports) {
+
+	/**
+	 * Style options object
+	 * 
+	 * @returns {StyleOptions}
+	 */
+
+	function StyleOptions() {
+	  'use strict';
+	}
+	StyleOptions.prototype.get = function(key) {
+	  'use strict';
+	  var style = this[key];
+	  return style;
+	};
+	StyleOptions.prototype.set = function(key, style) {
+	  'use strict';
+	  this[key] = style;
+	  return this;
+	};
+	module.exports = StyleOptions;
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Event options object
+	 * 
+	 * @requires {EventList}
+	 * @returns {EventOptions}
+	 */
+
+	var EventList = __webpack_require__(5);
+
+	function EventOptions() {
+	  'use strict';
+	}
+	EventOptions.prototype.get = function(key) {
+	  'use strict';
+	  var action = null;
+	  if(EventList.includes(key)) {
+	    action = this[key];
+	  }
+	  return action;
+	};
+	EventOptions.prototype.set = function(key, action) {
+	  'use strict';
+	  if(EventList.includes(key)) {
+	    this[key] = action;
+	  }
+	  return this;
+	};
+	EventOptions.prototype.clone = function() {
+	  'use strict';
+	  var clone = this._clone(this);
+	  return clone;
+	};
+	EventOptions.prototype._clone = function(obj) {
+	  'use strict';
+	  var self = this;
+	    if (obj === null || typeof obj !== 'object') {
+	        return obj;
+	    }
+	    var temp = new obj.constructor();
+	    for (var key in obj) {
+	      if (!obj.hasOwnProperty(key)) {
+	        continue;
+	      }
+	        temp[key] = self._clone(obj[key]);
+	    }
+	    return temp;
+	};
+
+	module.exports = EventOptions;
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * ImgPkg module definition
+	 */
+
+	var Img = __webpack_require__(21);
+	var ImgOptions = __webpack_require__(22);
+
+	angular.module('ImgPkg', [])
+	  .factory('Img', function() {
+	    'use strict';
+	    return Img;
+	  })
+	  .factory('ImgOptions',  function() {
+	    'use strict';
+	    return ImgOptions;
+	  });
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Basic Img element wrapper
+	 * 
+	 * @requires {Element}
+	 * @requires {ImgOptions}
+	 * @augments {Element}
+	 * @param {ImgOptions} options
+	 * @returns {Img}
+	 */
+
+	var Element = __webpack_require__(4);
+	var ImgOptions = __webpack_require__(22);
+
+	function Img(options) {
+	  'use strict';
+
+	  this._options = options ? options : new ImgOptions();
+
+	  Element.call(this, this._options);
+
+	  if(this._options.template) {
+	    this.setTemplate(this._options.template);
+	  } else if(this._options.textContent){
+	    this.setTextContent(this._options.textContent);
+	  }
+
+	  if(this._options.src) {
+	    this.setSrc(this._options.src);
+	  }
+	}
+	Img.prototype = Object.create(Element.prototype);
+	Img.prototype.setTextContent = function(content) {
+	  'use strict';
+	  this.element.textContent = content;
+	  return this;
+	};
+	Img.prototype.setTemplate = function(content) {
+	  'use strict';
+	  this.element.innerHTML = content;
+	  return this;
+	};
+	Img.prototype.setSrc = function(src) {
+	  'use strict';
+	  this.element.src = src;
+	  return this;
+	};
+
+	module.exports = Img;
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Options for Img element wrapper
+	 * 
+	 * @requires {ElementOptions}
+	 * @augments {ElementOptions}
+	 * @returns {ImgOptions}
+	 */
+
+	var ElementOptions = __webpack_require__(7);
+
+	function ImgOptions() {
+	  'use strict';
+	  ElementOptions.call(this);
+	  this.type = 'img';
+	}
+	ImgOptions.prototype = Object.create(ElementOptions.prototype);
+
+	module.exports = ImgOptions;
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * LiPkg module definition
+	 */
+
+	var Li = __webpack_require__(24);
+	var LiOptions = __webpack_require__(25);
+
+	angular.module('LiPkg', [])
+	  .factory('Li', function() {
+	    'use strict';
+	    return Li;
+	  })
+	  .factory('LiOptions',  function() {
+	    'use strict';
+	    return LiOptions;
+	  });
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Basic Li element wrapper
+	 * 
+	 * @requires {Element}
+	 * @requires {LiOptions}
+	 * @augments {Element}
+	 * @param {LiOptions} options
+	 * @returns {Li}
+	 */
+
+	var Element = __webpack_require__(4);
+	var LiOptions = __webpack_require__(25);
+
+	function Li(options) {
+	  'use strict';
+
+	  this._options = options ? options : new LiOptions();
+
+	  Element.call(this, this._options);
+
+	  if(this._options.template) {
+	    this.setTemplate(this._options.template);
+	  } else if(this._options.textContent){
+	    this.setTextContent(this._options.textContent);
+	  }
+	}
+	Li.prototype = Object.create(Element.prototype);
+	Li.prototype.setTextContent = function(content) {
+	  'use strict';
+	  this.element.textContent = content;
+	  return this;
+	};
+	Li.prototype.setTemplate = function(content) {
+	  'use strict';
+	  this.element.innerHTML = content;
+	  return this;
+	};
+
+	module.exports = Li;
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Options for Li element wrapper
+	 * 
+	 * @requires {ElementOptions}
+	 * @augments {ElementOptions}
+	 * @returns {LiOptions}
+	 */
+
+	var ElementOptions = __webpack_require__(7);
+
+	function LiOptions() {
+	  'use strict';
+	  ElementOptions.call(this);
+	  this.type = 'li';
+	}
+	LiOptions.prototype = Object.create(ElementOptions.prototype);
+
+	module.exports = LiOptions;
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * LinkPkg module definition
+	 */
+
+	var Link = __webpack_require__(27);
+	var LinkOptions = __webpack_require__(28);
+
+	angular.module('LinkPkg', [])
+	  .factory('Link', function() {
+	    'use strict';
+	    return Link;
+	  })
+	  .factory('LinkOptions',  function() {
+	    'use strict';
+	    return LinkOptions;
+	  });
+
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Basic Link element wrapper
+	 * 
+	 * @requires {Element}
+	 * @requires {LinkOptions}
+	 * @augments {Element}
+	 * @param {LinkOptions} options
+	 * @returns {Link}
+	 */
+
+	var Element = __webpack_require__(4);
+	var LinkOptions = __webpack_require__(28);
+
+	function Link(options) {
+	  'use strict';
+
+	  this._options = options ? options : new LinkOptions();
+
+	  Element.call(this, this._options);
+
+	  if(this._options.template) {
+	    this.setTemplate(this._options.template);
+	  } else if(this._options.textContent){
+	    this.setTextContent(this._options.textContent);
+	  }
+	  if(this._options.src) {
+	    this.setSrc(this._options.src);
+	  }
+	}
+	Link.prototype = Object.create(Element.prototype);
+	Link.prototype.setTextContent = function(content) {
+	  'use strict';
+	  this.element.textContent = content;
+	  return this;
+	};
+	Link.prototype.setTemplate = function(content) {
+	  'use strict';
+	  this.element.innerHTML = content;
+	  return this;
+	};
+
+	module.exports = Link;
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Options for Link element wrapper
+	 * 
+	 * @requires {ElementOptions}
+	 * @augments {ElementOptions}
+	 * @returns {LinkOptions}
+	 */
+
+	var ElementOptions = __webpack_require__(7);
+
+	function LinkOptions() {
+	  'use strict';
+	  ElementOptions.call(this);
+	  this.type = 'a';
+	}
+	LinkOptions.prototype = Object.create(ElementOptions.prototype);
+
+	module.exports = LinkOptions;
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * NavPkg module definition
+	 */
+
+	var Nav = __webpack_require__(30);
+	var NavOptions = __webpack_require__(31);
+
+	angular.module('NavPkg', [])
+	  .factory('Nav', function() {
+	    'use strict';
+	    return Nav;
+	  })
+	  .factory('NavOptions',  function() {
+	    'use strict';
+	    return NavOptions;
+	  });
+
+/***/ },
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Basic Nav element wrapper
+	 * 
+	 * @requires {Element}
+	 * @requires {NavOptions}
+	 * @augments {Element}
+	 * @param {NavOptions} options
+	 * @returns {Nav}
+	 */
+
+	var Element = __webpack_require__(4);
+	var NavOptions = __webpack_require__(31);
+
+	var Li = __webpack_require__(24);
+	var LiOptions = __webpack_require__(25);
+
+	var Link = __webpack_require__(27);
+	var LinkOptions = __webpack_require__(28);
+
+	var EventOptions = __webpack_require__(19);
+
+	function Nav(options) {
+	  'use strict';
+
+	  this._options = options ? options : new NavOptions();
+	  this._item_options = new LiOptions();
+	  this._item_link_options = new LinkOptions();
+	  this._item_events = new EventOptions();
+
+	  Element.call(this, this._options);
+
+	  if(this._options.template) {
+	    this.setTemplate(this._options.template);
+	  } else if(this._options.textContent){
+	    this.setTextContent(this._options.textContent);
+	  }
+
+	  this.create();
+	}
+	Nav.prototype = Object.create(Element.prototype);
+	Nav.prototype.create = function() {
+	  'use strict';
+	  this._item_options
+	    .setAttribute({
+	      key: 'role',
+	      value: 'navigation'
+	    });
+	  this._item_link_options
+	    .setAttribute({
+	      key: 'href',
+	      value: ''
+	    });
+	};
+	Nav.prototype.setTextContent = function(content) {
+	  'use strict';
+	  this.element.textContent = content;
+	  return this;
+	};
+	Nav.prototype.setTemplate = function(content) {
+	  'use strict';
+	  this.element.innerHTML = content;
+	  return this;
+	};
+	Nav.prototype.addItems = function(items) {
+	  'use strict';
+	  var self = this;
+	  items.forEach(function(attrs) {
+	    self.addItem(attrs);
+	  });
+	  return this;
+	};
+	Nav.prototype.addItem = function(attrs) {
+	  'use strict';
+	  var _item = this.createItem(attrs);
+	  this.addChild(_item);
+	  return this;
+	};
+	Nav.prototype.createItem = function(attrs) {
+	  'use strict';
+	  var itemOptions = this._item_options.clone();
+	  var linkOptions = this._item_link_options.clone();
+	  var linkEvents = this._item_events.clone();
+
+	  linkEvents
+	    .set('onclick', attrs.onClick || function() { alert('Nav Item clicked.'); });
+	  linkOptions
+	    .setTextContent(attrs.text || 'Unnamed')
+	    .setAttribute({
+	      key: 'ng-click',
+	      value: attrs.ngClick || ''
+	    })
+	    .setAttribute({
+	      key: 'data-index',
+	      value: this.children.length
+	    })
+	    .setEvents(linkEvents); 
+	  if(attrs.active) {
+	    itemOptions.addClass('active');
+	  }
+	  var _item = new Li(itemOptions);
+	  var _link = new Link(linkOptions);
+	  _item.addChild(_link);
+	  return _item;
+	};
+	Nav.prototype.setActive = function(item) {
+	  'use strict';
+	  var _item = this.children[item.dataset.index];
+	  this.children.forEach(function(child) {
+	    if(child._options.type !== 'li') {
+	      return;
+	    }
+	    child.removeClass('active');
+	  });
+	  _item.addClass('active');
+	};
+	module.exports = Nav;
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Options for Nav element wrapper
+	 * 
+	 * @requires {ElementOptions}
+	 * @augments {ElementOptions}
+	 * @returns {NavOptions}
+	 */
+
+	var ElementOptions = __webpack_require__(7);
+
+	function NavOptions() {
+	  'use strict';
+	  ElementOptions.call(this);
+	  this.type = 'ul';
+	  this.items = [];
+	}
+	NavOptions.prototype = Object.create(ElementOptions.prototype);
+	NavOptions.prototype.addItem = function(item) {
+	  'use strict';
+	  this.items.push(item);
+	  return this;
+	};
+
+	module.exports = NavOptions;
+
+/***/ },
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * SpanPkg module definition
+	 */
+
+	var Span = __webpack_require__(16);
+	var SpanOptions = __webpack_require__(17);
+
+	angular.module('SpanPkg', [])
+	  .factory('Span', function() {
+	    'use strict';
+	    return Span;
+	  })
+	  .factory('SpanOptions',  function() {
+	    'use strict';
+	    return SpanOptions;
+	  });
+
+/***/ },
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * StylePkg module definition
+	 */
+
+	var StyleOptions = __webpack_require__(18);
+
+	angular.module('StylePkg', [])
+	  .factory('StyleOptions', function() {
+	    'use strict';
+	    return StyleOptions;
+	  });
+
+/***/ },
+/* 34 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * AngularHelperPkg module definition
+	 */
+
+	var AngularHelper = __webpack_require__(35);
+
+	angular.module('AngularHelperPkg', [])
+	  .service('AngularHelper',  AngularHelper);
+
+/***/ },
+/* 35 */
+/***/ function(module, exports) {
+
+	/**
+	 * AngularHelper wrapper
+	 * 
+	 * @returns {AngularHelper}
+	 */
+
+	function AngularHelper() {
+	  'use strict';
+	  this.scope;
+	  this.compile;
+	}
+	AngularHelper.prototype.bind = function(scope, compile) {
+	  'use strict';
+	  this.scope = scope;
+	  this.compile = compile;
+	  return this;
+	};
+	AngularHelper.prototype.compileContent = function(content) {
+	  'use strict';
+	  var _content = this.compile(content)(this.scope);
+	  return _content;
+	};
+
+	module.exports = AngularHelper;
+
+/***/ },
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * ElementPkg module definition
 	 */
 
-	var Element = __webpack_require__(6);
-	var ElementFactory = __webpack_require__(16);
-	var ElementManager = __webpack_require__(17);
+	var Element = __webpack_require__(4);
+	var ElementFactory = __webpack_require__(37);
+	var ElementManager = __webpack_require__(38);
 
 	angular.module('ElementPkg', [])
 	  .factory('Element', Element)
@@ -866,7 +1659,7 @@
 	  .service('ElementFactory', ElementFactory);
 
 /***/ },
-/* 16 */
+/* 37 */
 /***/ function(module, exports) {
 
 	/**
@@ -893,7 +1686,7 @@
 	module.exports = ElementFactory;
 
 /***/ },
-/* 17 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -904,9 +1697,9 @@
 	 * @returns {ElementManager}
 	 */
 
-	var ElementFactory = __webpack_require__(16);
-	var Guid = __webpack_require__(18);
-	var AngularHelper = __webpack_require__(3);
+	var ElementFactory = __webpack_require__(37);
+	var Guid = __webpack_require__(39);
+	var AngularHelper = __webpack_require__(35);
 
 	function ElementManager() {
 	  'use strict';
@@ -1066,7 +1859,7 @@
 	module.exports = ElementManager;
 
 /***/ },
-/* 18 */
+/* 39 */
 /***/ function(module, exports) {
 
 	/**
@@ -1096,802 +1889,19 @@
 	module.exports = Guid;
 
 /***/ },
-/* 19 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * EventsPkg module definition
 	 */
 
-	var EventOptions = __webpack_require__(20);
+	var EventOptions = __webpack_require__(19);
 
 	angular.module('EventsPkg', [])
 	  .factory('EventOptions', function() {
 	    'use strict';
 	    return EventOptions;
-	  });
-
-/***/ },
-/* 20 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Event options object
-	 * 
-	 * @requires {EventList}
-	 * @returns {EventOptions}
-	 */
-
-	var EventList = __webpack_require__(7);
-
-	function EventOptions() {
-	  'use strict';
-	}
-	EventOptions.prototype.get = function(key) {
-	  'use strict';
-	  var action = null;
-	  if(EventList.includes(key)) {
-	    action = this[key];
-	  }
-	  return action;
-	};
-	EventOptions.prototype.set = function(key, action) {
-	  'use strict';
-	  if(EventList.includes(key)) {
-	    this[key] = action;
-	  }
-	  return this;
-	};
-	EventOptions.prototype.clone = function() {
-	  'use strict';
-	  var clone = this._clone(this);
-	  return clone;
-	};
-	EventOptions.prototype._clone = function(obj) {
-	  'use strict';
-	  var self = this;
-	    if (obj === null || typeof obj !== 'object') {
-	        return obj;
-	    }
-	    var temp = new obj.constructor();
-	    for (var key in obj) {
-	      if (!obj.hasOwnProperty(key)) {
-	        continue;
-	      }
-	        temp[key] = self._clone(obj[key]);
-	    }
-	    return temp;
-	};
-
-	module.exports = EventOptions;
-
-/***/ },
-/* 21 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * GlyphBtnPkg module definition
-	 */
-
-	var GlyphBtn = __webpack_require__(22);
-	var GlyphBtnOptions = __webpack_require__(23);
-
-	angular.module('GlyphBtnPkg', [])
-	  .factory('GlyphBtn', function() {
-	    'use strict';
-	    return GlyphBtn;
-	  })
-	  .factory('GlyphBtnOptions',  function() {
-	    'use strict';
-	    return GlyphBtnOptions;
-	  });
-
-/***/ },
-/* 22 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Basic GlyphBtn element wrapper
-	 * 
-	 * @requires {Element}
-	 * @requires {GlyphBtnOptions}
-	 * @augments {Element}
-	 * @param {GlyphBtnOptions} options
-	 * @returns {GlyphBtn}
-	 */
-
-	var Element = __webpack_require__(6);
-	var GlyphBtnOptions = __webpack_require__(23);
-
-	var Span = __webpack_require__(24);
-	var SpanOptions = __webpack_require__(25);
-
-	var StyleOptions = __webpack_require__(26);
-	var EventOptions = __webpack_require__(20);
-
-	function GlyphBtn(options) {
-	  'use strict';
-
-	  this._options = options ? options : new GlyphBtnOptions();
-	  this._icon_options = new SpanOptions();
-	  this._icon_style = new StyleOptions();
-	  this._icon_events = new EventOptions();
-
-	  Element.call(this, this._options);
-
-	  if(this._options.template) {
-	    this.setTemplate(this._options.template);
-	  } else if(this._options.textContent){
-	    this.setTextContent(this._options.textContent);
-	  }
-	}
-	GlyphBtn.prototype = Object.create(Element.prototype);
-	GlyphBtn.prototype.create = function(attrs) {
-	  'use strict';
-	  if(attrs.add) {
-	    this.setIconAttributes(attrs.add);
-	  }
-	  if(attrs.style) {
-	    this.setIconStyle(attrs.style);
-	  }
-	  if(attrs.events) {
-	    this.setIconEvents(attrs.events);
-	  }
-	  if(attrs.callback) {
-	    this.setScopedCallback(attrs.callback);
-	  }
-	  this._icon_options
-	    .addClass(attrs.icon_package)
-	    .addClass(attrs.icon)
-	    .setStyle(this._icon_style)
-	    .setEvents(this._icon_events);
-	  var _icon = new Span(this._icon_options);
-	  this.addChild(_icon);
-	  return this;
-	};
-	GlyphBtn.prototype.setIconAttributes = function(_attrs) {
-	  'use strict';
-	  var self = this;
-	  _attrs.forEach(function(_attr) {
-	    self._icon_options.setAttribute(_attr);
-	  });
-	};
-	GlyphBtn.prototype.setIconStyle = function(_styles) {
-	  'use strict';
-	  var self = this;
-	  _styles.forEach(function(_style) {
-	    self._icon_style.set(_style.key, _style.value);
-	  });
-	};
-	GlyphBtn.prototype.setIconEvents = function(_events) {
-	  'use strict';
-	  var self = this;
-	  _events.forEach(function(_event) {
-	     self._icon_events.set(_event.key, _event.value);
-	  });
-	};
-	GlyphBtn.prototype.setScopedCallback = function(_callback) {
-	  'use strict';
-	  var self = this;
-	  var unscoped = this._icon_events.get('onclick');
-	  var newAction = function() {
-	    if(unscoped) {
-	      unscoped();
-	    }
-	    _callback.call(self.children[0]);
-	  };
-	  this._icon_events.set('onclick', newAction);
-	};
-	GlyphBtn.prototype.setTextContent = function(content) {
-	  'use strict';
-	  this.element.textContent = content;
-	  return this;
-	};
-	GlyphBtn.prototype.setTemplate = function(content) {
-	  'use strict';
-	  this.element.innerHTML = content;
-	  return this;
-	};
-
-	module.exports = GlyphBtn;
-
-/***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Options for GlyphBtn element wrapper
-	 * 
-	 * @requires {ElementOptions}
-	 * @augments {ElementOptions}
-	 * @returns {GlyphBtnOptions}
-	 */
-
-	var ElementOptions = __webpack_require__(9);
-
-	function GlyphBtnOptions() {
-	  'use strict';
-	  ElementOptions.call(this);
-	  this.type = 'a';
-	}
-	GlyphBtnOptions.prototype = Object.create(ElementOptions.prototype);
-
-	module.exports = GlyphBtnOptions;
-
-/***/ },
-/* 24 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Basic Span element wrapper
-	 * 
-	 * @requires {Element}
-	 * @requires {SpanOptions}
-	 * @augments {Element}
-	 * @param {SpanOptions} options
-	 * @returns {Span}
-	 */
-
-	var Element = __webpack_require__(6);
-	var SpanOptions = __webpack_require__(25);
-
-	function Span(options) {
-	  'use strict';
-
-	  this._options = options ? options : new SpanOptions();
-
-	  Element.call(this, this._options);
-
-	  if(this._options.template) {
-	    this.setTemplate(this._options.template);
-	  } else if(this._options.textContent){
-	    this.setTextContent(this._options.textContent);
-	  }
-	}
-	Span.prototype = Object.create(Element.prototype);
-	Span.prototype.setTextContent = function(content) {
-	  'use strict';
-	  this.element.textContent = content;
-	  return this;
-	};
-	Span.prototype.setTemplate = function(content) {
-	  'use strict';
-	  this.element.innerHTML = content;
-	  return this;
-	};
-
-	module.exports = Span;
-
-/***/ },
-/* 25 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Options for Span element wrapper
-	 * 
-	 * @requires {ElementOptions}
-	 * @augments {ElementOptions}
-	 * @returns {SpanOptions}
-	 */
-
-	var ElementOptions = __webpack_require__(9);
-
-	function SpanOptions() {
-	  'use strict';
-	  ElementOptions.call(this);
-	  this.type = 'span';
-	}
-	SpanOptions.prototype = Object.create(ElementOptions.prototype);
-
-	module.exports = SpanOptions;
-
-/***/ },
-/* 26 */
-/***/ function(module, exports) {
-
-	/**
-	 * Style options object
-	 * 
-	 * @returns {StyleOptions}
-	 */
-
-	function StyleOptions() {
-	  'use strict';
-	}
-	StyleOptions.prototype.get = function(key) {
-	  'use strict';
-	  var style = this[key];
-	  return style;
-	};
-	StyleOptions.prototype.set = function(key, style) {
-	  'use strict';
-	  this[key] = style;
-	  return this;
-	};
-	module.exports = StyleOptions;
-
-/***/ },
-/* 27 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * ImgPkg module definition
-	 */
-
-	var Img = __webpack_require__(28);
-	var ImgOptions = __webpack_require__(29);
-
-	angular.module('ImgPkg', [])
-	  .factory('Img', function() {
-	    'use strict';
-	    return Img;
-	  })
-	  .factory('ImgOptions',  function() {
-	    'use strict';
-	    return ImgOptions;
-	  });
-
-/***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Basic Img element wrapper
-	 * 
-	 * @requires {Element}
-	 * @requires {ImgOptions}
-	 * @augments {Element}
-	 * @param {ImgOptions} options
-	 * @returns {Img}
-	 */
-
-	var Element = __webpack_require__(6);
-	var ImgOptions = __webpack_require__(29);
-
-	function Img(options) {
-	  'use strict';
-
-	  this._options = options ? options : new ImgOptions();
-
-	  Element.call(this, this._options);
-
-	  if(this._options.template) {
-	    this.setTemplate(this._options.template);
-	  } else if(this._options.textContent){
-	    this.setTextContent(this._options.textContent);
-	  }
-
-	  if(this._options.src) {
-	    this.setSrc(this._options.src);
-	  }
-	}
-	Img.prototype = Object.create(Element.prototype);
-	Img.prototype.setTextContent = function(content) {
-	  'use strict';
-	  this.element.textContent = content;
-	  return this;
-	};
-	Img.prototype.setTemplate = function(content) {
-	  'use strict';
-	  this.element.innerHTML = content;
-	  return this;
-	};
-	Img.prototype.setSrc = function(src) {
-	  'use strict';
-	  this.element.src = src;
-	  return this;
-	};
-
-	module.exports = Img;
-
-/***/ },
-/* 29 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Options for Img element wrapper
-	 * 
-	 * @requires {ElementOptions}
-	 * @augments {ElementOptions}
-	 * @returns {ImgOptions}
-	 */
-
-	var ElementOptions = __webpack_require__(9);
-
-	function ImgOptions() {
-	  'use strict';
-	  ElementOptions.call(this);
-	  this.type = 'img';
-	}
-	ImgOptions.prototype = Object.create(ElementOptions.prototype);
-
-	module.exports = ImgOptions;
-
-/***/ },
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * LiPkg module definition
-	 */
-
-	var Li = __webpack_require__(31);
-	var LiOptions = __webpack_require__(32);
-
-	angular.module('LiPkg', [])
-	  .factory('Li', function() {
-	    'use strict';
-	    return Li;
-	  })
-	  .factory('LiOptions',  function() {
-	    'use strict';
-	    return LiOptions;
-	  });
-
-/***/ },
-/* 31 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Basic Li element wrapper
-	 * 
-	 * @requires {Element}
-	 * @requires {LiOptions}
-	 * @augments {Element}
-	 * @param {LiOptions} options
-	 * @returns {Li}
-	 */
-
-	var Element = __webpack_require__(6);
-	var LiOptions = __webpack_require__(32);
-
-	function Li(options) {
-	  'use strict';
-
-	  this._options = options ? options : new LiOptions();
-
-	  Element.call(this, this._options);
-
-	  if(this._options.template) {
-	    this.setTemplate(this._options.template);
-	  } else if(this._options.textContent){
-	    this.setTextContent(this._options.textContent);
-	  }
-	}
-	Li.prototype = Object.create(Element.prototype);
-	Li.prototype.setTextContent = function(content) {
-	  'use strict';
-	  this.element.textContent = content;
-	  return this;
-	};
-	Li.prototype.setTemplate = function(content) {
-	  'use strict';
-	  this.element.innerHTML = content;
-	  return this;
-	};
-
-	module.exports = Li;
-
-/***/ },
-/* 32 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Options for Li element wrapper
-	 * 
-	 * @requires {ElementOptions}
-	 * @augments {ElementOptions}
-	 * @returns {LiOptions}
-	 */
-
-	var ElementOptions = __webpack_require__(9);
-
-	function LiOptions() {
-	  'use strict';
-	  ElementOptions.call(this);
-	  this.type = 'li';
-	}
-	LiOptions.prototype = Object.create(ElementOptions.prototype);
-
-	module.exports = LiOptions;
-
-/***/ },
-/* 33 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * LinkPkg module definition
-	 */
-
-	var Link = __webpack_require__(34);
-	var LinkOptions = __webpack_require__(35);
-
-	angular.module('LinkPkg', [])
-	  .factory('Link', function() {
-	    'use strict';
-	    return Link;
-	  })
-	  .factory('LinkOptions',  function() {
-	    'use strict';
-	    return LinkOptions;
-	  });
-
-/***/ },
-/* 34 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Basic Link element wrapper
-	 * 
-	 * @requires {Element}
-	 * @requires {LinkOptions}
-	 * @augments {Element}
-	 * @param {LinkOptions} options
-	 * @returns {Link}
-	 */
-
-	var Element = __webpack_require__(6);
-	var LinkOptions = __webpack_require__(35);
-
-	function Link(options) {
-	  'use strict';
-
-	  this._options = options ? options : new LinkOptions();
-
-	  Element.call(this, this._options);
-
-	  if(this._options.template) {
-	    this.setTemplate(this._options.template);
-	  } else if(this._options.textContent){
-	    this.setTextContent(this._options.textContent);
-	  }
-	  if(this._options.src) {
-	    this.setSrc(this._options.src);
-	  }
-	}
-	Link.prototype = Object.create(Element.prototype);
-	Link.prototype.setTextContent = function(content) {
-	  'use strict';
-	  this.element.textContent = content;
-	  return this;
-	};
-	Link.prototype.setTemplate = function(content) {
-	  'use strict';
-	  this.element.innerHTML = content;
-	  return this;
-	};
-
-	module.exports = Link;
-
-/***/ },
-/* 35 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Options for Link element wrapper
-	 * 
-	 * @requires {ElementOptions}
-	 * @augments {ElementOptions}
-	 * @returns {LinkOptions}
-	 */
-
-	var ElementOptions = __webpack_require__(9);
-
-	function LinkOptions() {
-	  'use strict';
-	  ElementOptions.call(this);
-	  this.type = 'a';
-	}
-	LinkOptions.prototype = Object.create(ElementOptions.prototype);
-
-	module.exports = LinkOptions;
-
-/***/ },
-/* 36 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * NavPkg module definition
-	 */
-
-	var Nav = __webpack_require__(37);
-	var NavOptions = __webpack_require__(38);
-
-	angular.module('NavPkg', [])
-	  .factory('Nav', function() {
-	    'use strict';
-	    return Nav;
-	  })
-	  .factory('NavOptions',  function() {
-	    'use strict';
-	    return NavOptions;
-	  });
-
-/***/ },
-/* 37 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Basic Nav element wrapper
-	 * 
-	 * @requires {Element}
-	 * @requires {NavOptions}
-	 * @augments {Element}
-	 * @param {NavOptions} options
-	 * @returns {Nav}
-	 */
-
-	var Element = __webpack_require__(6);
-	var NavOptions = __webpack_require__(38);
-
-	var Li = __webpack_require__(31);
-	var LiOptions = __webpack_require__(32);
-
-	var Link = __webpack_require__(34);
-	var LinkOptions = __webpack_require__(35);
-
-	var EventOptions = __webpack_require__(20);
-
-	function Nav(options) {
-	  'use strict';
-
-	  this._options = options ? options : new NavOptions();
-	  this._item_options = new LiOptions();
-	  this._item_link_options = new LinkOptions();
-	  this._item_events = new EventOptions();
-
-	  Element.call(this, this._options);
-
-	  if(this._options.template) {
-	    this.setTemplate(this._options.template);
-	  } else if(this._options.textContent){
-	    this.setTextContent(this._options.textContent);
-	  }
-
-	  this.create();
-	}
-	Nav.prototype = Object.create(Element.prototype);
-	Nav.prototype.create = function() {
-	  'use strict';
-	  this._item_options
-	    .setAttribute({
-	      key: 'role',
-	      value: 'navigation'
-	    });
-	  this._item_link_options
-	    .setAttribute({
-	      key: 'href',
-	      value: ''
-	    });
-	};
-	Nav.prototype.setTextContent = function(content) {
-	  'use strict';
-	  this.element.textContent = content;
-	  return this;
-	};
-	Nav.prototype.setTemplate = function(content) {
-	  'use strict';
-	  this.element.innerHTML = content;
-	  return this;
-	};
-	Nav.prototype.addItems = function(items) {
-	  'use strict';
-	  var self = this;
-	  items.forEach(function(attrs) {
-	    self.addItem(attrs);
-	  });
-	  return this;
-	};
-	Nav.prototype.addItem = function(attrs) {
-	  'use strict';
-	  var _item = this.createItem(attrs);
-	  this.addChild(_item);
-	  return this;
-	};
-	Nav.prototype.createItem = function(attrs) {
-	  'use strict';
-	  var itemOptions = this._item_options.clone();
-	  var linkOptions = this._item_link_options.clone();
-	  var linkEvents = this._item_events.clone();
-
-	  linkEvents
-	    .set('onclick', attrs.onClick || function() { alert('Nav Item clicked.'); });
-	  linkOptions
-	    .setTextContent(attrs.text || 'Unnamed')
-	    .setAttribute({
-	      key: 'ng-click',
-	      value: attrs.ngClick || ''
-	    })
-	    .setAttribute({
-	      key: 'data-index',
-	      value: this.children.length
-	    })
-	    .setEvents(linkEvents); 
-	  if(attrs.active) {
-	    itemOptions.addClass('active');
-	  }
-	  var _item = new Li(itemOptions);
-	  var _link = new Link(linkOptions);
-	  _item.addChild(_link);
-	  return _item;
-	};
-	Nav.prototype.setActive = function(item) {
-	  'use strict';
-	  var _item = this.children[item.dataset.index];
-	  this.children.forEach(function(child) {
-	    if(child._options.type !== 'li') {
-	      return;
-	    }
-	    child.removeClass('active');
-	  });
-	  _item.addClass('active');
-	};
-	module.exports = Nav;
-
-/***/ },
-/* 38 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Options for Nav element wrapper
-	 * 
-	 * @requires {ElementOptions}
-	 * @augments {ElementOptions}
-	 * @returns {NavOptions}
-	 */
-
-	var ElementOptions = __webpack_require__(9);
-
-	function NavOptions() {
-	  'use strict';
-	  ElementOptions.call(this);
-	  this.type = 'ul';
-	  this.items = [];
-	}
-	NavOptions.prototype = Object.create(ElementOptions.prototype);
-	NavOptions.prototype.addItem = function(item) {
-	  'use strict';
-	  this.items.push(item);
-	  return this;
-	};
-
-	module.exports = NavOptions;
-
-/***/ },
-/* 39 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * SpanPkg module definition
-	 */
-
-	var Span = __webpack_require__(24);
-	var SpanOptions = __webpack_require__(25);
-
-	angular.module('SpanPkg', [])
-	  .factory('Span', function() {
-	    'use strict';
-	    return Span;
-	  })
-	  .factory('SpanOptions',  function() {
-	    'use strict';
-	    return SpanOptions;
-	  });
-
-/***/ },
-/* 40 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * StylePkg module definition
-	 */
-
-	var StyleOptions = __webpack_require__(26);
-
-	angular.module('StylePkg', [])
-	  .factory('StyleOptions', function() {
-	    'use strict';
-	    return StyleOptions;
 	  });
 
 /***/ },
@@ -1985,22 +1995,408 @@
 
 /***/ },
 /* 44 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Glyph module definition
+	 */
+
+	var Glyph = __webpack_require__(45);
+
+	angular.module('GlyphPkg', [])
+	  .service('Glyph', Glyph);
+
+/***/ },
+/* 45 */
 /***/ function(module, exports) {
 
 	/**
-	 * This is where we build out the info state UI
+	 * Glyph Icon UI Component
+	 * 
+	 * @returns Glyph
 	 */
 
-	function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
+	function Glyph($injector) {
 	  'use strict';
 
 	  var self = this;
 
 	  var ElementManager = $injector.get('ElementManager');
 
-	  var Banner = $injector.get('Banner');
-	  var BannerOptions = $injector.get('BannerOptions');
-	  ElementManager.register('Banner', Banner);
+	  var GlyphBtn = $injector.get('GlyphBtn');
+	  var GlyphBtnOptions = $injector.get('GlyphBtnOptions');
+	  ElementManager.register('GlyphBtn', GlyphBtn);
+
+	  /* ****************************************
+	   * Glyph Icon
+	   **************************************** */
+	  var glyphBtnOptions = new GlyphBtnOptions();
+	  glyphBtnOptions
+	    .setAttribute({
+	      key: 'href',
+	      value: ''
+	    });
+
+	  self.component = ElementManager.construct('GlyphBtn', glyphBtnOptions);
+	  self.new = function() {
+	    return ElementManager.construct('GlyphBtn', glyphBtnOptions);
+	  };
+
+	}
+
+	module.exports = Glyph;
+
+/***/ },
+/* 46 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Panel module definition
+	 */
+
+	var Panel = __webpack_require__(47);
+	var PanelHeader = __webpack_require__(48);
+	var PanelBody = __webpack_require__(49);
+
+	angular.module('PanelPkg', [])
+	  .service('Panel', Panel)
+	  .service('PanelHeader', PanelHeader)
+	  .service('PanelBody', PanelBody);
+
+/***/ },
+/* 47 */
+/***/ function(module, exports) {
+
+	/**
+	 * Panel UI Component
+	 * 
+	 * @returns Panel
+	 */
+
+	function Panel($injector) {
+	  'use strict';
+
+	  var self = this;
+
+	  var ElementManager = $injector.get('ElementManager');
+
+	  var Div = $injector.get('Div');
+	  var DivOptions = $injector.get('DivOptions');
+	  ElementManager.register('Div', Div);
+
+	  var StyleOptions = $injector.get('StyleOptions');
+
+	  /* ****************************************
+	   * Panel Content
+	   **************************************** */
+	  var panelOptions = new DivOptions();
+	  var panelStyle = new StyleOptions();
+	  panelStyle
+	    .set('margin-left', 'auto')
+	    .set('margin-right', 'auto')
+	    .set('max-width', '510px');
+	  panelOptions
+	    .addClass('panel')
+	    .addClass('panel-default')
+	    .setStyle(panelStyle);
+
+	  self.component = ElementManager.construct('Div', panelOptions);
+
+	}
+
+	module.exports = Panel;
+
+/***/ },
+/* 48 */
+/***/ function(module, exports) {
+
+	/**
+	 * Panel Header UI Component
+	 * 
+	 * @returns PanelHeader
+	 */
+
+	function PanelHeader($injector) {
+	  'use strict';
+
+	  var self = this;
+
+	  var ElementManager = $injector.get('ElementManager');
+
+	  var Div = $injector.get('Div');
+	  var DivOptions = $injector.get('DivOptions');
+	  ElementManager.register('Div', Div);
+
+	  var StyleOptions = $injector.get('StyleOptions');
+
+	  /* ****************************************
+	   * Panel Header
+	   **************************************** */
+	  var panelHeaderOptions = new DivOptions();
+	  var panelHeaderStyle = new StyleOptions();
+	  panelHeaderStyle
+	    .set('background-color', 'white')
+	    .set('color', 'black')
+	    .set('padding-top', '3px')
+	    .set('padding-bottom', '3px');
+	  panelHeaderOptions
+	    .addClass('panel-heading')
+	    .setStyle(panelHeaderStyle);
+
+	  self.component = ElementManager.construct('Div', panelHeaderOptions);
+
+	}
+
+	module.exports = PanelHeader;
+
+/***/ },
+/* 49 */
+/***/ function(module, exports) {
+
+	/**
+	 * Panel Body UI Component
+	 * 
+	 * @returns PanelBody
+	 */
+
+	function PanelBody($injector) {
+	  'use strict';
+
+	  var self = this;
+
+	  var ElementManager = $injector.get('ElementManager');
+
+	  var Div = $injector.get('Div');
+	  var DivOptions = $injector.get('DivOptions');
+	  ElementManager.register('Div', Div);
+
+	  var StyleOptions = $injector.get('StyleOptions');
+
+	  /* ****************************************
+	   * Panel Body
+	   **************************************** */
+	  var panelBodyOptions = new DivOptions();
+	  var panelBodyStyle = new StyleOptions();
+	  panelBodyStyle
+	    .set('margin', '0')
+	    .set('padding', '0');
+	  panelBodyOptions
+	    .addClass('panel-body')
+	    .setStyle(panelBodyStyle);
+
+	  self.component = ElementManager.construct('Div', panelBodyOptions);
+
+	}
+
+	module.exports = PanelBody;
+
+/***/ },
+/* 50 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Scrollable module definition
+	 */
+
+	var Scrollable = __webpack_require__(51);
+
+	angular.module('ScrollablePkg', [])
+	  .service('Scrollable', Scrollable);
+
+/***/ },
+/* 51 */
+/***/ function(module, exports) {
+
+	/**
+	 * Scrollable Container UI Component
+	 * 
+	 * @returns Scrollable
+	 */
+
+	function Scrollable($injector) {
+	  'use strict';
+
+	  var self = this;
+
+	  var ElementManager = $injector.get('ElementManager');
+
+	  var Div = $injector.get('Div');
+	  var DivOptions = $injector.get('DivOptions');
+	  ElementManager.register('Div', Div);
+
+	  /* ****************************************
+	   * Scrollable Options
+	   **************************************** */
+	   var scrollOptions = new DivOptions();
+	  scrollOptions
+	    .addClass('scroll-content');
+
+	  self.component = ElementManager.construct('Div', scrollOptions);
+
+	}
+
+	module.exports = Scrollable;
+
+/***/ },
+/* 52 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Navigation module definition
+	 */
+
+	var NavContainer = __webpack_require__(53);
+	var NavTabs = __webpack_require__(54);
+	var NavBtns = __webpack_require__(55);
+
+	angular.module('NavigationPkg', [])
+	  .service('NavContainer', NavContainer)
+	  .service('NavTabs', NavTabs)
+	  .service('NavBtns', NavBtns);
+
+/***/ },
+/* 53 */
+/***/ function(module, exports) {
+
+	/**
+	 * Navigation Container UI Component
+	 * 
+	 * @returns NavContainer
+	 */
+
+	function NavContainer($injector) {
+	  'use strict';
+
+	  var self = this;
+
+	  var ElementManager = $injector.get('ElementManager');
+
+	  var Div = $injector.get('Div');
+	  var DivOptions = $injector.get('DivOptions');
+	  ElementManager.register('Div', Div);
+
+	  var StyleOptions = $injector.get('StyleOptions');
+
+	  /* ****************************************
+	   * Navigation Container
+	   **************************************** */
+	  var navContainerOptions = new DivOptions();
+	  var navContainerStyle = new StyleOptions();
+	  navContainerStyle
+	    .set('background-color', 'white');
+	  navContainerOptions
+	    .setStyle(navContainerStyle);
+
+	  self.component = ElementManager.construct('Div', navContainerOptions);
+
+	}
+
+	module.exports = NavContainer;
+
+/***/ },
+/* 54 */
+/***/ function(module, exports) {
+
+	/**
+	 * Navigation Tabs UI Component
+	 * 
+	 * @returns NavTabs
+	 */
+
+	function NavTabs($injector) {
+	  'use strict';
+
+	  var self = this;
+
+	  var ElementManager = $injector.get('ElementManager');
+
+	  var Nav = $injector.get('Nav');
+	  var NavOptions = $injector.get('NavOptions');
+	  ElementManager.register('Nav', Nav);
+
+	  var StyleOptions = $injector.get('StyleOptions');
+
+	  /* ****************************************
+	   * Navigation Tabs
+	   **************************************** */
+	  var navTabOptions = new NavOptions();
+	  var navTabStyle = new StyleOptions();
+	  navTabStyle
+	    .set('padding-top', '5px');
+	  navTabOptions
+	    .addClass('nav')
+	    .addClass('nav-tabs')
+	    .setStyle(navTabStyle);
+
+	  self.component = ElementManager.construct('Nav', navTabOptions);
+
+	}
+
+	module.exports = NavTabs;
+
+/***/ },
+/* 55 */
+/***/ function(module, exports) {
+
+	/**
+	 * Navigation Button Group UI Component
+	 * 
+	 * @returns NavBtns
+	 */
+
+	function NavBtns($injector) {
+	  'use strict';
+
+	  var self = this;
+
+	  var ElementManager = $injector.get('ElementManager');
+
+	  var Div = $injector.get('Div');
+	  var DivOptions = $injector.get('DivOptions');
+	  ElementManager.register('Div', Div);
+
+	  var StyleOptions = $injector.get('StyleOptions');
+
+	  /* ****************************************
+	  * Nav-Button Group
+	  ***************************************** */
+	  var navBtnGroupOptions = new DivOptions();
+	  var navBtnGroupStyle = new StyleOptions();
+	  navBtnGroupStyle
+	    .set('float', 'right')
+	    .set('padding-right', '10px');
+	  navBtnGroupOptions
+	    .addClass('btn-group')
+	    .setAttribute({
+	      key: 'role',
+	      value: 'group'
+	    })
+	    .setAttribute({
+	      key: 'aria-label',
+	      value: '...'
+	    })
+	    .setStyle(navBtnGroupStyle);
+
+	  self.component = ElementManager.construct('Div', navBtnGroupOptions);
+
+	}
+
+	module.exports = NavBtns;
+
+/***/ },
+/* 56 */
+/***/ function(module, exports) {
+
+	/**
+	 * This is where we build out the info state UI
+	 */
+
+	function Info($injector) {
+	  'use strict';
+
+	  var self = this;
+
+	  var ElementManager = $injector.get('ElementManager');
 
 	  var Div = $injector.get('Div');
 	  var DivOptions = $injector.get('DivOptions');
@@ -2014,62 +2410,22 @@
 	  var ImgOptions = $injector.get('ImgOptions');
 	  ElementManager.register('Img', Img);
 
-	  var Nav = $injector.get('Nav');
-	  var NavOptions = $injector.get('NavOptions');
-	  ElementManager.register('Nav', Nav);
-
-	  var GlyphBtn = $injector.get('GlyphBtn');
-	  var GlyphBtnOptions = $injector.get('GlyphBtnOptions');
-	  ElementManager.register('GlyphBtn', GlyphBtn);
-
 	  var StyleOptions = $injector.get('StyleOptions');
 	  var EventOptions = $injector.get('EventOptions');
 
 	  /* ****************************************
-	   * Header
+	   * Templeted Components
 	   **************************************** */
-	  var headerOptions = new BannerOptions();
-	  headerOptions
-	    .setType('header')
-	    .addClass('header')
-	    .addClass('class-top-secret')
-	    .setTextContent('TOP SECRET');
+	  var Header = $injector.get('Header');
+	  var Scrollable = $injector.get('Scrollable');
+	  var Panel = $injector.get('Panel');
+	  var PanelHeader = $injector.get('PanelHeader');
+	  var PanelBody = $injector.get('PanelBody');
+	  var NavContainer = $injector.get('NavContainer');
+	  var NavTabs = $injector.get('NavTabs');
+	  var NavBtns = $injector.get('NavBtns');
+	  var Glyph = $injector.get('Glyph');
 
-	  /* ****************************************
-	   * Scroll Content
-	   **************************************** */
-	  var scrollOptions = new DivOptions();
-	  scrollOptions
-	    .addClass('scroll-content');
-	    
-	  /* ****************************************
-	   * Panel Content
-	   **************************************** */
-	  var panelOptions = new DivOptions();
-	  var panelStyle = new StyleOptions();
-	  panelStyle
-	    .set('margin-left', 'auto')
-	    .set('margin-right', 'auto')
-	    .set('max-width', '510px');
-	  panelOptions
-	    //.addClass('scroll-content')
-	    .addClass('panel')
-	    .addClass('panel-default')
-	    .setStyle(panelStyle);
-
-	  /* ****************************************
-	   * Panel Heading
-	   **************************************** */
-	  var panelHeadingOptions = new DivOptions();
-	  var panelHeadingStyle = new StyleOptions();
-	  panelHeadingStyle
-	    .set('background-color', 'white')
-	    .set('color', 'black')
-	    .set('padding-top', '3px')
-	    .set('padding-bottom', '3px');
-	  panelHeadingOptions
-	    .addClass('panel-heading')
-	    .setStyle(panelHeadingStyle);
 	  /* ****************************************
 	   * Flag Pic
 	   **************************************** */
@@ -2123,18 +2479,6 @@
 	    .setTemplate(lastUpdatedTemplate);
 
 	  /* ****************************************
-	   * Panel Body
-	   **************************************** */
-	  var panelBodyOptions = new DivOptions();
-	  var panelBodyStyle = new StyleOptions();
-	  panelBodyStyle
-	    .set('margin', '0')
-	    .set('padding', '0');
-	  panelBodyOptions
-	    .addClass('panel-body')
-	    .setStyle(panelBodyStyle);
-
-	  /* ****************************************
 	   * Ship Pic
 	   **************************************** */
 	  var shipPicOptions = new ImgOptions();
@@ -2150,81 +2494,6 @@
 	      value: '{{track.image}}'
 	    })
 	    .setEvents(shipPicEvents);
-	  
-	  /* ****************************************
-	   * Navigation Container
-	   **************************************** */
-	  var navContainerOptions = new DivOptions();
-	  var navContainerStyle = new StyleOptions();
-	  navContainerStyle
-	    .set('background-color', 'white');
-	  navContainerOptions
-	    .setStyle(navContainerStyle);
-
-	  /* ****************************************
-	   * Navigation Tabs
-	   **************************************** */
-	  var navTabOptions = new NavOptions();
-	  var navTabStyle = new StyleOptions();
-	  navTabStyle
-	    .set('padding-top', '5px');
-	  navTabOptions
-	    .addClass('nav')
-	    .addClass('nav-tabs')
-	    .setStyle(navTabStyle);
-
-	  /* ****************************************
-	  * Nav-Button Group
-	  ***************************************** */
-	  // <div class="btn-group pad-right float-right" role="group" aria-label="..."></div>
-	  var navBtnGroupOptions = new DivOptions();
-	  var navBtnGroupStyle = new StyleOptions();
-	  navBtnGroupStyle
-	    .set('float', 'right')
-	    .set('padding-right', '10px');
-	  navBtnGroupOptions
-	    .addClass('btn-group')
-	    .setAttribute({
-	      key: 'role',
-	      value: 'group'
-	    })
-	    .setAttribute({
-	      key: 'aria-label',
-	      value: '...'
-	    })
-	    .setStyle(navBtnGroupStyle);
-
-	  /* ****************************************
-	   * Refresh Button
-	   **************************************** */
-	  var refreshBtnOptions = new GlyphBtnOptions();
-	  var refreshBtnEvents = new EventOptions();
-	  refreshBtnEvents
-	    .set('onclick', function() {
-	      console.debug('Refresh button clicked.');
-	    });
-	  refreshBtnOptions
-	    .setAttribute({
-	      key: 'href',
-	      value: ''
-	    })
-	    .setEvents(refreshBtnEvents);
-
-	  /* ****************************************
-	   * Watchlist Button
-	   **************************************** */
-	  var watchBtnOptions = new GlyphBtnOptions();
-	  var watchBtnEvents = new EventOptions();
-	  watchBtnEvents
-	    .set('onclick', function() {
-	      console.debug('Watch List toggle button clicked.');
-	    });
-	  watchBtnOptions
-	    .setAttribute({
-	      key: 'href',
-	      value: ''
-	    })
-	    .setEvents(watchBtnEvents);
 
 	  /* ****************************************
 	   * Tab Content
@@ -2249,38 +2518,33 @@
 
 	  /* ****************************************
 	   * Footer
-	   **************************************** */
-	  var footerOptions = new BannerOptions();
-	  footerOptions
-	    .setType('footer')
-	    .addClass('footer')
-	    .addClass('class-top-secret')
-	    .setTextContent('TOP SECRET');
+	   **************************************** */ 
+	  var Footer = $injector.get('Footer');
 
 	  /* ****************************************
 	   * Create the UI
 	   **************************************** */
 	  // Create the pieces
-	  this.header = ElementManager.construct('Banner', headerOptions);
-	  this.panel = ElementManager.construct('Div', panelOptions);
-	  this.panelHeader = ElementManager.construct('Div', panelHeadingOptions);
+	  this.header = Header.component;
+	  this.panel = Panel.component;
+	  this.panelHeader = PanelHeader.component;
 	  this.flag_pic = ElementManager.construct('Img', flagPicOptions);
 	  this.track_name = ElementManager.construct('Img', trackNameOptions);
 	  this.country = ElementManager.construct('Img', countryOptions);
 	  this.lastUpdated = ElementManager.construct('Span', lastUpdatedOptions);
-	  this.scroll = ElementManager.construct('Div', scrollOptions);
-	  this.panelBody = ElementManager.construct('Div', panelBodyOptions);
+	  this.scroll = Scrollable.component;
+	  this.panelBody = PanelBody.component;
 	  this.ship_pic = ElementManager.construct('Img', shipPicOptions);
-	  this.navigation = ElementManager.construct('Div', navContainerOptions);
-	  this.nav_tabs = ElementManager.construct('Nav', navTabOptions);
-	  this.nav_btns = ElementManager.construct('Div', navBtnGroupOptions);
-	  this.refresh_btn = ElementManager.construct('GlyphBtn', refreshBtnOptions);
-	  this.watch_btn = ElementManager.construct('GlyphBtn', watchBtnOptions);
+	  this.navigation = NavContainer.component;
+	  this.nav_tabs = NavTabs.component;
+	  this.nav_btns = NavBtns.component;
+	  this.refresh_btn = Glyph.new();
+	  this.watch_btn = Glyph.new();
 	  this.tab_content = ElementManager.construct('Div', tabContentOptions);
 	  this.row_one = ElementManager.construct('Div', infoRowOptions);
 	  this.row_two = ElementManager.construct('Div', infoRowOptions);
 	  this.row_three = ElementManager.construct('Div', infoRowOptions);
-	  this.footer = ElementManager.construct('Banner', footerOptions);
+	  this.footer = Footer.component;
 
 	  this.nav_tabs
 	    .addItems([
@@ -2418,7 +2682,7 @@
 	module.exports = Info;
 
 /***/ },
-/* 45 */
+/* 57 */
 /***/ function(module, exports) {
 
 	/**
@@ -2444,7 +2708,7 @@
 	module.exports = run;
 
 /***/ },
-/* 46 */
+/* 58 */
 /***/ function(module, exports) {
 
 	/**
