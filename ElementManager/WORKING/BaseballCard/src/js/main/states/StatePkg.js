@@ -17,6 +17,8 @@ require('../../Nav/NavPkg.js');
 require('../../Span/SpanPkg.js');
 require('../../Style/StylePkg.js');
 
+require('./templates/Classification/ClassificationPkg.js');
+
 var Info = require('./info/Info.js');
 
 angular.module('StatePkg', [
@@ -33,6 +35,7 @@ angular.module('StatePkg', [
   'NavPkg',
   'SpanPkg',
   'StylePkg',
+  'ClassificationPkg'
 ])
   .service('Info', [
     '$injector',

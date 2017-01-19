@@ -9,10 +9,6 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
 
   var ElementManager = $injector.get('ElementManager');
 
-  var Banner = $injector.get('Banner');
-  var BannerOptions = $injector.get('BannerOptions');
-  ElementManager.register('Banner', Banner);
-
   var Div = $injector.get('Div');
   var DivOptions = $injector.get('DivOptions');
   ElementManager.register('Div', Div);
@@ -39,12 +35,7 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
   /* ****************************************
    * Header
    **************************************** */
-  var headerOptions = new BannerOptions();
-  headerOptions
-    .setType('header')
-    .addClass('header')
-    .addClass('class-top-secret')
-    .setTextContent('TOP SECRET');
+  var Header = $injector.get('Header');
 
   /* ****************************************
    * Scroll Content
@@ -261,13 +252,8 @@ function Info($injector, $compile) {  // eslint-disable-line no-unused-vars
   /* ****************************************
    * Footer
    **************************************** */
-  var footerOptions = new BannerOptions();
-  footerOptions
-    .setType('footer')
-    .addClass('footer')
-    .addClass('class-top-secret')
-    .setTextContent('TOP SECRET');
-
+  
+  var Footer = $injector.get('Footer');
   /* ****************************************
    * Create the UI
    **************************************** */

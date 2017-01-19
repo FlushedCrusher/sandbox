@@ -48,8 +48,8 @@
 
 	__webpack_require__(1);
 
-	var run = __webpack_require__(42);
-	var InfoCtrl = __webpack_require__(43);
+	var run = __webpack_require__(45);
+	var InfoCtrl = __webpack_require__(46);
 
 	angular.module('app',
 	  [
@@ -91,7 +91,9 @@
 	__webpack_require__(39);
 	__webpack_require__(40);
 
-	var Info = __webpack_require__(41);
+	__webpack_require__(41);
+
+	var Info = __webpack_require__(44);
 
 	angular.module('StatePkg', [
 	  'AngularHelperPkg',
@@ -107,6 +109,7 @@
 	  'NavPkg',
 	  'SpanPkg',
 	  'StylePkg',
+	  'ClassificationPkg'
 	])
 	  .service('Info', [
 	    '$injector',
@@ -1893,6 +1896,95 @@
 
 /***/ },
 /* 41 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Classification module definition
+	 */
+
+	var Header = __webpack_require__(42);
+	var Footer = __webpack_require__(43);
+
+	angular.module('ClassificationPkg', [])
+	  .service('Header', Header)
+	  .service('Footer', Footer);
+
+/***/ },
+/* 42 */
+/***/ function(module, exports) {
+
+	/**
+	 * Classification Header UI Component
+	 * 
+	 * @returns Header
+	 */
+
+	function Header($injector) {
+	  'use strict';
+
+	  var self = this;
+
+	  var ElementManager = $injector.get('ElementManager');
+
+	  var Banner = $injector.get('Banner');
+	  var BannerOptions = $injector.get('BannerOptions');
+	  ElementManager.register('Banner', Banner);
+
+	  /* ****************************************
+	   * Header Options
+	   **************************************** */
+	  var headerOptions = new BannerOptions();
+	  headerOptions
+	    .setType('header')
+	    .addClass('header')
+	    .addClass('class-top-secret')
+	    .setTextContent('TOP SECRET');
+
+	  self.component = ElementManager.construct('Banner', headerOptions);
+
+	}
+
+	module.exports = Header;
+
+/***/ },
+/* 43 */
+/***/ function(module, exports) {
+
+	/**
+	 * Classification Footer UI Component
+	 * 
+	 * @returns Footer
+	 */
+
+	function Footer($injector) {
+	  'use strict';
+
+	  var self = this;
+
+	  var ElementManager = $injector.get('ElementManager');
+
+	  var Banner = $injector.get('Banner');
+	  var BannerOptions = $injector.get('BannerOptions');
+	  ElementManager.register('Banner', Banner);
+
+	  /* ****************************************
+	   * Footer Options
+	   **************************************** */
+	  var footerOptions = new BannerOptions();
+	  footerOptions
+	    .setType('footer')
+	    .addClass('footer')
+	    .addClass('class-top-secret')
+	    .setTextContent('TOP SECRET');
+
+	  self.component = ElementManager.construct('Banner', footerOptions);
+
+	}
+
+	module.exports = Footer;
+
+/***/ },
+/* 44 */
 /***/ function(module, exports) {
 
 	/**
@@ -2326,7 +2418,7 @@
 	module.exports = Info;
 
 /***/ },
-/* 42 */
+/* 45 */
 /***/ function(module, exports) {
 
 	/**
@@ -2352,7 +2444,7 @@
 	module.exports = run;
 
 /***/ },
-/* 43 */
+/* 46 */
 /***/ function(module, exports) {
 
 	/**
