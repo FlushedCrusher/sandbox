@@ -15,25 +15,9 @@ function Li(options) {
   'use strict';
 
   this._options = options ? options : new LiOptions();
-
   Element.call(this, this._options);
 
-  if(this._options.template) {
-    this.setTemplate(this._options.template);
-  } else if(this._options.textContent){
-    this.setTextContent(this._options.textContent);
-  }
 }
 Li.prototype = Object.create(Element.prototype);
-Li.prototype.setTextContent = function(content) {
-  'use strict';
-  this.element.textContent = content;
-  return this;
-};
-Li.prototype.setTemplate = function(content) {
-  'use strict';
-  this.element.innerHTML = content;
-  return this;
-};
 
 module.exports = Li;

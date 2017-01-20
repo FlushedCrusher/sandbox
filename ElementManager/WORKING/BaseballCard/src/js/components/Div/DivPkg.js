@@ -1,5 +1,8 @@
 /**
  * DivPkg module definition
+ * 
+ * @requires {Div}
+ * @requires {DivOptions}
  */
 
 var Div = require('./Div.js');

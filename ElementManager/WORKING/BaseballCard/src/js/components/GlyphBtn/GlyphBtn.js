@@ -27,11 +27,6 @@ function GlyphBtn(options) {
 
   Element.call(this, this._options);
 
-  if(this._options.template) {
-    this.setTemplate(this._options.template);
-  } else if(this._options.textContent){
-    this.setTextContent(this._options.textContent);
-  }
 }
 GlyphBtn.prototype = Object.create(Element.prototype);
 GlyphBtn.prototype.create = function(attrs) {
@@ -89,16 +84,6 @@ GlyphBtn.prototype.setScopedCallback = function(_callback) {
     _callback.call(self.children[0]);
   };
   this._icon_events.set('onclick', newAction);
-};
-GlyphBtn.prototype.setTextContent = function(content) {
-  'use strict';
-  this.element.textContent = content;
-  return this;
-};
-GlyphBtn.prototype.setTemplate = function(content) {
-  'use strict';
-  this.element.innerHTML = content;
-  return this;
 };
 
 module.exports = GlyphBtn;

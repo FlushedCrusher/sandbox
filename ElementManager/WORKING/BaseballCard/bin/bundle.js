@@ -53,6 +53,7 @@
 
 	angular.module('app',
 	  [
+	    'ui.bootstrap',
 	    'StatePkg'
 	  ])
 	  .run([
@@ -133,6 +134,9 @@
 
 	/**
 	 * BannerPkg module definition
+	 * 
+	 * @requires {Banner}
+	 * @requires {BannerOptions}
 	 */
 
 	var Banner = __webpack_require__(3);
@@ -167,26 +171,33 @@
 
 	function Banner(options) {
 	  'use strict';
-	  
+	    
+	  this._p = new Element('p');
+
 	  this._options = options ? options : new BannerOptions();
 	  Element.call(this, this._options);
-	  
-	  this._p = new Element('p');
-	  this.addElementChild(this._p.element);
 
-	  if(this._options.template) {
-	    this.setTemplate(this._options.template);
-	  } else if(this._options.textContent){
-	    this.setTextContent(this._options.textContent);
-	  }
+	  this.addElementChild(this._p.element);
 
 	}
 	Banner.prototype = Object.create(Element.prototype);
+	/*
+	 * Set the text content of the inner most element
+	 * 
+	 * @override
+	 * @returns {Banner}
+	 */
 	Banner.prototype.setTextContent = function(content) {
 	  'use strict';
 	  this._p.element.textContent = content;
 	  return this;
 	};
+	/*
+	 * Set the template of the inner most element
+	 * 
+	 * @override
+	 * @returns {Banner}
+	 */
 	Banner.prototype.setTemplate = function(content) {
 	  'use strict';
 	  this._p.element.innerHTML = content;
@@ -203,7 +214,7 @@
 	 * Dom Element wrapper
 	 * 
 	 * @requires {EventList}
-	 * @param {String} type Element type
+	 * @param {string | object} type Element type | Element options
 	 * @returns {Element}
 	 */
 
@@ -211,15 +222,28 @@
 
 	function Element(options) {
 	  'use strict';
-
+	  this.assign(options);
+	}
+	/*
+	 * Assign options to the element
+	 * 
+	 * @param {object} options
+	 * @returns {Element}
+	 */
+	Element.prototype.assign = function(options) {
+	  'use strict';
 	  this.children = [];
 	  this.element =
 	    options.type ? 
 	      document.createElement(options.type) : 
 	      typeof options === 'string' ? 
 	        document.createElement(options) :
-	        null;
-
+	        {};
+	  if(options.template) {
+	    this.setTemplate(options.template);
+	  } else if(options.textContent){
+	    this.setTextContent(options.textContent);
+	  }
 	  if(options.events) {
 	    this.setEvents(options.events);
 	  }
@@ -232,10 +256,21 @@
 	  if(options.attributes) {
 	    this.setAttributes(options.attributes);
 	  }
-	}
-	/*
-	 * Display modifiers
-	 */
+	  return this;
+	};
+
+	// Element inner content modifiers
+	Element.prototype.setTextContent = function(content) {
+	  'use strict';
+	  this.element.textContent = content;
+	  return this;
+	};
+	Element.prototype.setTemplate = function(content) {
+	  'use strict';
+	  this.element.innerHTML = content;
+	  return this;
+	};
+	// Display modifiers
 	Element.prototype.show = function() {
 	  'use strict';
 	  var elem = this.element;
@@ -254,9 +289,7 @@
 	  elem.style.display = (elem.style.display === 'none') ? 'block' : 'none';
 	  return this;
 	};
-	/*
-	 * Visibility modifiers
-	 */
+	// Visibility modifiers
 	Element.prototype.visible = function() {
 	  'use strict';
 	  var elem = this.element;
@@ -275,9 +308,7 @@
 	  elem.style.visibility = (elem.style.visibility === 'hidden') ? 'visible' : 'hidden';
 	  return this;
 	};
-	/*
-	 * Object child modifiers
-	 */
+	// Object child modifiers
 	Element.prototype.addChild = function(component) {
 	  'use strict';
 	  this.children.push(component);
@@ -288,17 +319,13 @@
 	  // TODO: remove component from children array
 	  return this;
 	};
-	/*
-	 * Append content to element
-	 */
+	//  Append content to element
 	Element.prototype.append = function(content) {
 	  'use strict';
 	  this.element.append(content);
 	  return this;
 	};
-	/*
-	 * Element Child modifiers
-	 */
+	// Element Child modifiers
 	Element.prototype.addElementChild = function(component) {
 	  'use strict';
 	  this.element.appendChild(component);
@@ -310,9 +337,7 @@
 	  elem.removeChild(component);
 	  return this;
 	};
-	/*
-	 * Element Sibling modifiers
-	 */
+	// Element Sibling modifiers
 	Element.prototype.addElementSibling = function(component) {
 	  'use strict';
 	  var elem = this.element.parentElement || this.element;
@@ -325,9 +350,7 @@
 	  elem.removeChild(component);
 	  return this;
 	};
-	/*
-	 * Event modifiers
-	 */
+	// Event modifiers
 	Element.prototype.setEvent = function(key, action) {
 	  'use strict';
 	  if(this.element[key] !== undefined && EventList.includes(key)) { 
@@ -366,9 +389,7 @@
 	  }
 	  return this;
 	};
-	/*
-	 * Style modifiers
-	 */
+	// Style modifiers
 	Element.prototype.setStyle = function(key, style) {
 	  'use strict';
 	  this.element.style[key] = style;
@@ -404,9 +425,7 @@
 	  }
 	  return this;
 	};
-	/*
-	 * Class modifiers
-	 */
+	// Class modifiers
 	Element.prototype.hasClass = function(_class) {
 	  'use strict';
 	  return this.element.classList.contains(_class);
@@ -434,9 +453,7 @@
 	  this.element.classList = "";
 	  return this;
 	};
-	/*
-	 * Abstract Attribute modifiers
-	 */
+	// Abstract Attribute modifiers
 	Element.prototype.setAttribute = function(key, value) {
 	  'use strict';
 	  this.element.setAttribute(key, value);
@@ -565,7 +582,6 @@
 	 * @augments {ElementOptions}
 	 * @returns {BannerOptions}
 	 */
-
 	var ElementOptions = __webpack_require__(7);
 
 	function BannerOptions() {
@@ -574,11 +590,22 @@
 	  this.type = 'div';
 	}
 	BannerOptions.prototype = Object.create(ElementOptions.prototype);
+	/*
+	 * Set type of element to create. Defaults to div
+	 * 
+	 * @param {string} type
+	 * @returns {BannerOptions)}
+	 */
 	BannerOptions.prototype.setType = function(type) {
 	  'use strict';
 	  this.type = type;
 	  return this;
 	};
+	/*
+	 * Get the element type to create / that has been created
+	 * 
+	 * @returns {string} type
+	 */
 	BannerOptions.prototype.getType = function() {
 	  'use strict';
 	  return this.type;
@@ -734,6 +761,9 @@
 
 	/**
 	 * DivPkg module definition
+	 * 
+	 * @requires {Div}
+	 * @requires {DivOptions}
 	 */
 
 	var Div = __webpack_require__(11);
@@ -770,26 +800,10 @@
 	  'use strict';
 
 	  this._options = options ? options : new DivOptions();
-
 	  Element.call(this, this._options);
 
-	  if(this._options.template) {
-	    this.setTemplate(this._options.template);
-	  } else if(this._options.textContent){
-	    this.setTextContent(this._options.textContent);
-	  }
 	}
 	Div.prototype = Object.create(Element.prototype);
-	Div.prototype.setTextContent = function(content) {
-	  'use strict';
-	  this.element.textContent = content;
-	  return this;
-	};
-	Div.prototype.setTemplate = function(content) {
-	  'use strict';
-	  this.element.innerHTML = content;
-	  return this;
-	};
 
 	module.exports = Div;
 
@@ -870,11 +884,6 @@
 
 	  Element.call(this, this._options);
 
-	  if(this._options.template) {
-	    this.setTemplate(this._options.template);
-	  } else if(this._options.textContent){
-	    this.setTextContent(this._options.textContent);
-	  }
 	}
 	GlyphBtn.prototype = Object.create(Element.prototype);
 	GlyphBtn.prototype.create = function(attrs) {
@@ -933,16 +942,6 @@
 	  };
 	  this._icon_events.set('onclick', newAction);
 	};
-	GlyphBtn.prototype.setTextContent = function(content) {
-	  'use strict';
-	  this.element.textContent = content;
-	  return this;
-	};
-	GlyphBtn.prototype.setTemplate = function(content) {
-	  'use strict';
-	  this.element.innerHTML = content;
-	  return this;
-	};
 
 	module.exports = GlyphBtn;
 
@@ -990,26 +989,10 @@
 	  'use strict';
 
 	  this._options = options ? options : new SpanOptions();
-
 	  Element.call(this, this._options);
 
-	  if(this._options.template) {
-	    this.setTemplate(this._options.template);
-	  } else if(this._options.textContent){
-	    this.setTextContent(this._options.textContent);
-	  }
 	}
 	Span.prototype = Object.create(Element.prototype);
-	Span.prototype.setTextContent = function(content) {
-	  'use strict';
-	  this.element.textContent = content;
-	  return this;
-	};
-	Span.prototype.setTemplate = function(content) {
-	  'use strict';
-	  this.element.innerHTML = content;
-	  return this;
-	};
 
 	module.exports = Span;
 
@@ -1157,30 +1140,13 @@
 	  'use strict';
 
 	  this._options = options ? options : new ImgOptions();
-
 	  Element.call(this, this._options);
-
-	  if(this._options.template) {
-	    this.setTemplate(this._options.template);
-	  } else if(this._options.textContent){
-	    this.setTextContent(this._options.textContent);
-	  }
 
 	  if(this._options.src) {
 	    this.setSrc(this._options.src);
 	  }
 	}
 	Img.prototype = Object.create(Element.prototype);
-	Img.prototype.setTextContent = function(content) {
-	  'use strict';
-	  this.element.textContent = content;
-	  return this;
-	};
-	Img.prototype.setTemplate = function(content) {
-	  'use strict';
-	  this.element.innerHTML = content;
-	  return this;
-	};
 	Img.prototype.setSrc = function(src) {
 	  'use strict';
 	  this.element.src = src;
@@ -1254,26 +1220,10 @@
 	  'use strict';
 
 	  this._options = options ? options : new LiOptions();
-
 	  Element.call(this, this._options);
 
-	  if(this._options.template) {
-	    this.setTemplate(this._options.template);
-	  } else if(this._options.textContent){
-	    this.setTextContent(this._options.textContent);
-	  }
 	}
 	Li.prototype = Object.create(Element.prototype);
-	Li.prototype.setTextContent = function(content) {
-	  'use strict';
-	  this.element.textContent = content;
-	  return this;
-	};
-	Li.prototype.setTemplate = function(content) {
-	  'use strict';
-	  this.element.innerHTML = content;
-	  return this;
-	};
 
 	module.exports = Li;
 
@@ -1342,29 +1292,13 @@
 	  'use strict';
 
 	  this._options = options ? options : new LinkOptions();
-
 	  Element.call(this, this._options);
 
-	  if(this._options.template) {
-	    this.setTemplate(this._options.template);
-	  } else if(this._options.textContent){
-	    this.setTextContent(this._options.textContent);
-	  }
 	  if(this._options.src) {
 	    this.setSrc(this._options.src);
 	  }
 	}
 	Link.prototype = Object.create(Element.prototype);
-	Link.prototype.setTextContent = function(content) {
-	  'use strict';
-	  this.element.textContent = content;
-	  return this;
-	};
-	Link.prototype.setTemplate = function(content) {
-	  'use strict';
-	  this.element.innerHTML = content;
-	  return this;
-	};
 
 	module.exports = Link;
 
@@ -1447,12 +1381,6 @@
 
 	  Element.call(this, this._options);
 
-	  if(this._options.template) {
-	    this.setTemplate(this._options.template);
-	  } else if(this._options.textContent){
-	    this.setTextContent(this._options.textContent);
-	  }
-
 	  this.create();
 	}
 	Nav.prototype = Object.create(Element.prototype);
@@ -1468,16 +1396,6 @@
 	      key: 'href',
 	      value: ''
 	    });
-	};
-	Nav.prototype.setTextContent = function(content) {
-	  'use strict';
-	  this.element.textContent = content;
-	  return this;
-	};
-	Nav.prototype.setTemplate = function(content) {
-	  'use strict';
-	  this.element.innerHTML = content;
-	  return this;
 	};
 	Nav.prototype.addItems = function(items) {
 	  'use strict';
@@ -1531,6 +1449,7 @@
 	  });
 	  _item.addClass('active');
 	};
+
 	module.exports = Nav;
 
 /***/ },
@@ -1605,6 +1524,8 @@
 
 	/**
 	 * AngularHelperPkg module definition
+	 * 
+	 * @requires {AngularHelper}
 	 */
 
 	var AngularHelper = __webpack_require__(35);
@@ -1621,18 +1542,30 @@
 	 * 
 	 * @returns {AngularHelper}
 	 */
-
 	function AngularHelper() {
 	  'use strict';
 	  this.scope;
 	  this.compile;
 	}
+	/*
+	 * Binds a scope and compile to the helper
+	 * 
+	 * @param {object} scope
+	 * @param {object} compile
+	 * @returns {AngularHelper}
+	 */
 	AngularHelper.prototype.bind = function(scope, compile) {
 	  'use strict';
 	  this.scope = scope;
 	  this.compile = compile;
 	  return this;
 	};
+	/*
+	 * Compile angular content to HTMLElement
+	 * 
+	 * @param {String | object} content
+	 * @returns {HTMLElement} _content
+	 */
 	AngularHelper.prototype.compileContent = function(content) {
 	  'use strict';
 	  var _content = this.compile(content)(this.scope);
@@ -1647,6 +1580,10 @@
 
 	/**
 	 * ElementPkg module definition
+	 * 
+	 * @requires {Element}
+	 * @requires {ElementFactory}
+	 * @requires {ElementManager}
 	 */
 
 	var Element = __webpack_require__(4);
@@ -1672,11 +1609,25 @@
 	  'use strict';
 	  this.registeredElements = new Map();
 	}
+	/*
+	 * Add an element to the registered element Map
+	 * 
+	 * @param {string} key
+	 * @param {object} value
+	 * @returns {ElementFactory}
+	 */
 	ElementFactory.prototype.registerElement = function(key, value) {
 	  'use strict';
 	  this.registeredElements.set(key, value);
 	  return this;
 	};
+	/*
+	 * Create a DOM Element of type mapped to key with given options
+	 * 
+	 * @param {string} key Key of Element type to create
+	 * @param {object} options Options to use when creating element
+	 * @returns {object} of type mapped to given key
+	 */
 	ElementFactory.prototype.create = function(key, options) {
 	  'use strict';
 	  var Elem = this.registeredElements.get(key);
@@ -1690,16 +1641,17 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Element manager
+	 * Element Manager
 	 * 
+	 * @requires {AngularHelper}
 	 * @requires {ElementFactory}
 	 * @requires {Guid}
 	 * @returns {ElementManager}
 	 */
 
+	var AngularHelper = __webpack_require__(35);
 	var ElementFactory = __webpack_require__(37);
 	var Guid = __webpack_require__(39);
-	var AngularHelper = __webpack_require__(35);
 
 	function ElementManager() {
 	  'use strict';
@@ -1714,9 +1666,9 @@
 	  this.dom = document.body;
 	  this.component = null;
 	}
-	/*
+	/* *************************
 	 * Configuration
-	 */
+	 ************************* */
 	ElementManager.prototype.register = function(key, value) {
 	  'use strict';
 	  this.factory.registerElement(key, value);
@@ -1727,9 +1679,9 @@
 	  this.helper.bind(scope, compile);
 	  return this;
 	};
-	/*
+	/* *************************
 	 * Workers
-	 */
+	 ************************* */
 	ElementManager.prototype.get = function(key) {
 	  'use strict';
 	  return this.elements.get(key);
@@ -1781,9 +1733,7 @@
 	    }
 	  });
 	};
-	/*
-	 * Creation
-	 */
+	// Creation operations
 	ElementManager.prototype.create = function(key, options) {
 	  'use strict';
 	  var element = this.factory.create(key, options);
@@ -1801,9 +1751,7 @@
 	  }
 	  return this;
 	};
-	/*
-	 * UI Cache Manipulators
-	 */
+	// UI Cache Manipulators
 	ElementManager.prototype.saveUI = function(name) {
 	  'use strict';
 	  var _name = name || this.guid.create();
@@ -1832,9 +1780,7 @@
 	  this.UICache = {};
 	  return this;
 	};
-	/*
-	 * Build
-	 */
+	// DOM Build operations
 	ElementManager.prototype.compile = function() {
 	  'use strict';
 	  this.helper.compileContent(this.dom);
@@ -1847,9 +1793,7 @@
 	  this.compile();
 	  return this;
 	};
-	/*
-	 * Construct
-	 */
+	// Element Constructor
 	ElementManager.prototype.construct = function(key, options) {
 	  'use strict';
 	  var element = this.factory.create(key, options);

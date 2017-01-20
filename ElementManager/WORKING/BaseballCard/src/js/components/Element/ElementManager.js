@@ -1,14 +1,15 @@
 /**
- * Element manager
+ * Element Manager
  * 
+ * @requires {AngularHelper}
  * @requires {ElementFactory}
  * @requires {Guid}
  * @returns {ElementManager}
  */
 
+var AngularHelper = require('../AngularHelper/AngularHelper.js');
 var ElementFactory = require('./ElementFactory.js');
 var Guid = require('../Guid/Guid.js');
-var AngularHelper = require('../AngularHelper/AngularHelper.js');
 
 function ElementManager() {
   'use strict';
@@ -23,9 +24,9 @@ function ElementManager() {
   this.dom = document.body;
   this.component = null;
 }
-/*
+/* *************************
  * Configuration
- */
+ ************************* */
 ElementManager.prototype.register = function(key, value) {
   'use strict';
   this.factory.registerElement(key, value);
@@ -36,9 +37,9 @@ ElementManager.prototype.bind = function(scope, compile) {
   this.helper.bind(scope, compile);
   return this;
 };
-/*
+/* *************************
  * Workers
- */
+ ************************* */
 ElementManager.prototype.get = function(key) {
   'use strict';
   return this.elements.get(key);
@@ -90,9 +91,7 @@ ElementManager.prototype._build = function(context, elementMap, add) {
     }
   });
 };
-/*
- * Creation
- */
+// Creation operations
 ElementManager.prototype.create = function(key, options) {
   'use strict';
   var element = this.factory.create(key, options);
@@ -110,9 +109,7 @@ ElementManager.prototype.nest = function (key, options, chain) {
   }
   return this;
 };
-/*
- * UI Cache Manipulators
- */
+// UI Cache Manipulators
 ElementManager.prototype.saveUI = function(name) {
   'use strict';
   var _name = name || this.guid.create();
@@ -141,9 +138,7 @@ ElementManager.prototype.clearUICache = function() {
   this.UICache = {};
   return this;
 };
-/*
- * Build
- */
+// DOM Build operations
 ElementManager.prototype.compile = function() {
   'use strict';
   this.helper.compileContent(this.dom);
@@ -156,9 +151,7 @@ ElementManager.prototype.build = function() {
   this.compile();
   return this;
 };
-/*
- * Construct
- */
+// Element Constructor
 ElementManager.prototype.construct = function(key, options) {
   'use strict';
   var element = this.factory.create(key, options);

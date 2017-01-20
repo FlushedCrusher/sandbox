@@ -1,12 +1,13 @@
 'use strict'; // eslint-disable-line strict
 
-require('./states/StatePkg.js');
+require('../states/StatePkg.js');
 
 var run = require('./run.js');
-var InfoCtrl = require('./controllers/InfoCtrl.js');
+var InfoCtrl = require('../controllers/InfoCtrl.js');
 
 angular.module('app',
   [
+    'ui.bootstrap',
     'StatePkg'
   ])
   .run([

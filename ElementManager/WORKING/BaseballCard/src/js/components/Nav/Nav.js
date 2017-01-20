@@ -29,12 +29,6 @@ function Nav(options) {
 
   Element.call(this, this._options);
 
-  if(this._options.template) {
-    this.setTemplate(this._options.template);
-  } else if(this._options.textContent){
-    this.setTextContent(this._options.textContent);
-  }
-
   this.create();
 }
 Nav.prototype = Object.create(Element.prototype);
@@ -50,16 +44,6 @@ Nav.prototype.create = function() {
       key: 'href',
       value: ''
     });
-};
-Nav.prototype.setTextContent = function(content) {
-  'use strict';
-  this.element.textContent = content;
-  return this;
-};
-Nav.prototype.setTemplate = function(content) {
-  'use strict';
-  this.element.innerHTML = content;
-  return this;
 };
 Nav.prototype.addItems = function(items) {
   'use strict';
@@ -113,4 +97,5 @@ Nav.prototype.setActive = function(item) {
   });
   _item.addClass('active');
 };
+
 module.exports = Nav;

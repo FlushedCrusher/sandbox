@@ -2,7 +2,7 @@
  * Dom Element wrapper
  * 
  * @requires {EventList}
- * @param {String} type Element type
+ * @param {string | object} type Element type | Element options
  * @returns {Element}
  */
 
@@ -10,15 +10,28 @@ var EventList = require('../Events/EventList.js');
 
 function Element(options) {
   'use strict';
-
+  this.assign(options);
+}
+/*
+ * Assign options to the element
+ * 
+ * @param {object} options
+ * @returns {Element}
+ */
+Element.prototype.assign = function(options) {
+  'use strict';
   this.children = [];
   this.element =
     options.type ? 
       document.createElement(options.type) : 
       typeof options === 'string' ? 
         document.createElement(options) :
-        null;
-
+        {};
+  if(options.template) {
+    this.setTemplate(options.template);
+  } else if(options.textContent){
+    this.setTextContent(options.textContent);
+  }
   if(options.events) {
     this.setEvents(options.events);
   }
@@ -31,10 +44,21 @@ function Element(options) {
   if(options.attributes) {
     this.setAttributes(options.attributes);
   }
-}
-/*
- * Display modifiers
- */
+  return this;
+};
+
+// Element inner content modifiers
+Element.prototype.setTextContent = function(content) {
+  'use strict';
+  this.element.textContent = content;
+  return this;
+};
+Element.prototype.setTemplate = function(content) {
+  'use strict';
+  this.element.innerHTML = content;
+  return this;
+};
+// Display modifiers
 Element.prototype.show = function() {
   'use strict';
   var elem = this.element;
@@ -53,9 +77,7 @@ Element.prototype.toggleDisplay = function() {
   elem.style.display = (elem.style.display === 'none') ? 'block' : 'none';
   return this;
 };
-/*
- * Visibility modifiers
- */
+// Visibility modifiers
 Element.prototype.visible = function() {
   'use strict';
   var elem = this.element;
@@ -74,9 +96,7 @@ Element.prototype.toggleVisibility = function() {
   elem.style.visibility = (elem.style.visibility === 'hidden') ? 'visible' : 'hidden';
   return this;
 };
-/*
- * Object child modifiers
- */
+// Object child modifiers
 Element.prototype.addChild = function(component) {
   'use strict';
   this.children.push(component);
@@ -87,17 +107,13 @@ Element.prototype.removeChild = function(component) { // eslint-disable-line no-
   // TODO: remove component from children array
   return this;
 };
-/*
- * Append content to element
- */
+//  Append content to element
 Element.prototype.append = function(content) {
   'use strict';
   this.element.append(content);
   return this;
 };
-/*
- * Element Child modifiers
- */
+// Element Child modifiers
 Element.prototype.addElementChild = function(component) {
   'use strict';
   this.element.appendChild(component);
@@ -109,9 +125,7 @@ Element.prototype.removeElementChild = function(component) {
   elem.removeChild(component);
   return this;
 };
-/*
- * Element Sibling modifiers
- */
+// Element Sibling modifiers
 Element.prototype.addElementSibling = function(component) {
   'use strict';
   var elem = this.element.parentElement || this.element;
@@ -124,9 +138,7 @@ Element.prototype.removeElementSibling = function(component) {
   elem.removeChild(component);
   return this;
 };
-/*
- * Event modifiers
- */
+// Event modifiers
 Element.prototype.setEvent = function(key, action) {
   'use strict';
   if(this.element[key] !== undefined && EventList.includes(key)) { 
@@ -165,9 +177,7 @@ Element.prototype.clearEvents = function() {
   }
   return this;
 };
-/*
- * Style modifiers
- */
+// Style modifiers
 Element.prototype.setStyle = function(key, style) {
   'use strict';
   this.element.style[key] = style;
@@ -203,9 +213,7 @@ Element.prototype.clearStyles = function() {
   }
   return this;
 };
-/*
- * Class modifiers
- */
+// Class modifiers
 Element.prototype.hasClass = function(_class) {
   'use strict';
   return this.element.classList.contains(_class);
@@ -233,9 +241,7 @@ Element.prototype.clearClasses = function() {
   this.element.classList = "";
   return this;
 };
-/*
- * Abstract Attribute modifiers
- */
+// Abstract Attribute modifiers
 Element.prototype.setAttribute = function(key, value) {
   'use strict';
   this.element.setAttribute(key, value);

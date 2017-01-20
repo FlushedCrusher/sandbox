@@ -1,5 +1,8 @@
 /**
  * BannerPkg module definition
+ * 
+ * @requires {Banner}
+ * @requires {BannerOptions}
  */
 
 var Banner = require('./Banner.js');

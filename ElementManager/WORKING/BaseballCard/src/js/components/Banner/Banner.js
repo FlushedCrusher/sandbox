@@ -13,26 +13,33 @@ var BannerOptions = require('./BannerOptions.js');
 
 function Banner(options) {
   'use strict';
-  
+    
+  this._p = new Element('p');
+
   this._options = options ? options : new BannerOptions();
   Element.call(this, this._options);
-  
-  this._p = new Element('p');
-  this.addElementChild(this._p.element);
 
-  if(this._options.template) {
-    this.setTemplate(this._options.template);
-  } else if(this._options.textContent){
-    this.setTextContent(this._options.textContent);
-  }
+  this.addElementChild(this._p.element);
 
 }
 Banner.prototype = Object.create(Element.prototype);
+/*
+ * Set the text content of the inner most element
+ * 
+ * @override
+ * @returns {Banner}
+ */
 Banner.prototype.setTextContent = function(content) {
   'use strict';
   this._p.element.textContent = content;
   return this;
 };
+/*
+ * Set the template of the inner most element
+ * 
+ * @override
+ * @returns {Banner}
+ */
 Banner.prototype.setTemplate = function(content) {
   'use strict';
   this._p.element.innerHTML = content;

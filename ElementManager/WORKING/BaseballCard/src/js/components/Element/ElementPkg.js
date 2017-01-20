@@ -1,5 +1,9 @@
 /**
  * ElementPkg module definition
+ * 
+ * @requires {Element}
+ * @requires {ElementFactory}
+ * @requires {ElementManager}
  */
 
 var Element = require('./Element.js');

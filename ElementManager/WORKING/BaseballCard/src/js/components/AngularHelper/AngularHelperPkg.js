@@ -1,5 +1,7 @@
 /**
  * AngularHelperPkg module definition
+ * 
+ * @requires {AngularHelper}
  */
 
 var AngularHelper = require('./AngularHelper.js');
