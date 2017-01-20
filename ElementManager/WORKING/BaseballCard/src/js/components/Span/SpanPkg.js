@@ -1,5 +1,8 @@
 /**
  * SpanPkg module definition
+ * 
+ * @requires {Span}
+ * @requires {SpanOptions}
  */
 
 var Span = require('./Span.js');

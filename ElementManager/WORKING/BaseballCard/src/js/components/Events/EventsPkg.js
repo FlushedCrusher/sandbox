@@ -1,5 +1,7 @@
 /**
  * EventsPkg module definition
+ * 
+ * @requires {EventOptions}
  */
 
 var EventOptions = require('./EventOptions.js');

@@ -1,5 +1,7 @@
 /**
  * StylePkg module definition
+ * 
+ * @requires {StyleOptions}
  */
 
 var StyleOptions = require('./StyleOptions.js');

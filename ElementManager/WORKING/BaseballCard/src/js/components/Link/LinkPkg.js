@@ -1,5 +1,8 @@
 /**
  * LinkPkg module definition
+ * 
+ * @requires {Link}
+ * @requires {LinkOptions}
  */
 
 var Link = require('./Link.js');

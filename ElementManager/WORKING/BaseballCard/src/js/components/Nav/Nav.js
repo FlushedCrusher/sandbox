@@ -3,6 +3,11 @@
  * 
  * @requires {Element}
  * @requires {NavOptions}
+ * @requires {Li}
+ * @requires {LiOptions}
+ * @requires {Link}
+ * @requires {LinkOptions}
+ * @requires {EventOptions}
  * @augments {Element}
  * @param {NavOptions} options
  * @returns {Nav}

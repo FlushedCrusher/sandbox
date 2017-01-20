@@ -836,6 +836,9 @@
 
 	/**
 	 * GlyphBtnPkg module definition
+	 * 
+	 * @requires {GlyphBtn}
+	 * @requires {GlyphBtnOptions}
 	 */
 
 	var GlyphBtn = __webpack_require__(14);
@@ -860,6 +863,10 @@
 	 * 
 	 * @requires {Element}
 	 * @requires {GlyphBtnOptions}
+	 * @requires {Span}
+	 * @requires {SpanOptions}
+	 * @requires {StyleOptions}
+	 * @requires {EventOptions}
 	 * @augments {Element}
 	 * @param {GlyphBtnOptions} options
 	 * @returns {GlyphBtn}
@@ -1104,6 +1111,9 @@
 
 	/**
 	 * ImgPkg module definition
+	 * 
+	 * @requires {Img}
+	 * @requires {ImgOptions}
 	 */
 
 	var Img = __webpack_require__(21);
@@ -1184,6 +1194,9 @@
 
 	/**
 	 * LiPkg module definition
+	 * 
+	 * @requires {Li}
+	 * @requires {LiOptions}
 	 */
 
 	var Li = __webpack_require__(24);
@@ -1256,6 +1269,9 @@
 
 	/**
 	 * LinkPkg module definition
+	 * 
+	 * @requires {Link}
+	 * @requires {LinkOptions}
 	 */
 
 	var Link = __webpack_require__(27);
@@ -1331,6 +1347,9 @@
 
 	/**
 	 * NavPkg module definition
+	 * 
+	 * @requires {Nav}
+	 * @requires {NavOptions}
 	 */
 
 	var Nav = __webpack_require__(30);
@@ -1355,6 +1374,11 @@
 	 * 
 	 * @requires {Element}
 	 * @requires {NavOptions}
+	 * @requires {Li}
+	 * @requires {LiOptions}
+	 * @requires {Link}
+	 * @requires {LinkOptions}
+	 * @requires {EventOptions}
 	 * @augments {Element}
 	 * @param {NavOptions} options
 	 * @returns {Nav}
@@ -1487,6 +1511,9 @@
 
 	/**
 	 * SpanPkg module definition
+	 * 
+	 * @requires {Span}
+	 * @requires {SpanOptions}
 	 */
 
 	var Span = __webpack_require__(16);
@@ -1508,6 +1535,8 @@
 
 	/**
 	 * StylePkg module definition
+	 * 
+	 * @requires {StyleOptions}
 	 */
 
 	var StyleOptions = __webpack_require__(18);
@@ -1816,6 +1845,11 @@
 	  'use strict';
 	  this.hash = new Map();
 	}
+	/*
+	 * Generate a unique guid string
+	 * 
+	 * @returns {string} guid
+	 */
 	Guid.prototype.create = function() {
 	  'use strict';
 	  var guid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -1838,6 +1872,8 @@
 
 	/**
 	 * EventsPkg module definition
+	 * 
+	 * @requires {EventOptions}
 	 */
 
 	var EventOptions = __webpack_require__(19);
@@ -2670,6 +2706,10 @@
 	  var Config = $injector.get('Config');
 	  var CONST = Config.baseballcard.constants;
 
+	  ElementManager
+	    .setUI('info')
+	    .build();
+
 	  $scope.track = {};
 
 	  if(Config.baseballcard.constants.FAKEDATA) {
@@ -2685,10 +2725,6 @@
 	    $scope.track.location = CONST.FAKE.LOCATION; 
 	    $scope.track.time_delay = 'Calculating time delay...';
 	  }
-	  
-	  ElementManager
-	    .setUI('info')
-	    .build();
 
 	}
 

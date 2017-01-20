@@ -1,5 +1,8 @@
 /**
  * LiPkg module definition
+ * 
+ * @requires {Li}
+ * @requires {LiOptions}
  */
 
 var Li = require('./Li.js');

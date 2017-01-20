@@ -8,6 +8,11 @@ function Guid() {
   'use strict';
   this.hash = new Map();
 }
+/*
+ * Generate a unique guid string
+ * 
+ * @returns {string} guid
+ */
 Guid.prototype.create = function() {
   'use strict';
   var guid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {

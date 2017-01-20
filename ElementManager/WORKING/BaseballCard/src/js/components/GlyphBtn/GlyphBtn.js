@@ -3,6 +3,10 @@
  * 
  * @requires {Element}
  * @requires {GlyphBtnOptions}
+ * @requires {Span}
+ * @requires {SpanOptions}
+ * @requires {StyleOptions}
+ * @requires {EventOptions}
  * @augments {Element}
  * @param {GlyphBtnOptions} options
  * @returns {GlyphBtn}

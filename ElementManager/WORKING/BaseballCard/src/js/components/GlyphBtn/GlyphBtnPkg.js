@@ -1,5 +1,8 @@
 /**
  * GlyphBtnPkg module definition
+ * 
+ * @requires {GlyphBtn}
+ * @requires {GlyphBtnOptions}
  */
 
 var GlyphBtn = require('./GlyphBtn.js');

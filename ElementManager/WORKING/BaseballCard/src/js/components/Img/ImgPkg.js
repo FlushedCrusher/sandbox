@@ -1,5 +1,8 @@
 /**
  * ImgPkg module definition
+ * 
+ * @requires {Img}
+ * @requires {ImgOptions}
  */
 
 var Img = require('./Img.js');

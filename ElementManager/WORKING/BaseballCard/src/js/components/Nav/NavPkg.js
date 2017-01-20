@@ -1,5 +1,8 @@
 /**
  * NavPkg module definition
+ * 
+ * @requires {Nav}
+ * @requires {NavOptions}
  */
 
 var Nav = require('./Nav.js');

@@ -13,6 +13,10 @@ function InfoCtrl($injector, $compile, $scope) {
   var Config = $injector.get('Config');
   var CONST = Config.baseballcard.constants;
 
+  ElementManager
+    .setUI('info')
+    .build();
+
   $scope.track = {};
 
   if(Config.baseballcard.constants.FAKEDATA) {
@@ -28,10 +32,6 @@ function InfoCtrl($injector, $compile, $scope) {
     $scope.track.location = CONST.FAKE.LOCATION; 
     $scope.track.time_delay = 'Calculating time delay...';
   }
-  
-  ElementManager
-    .setUI('info')
-    .build();
 
 }
 
