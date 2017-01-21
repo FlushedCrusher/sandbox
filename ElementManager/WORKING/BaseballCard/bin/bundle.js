@@ -48,8 +48,8 @@
 
 	__webpack_require__(1);
 
-	var run = __webpack_require__(57);
-	var InfoCtrl = __webpack_require__(58);
+	var run = __webpack_require__(60);
+	var InfoCtrl = __webpack_require__(61);
 
 	angular.module('app',
 	  [
@@ -88,18 +88,19 @@
 	__webpack_require__(29);
 	__webpack_require__(32);
 	__webpack_require__(33);
-
 	__webpack_require__(34);
-	__webpack_require__(36);
-	__webpack_require__(40);
 
-	__webpack_require__(41);
+	__webpack_require__(37);
+	__webpack_require__(39);
+	__webpack_require__(43);
+
 	__webpack_require__(44);
-	__webpack_require__(46);
-	__webpack_require__(50);
-	__webpack_require__(52);
+	__webpack_require__(47);
+	__webpack_require__(49);
+	__webpack_require__(53);
+	__webpack_require__(55);
 
-	var Info = __webpack_require__(56);
+	var Info = __webpack_require__(59);
 
 	angular.module('StatePkg', [
 	  'BannerPkg',
@@ -112,6 +113,7 @@
 	  'NavPkg',
 	  'SpanPkg',
 	  'StylePkg',
+	  'TablePkg',
 
 	  'AngularHelperPkg',
 	  'ElementPkg',
@@ -258,7 +260,6 @@
 	  }
 	  return this;
 	};
-
 	// Element inner content modifiers
 	Element.prototype.setTextContent = function(content) {
 	  'use strict';
@@ -317,6 +318,11 @@
 	Element.prototype.removeChild = function(component) { // eslint-disable-line no-unused-vars
 	  'use strict';
 	  // TODO: remove component from children array
+	  return this;
+	};
+	Element.prototype.addFirstChild = function(component) {
+	  'use strict';
+	  this.children.unshift(component);
 	  return this;
 	};
 	//  Append content to element
@@ -590,26 +596,6 @@
 	  this.type = 'div';
 	}
 	BannerOptions.prototype = Object.create(ElementOptions.prototype);
-	/*
-	 * Set type of element to create. Defaults to div
-	 * 
-	 * @param {string} type
-	 * @returns {BannerOptions)}
-	 */
-	BannerOptions.prototype.setType = function(type) {
-	  'use strict';
-	  this.type = type;
-	  return this;
-	};
-	/*
-	 * Get the element type to create / that has been created
-	 * 
-	 * @returns {string} type
-	 */
-	BannerOptions.prototype.getType = function() {
-	  'use strict';
-	  return this.type;
-	};
 
 	module.exports = BannerOptions;
 
@@ -625,6 +611,7 @@
 
 	function ElementOptions() {
 	  'use strict';
+	  this.type = null;
 	  this.textContent = null;
 	  this.template = null;
 	  this.events = null;
@@ -632,6 +619,15 @@
 	  this.attributes = [];
 	  this.classList = [];
 	}
+	ElementOptions.prototype.setType = function(type) {
+	  'use strict';
+	  this.type = type;
+	  return this;
+	};
+	ElementOptions.prototype.getType = function() {
+	  'use strict';
+	  return this.type;
+	};
 	ElementOptions.prototype.getTextContent = function() {
 	  'use strict';
 	  return this.textContent;
@@ -1552,18 +1548,204 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
+	 * TablePkg module definition
+	 * 
+	 * @requires {Table}
+	 * @requires {TableOptions}
+	 */
+
+	var Table = __webpack_require__(35);
+	var TableOptions = __webpack_require__(36);
+
+	angular.module('TablePkg', [])
+	  .factory('Table', function() {
+	    'use strict';
+	    return Table;
+	  })
+	  .factory('TableOptions',  function() {
+	    'use strict';
+	    return TableOptions;
+	  });
+
+/***/ },
+/* 35 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// <table class="table collapsable close-fit-table row-table table-no-border">
+	//   <tbody>
+	//     <tr>
+	//       <td colspan="4">
+	//         <i>Last Contact</i>
+	//       </td>
+	//     </tr>
+	//     <tr>
+	//       <td>
+	//         <label for="home_port">Home Port</label>
+	//         <div class="dynamic-color">
+	//           <p id="home_port" name="home_port" class="ng-binding" style="color: black;">
+	//             Corellia
+	//           </p>
+	//         </div>
+	//       </td>
+	//     </tr>
+	//   </tbody>
+	// </table>
+
+	/**
+	 * Basic Table element wrapper
+	 * 
+	 * @requires {Element}
+	 * @requires {ElementOptions}
+	 * @requires {TableOptions}
+	 * @augments {Element}
+	 * @param {TableOptions} options
+	 * @returns {Table}
+	 */
+
+	var Element = __webpack_require__(4);
+	var ElementOptions = __webpack_require__(7);
+	var TableOptions = __webpack_require__(36);
+
+	function Table(options) {
+	  'use strict';
+
+	  this._options = options ? options : new TableOptions();
+	  Element.call(this, this._options);
+
+	  this.create(this._options);
+
+	}
+	Table.prototype = Object.create(Element.prototype);
+	Table.prototype.create = function(options) {
+	  'use strict';
+	  if(options.rows && options.columns) {
+	    this.body = this._createTable(options.rows, options.columns);
+	    this.addChild(this.body);
+	  } else {
+	    this.body = this._createBody();
+	  }
+	  if(options.header && options.columns) {
+	    this.header = this._createHeader(options.header, options.columns);
+	    this.body.addFirstChild(this.header);
+	  }
+	  return this;
+	};
+	Table.prototype._createTable = function(rows, columns) {
+	  'use strict';
+	  var body = this._createBody();
+	  for(var i = 0; i < rows; i++) {
+	    var row = this._createRow();
+	    for(var j = 0; j < columns; j++ ) {
+	      var cell = this._createCell();
+	      row.addChild(cell);
+	    }
+	    body.addChild(row);
+	  }
+	  return body;
+	};
+	Table.prototype._createHeader = function(text, span) {
+	  'use strict';
+	  var header = this._createRow();
+	  var headerCellOptions = new ElementOptions();
+	  headerCellOptions
+	    .setAttribute({
+	      key: 'colspan',
+	      value: span
+	    })
+	    .setType('td')
+	    .setTextContent(text);
+	  var headerCell = this._createCell(headerCellOptions);
+	  header.addChild(headerCell);
+	  return header;
+	};
+	Table.prototype._createBody = function(_options) {
+	  'use strict';
+	  var body = _options ? new Element(_options) : new Element('tbody');
+	  return body;
+	};
+	Table.prototype._createRow = function(_options) {
+	  'use strict';
+	  var row = _options ? new Element(_options) : new Element('tr');
+	  return row;
+	};
+	Table.prototype._createCell = function(_options) {
+	  'use strict';
+	  var cell = _options ? new Element(_options) : new Element('td');
+	  return cell;
+	};
+
+	module.exports = Table;
+
+/***/ },
+/* 36 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Options for Table element wrapper
+	 * 
+	 * @requires {ElementOptions}
+	 * @augments {ElementOptions}
+	 * @returns {TableOptions}
+	 */
+
+	var ElementOptions = __webpack_require__(7);
+
+	function TableOptions() {
+	  'use strict';
+	  ElementOptions.call(this);
+	  this.type = 'table';
+	  this.rows = 0;
+	  this.columns = 0;
+	  this.header = null;
+	}
+	TableOptions.prototype = Object.create(ElementOptions.prototype);
+	TableOptions.prototype.setRows = function(rows) {
+	  'use strict';
+	  this.rows = rows;
+	  return this;
+	};
+	TableOptions.prototype.getRows = function() {
+	  'use strict';
+	  return this.rows;
+	};
+	TableOptions.prototype.setColumns = function(columns) {
+	  'use strict';
+	  this.columns = columns;
+	  return this;
+	};
+	TableOptions.prototype.getColumns = function() {
+	  'use strict';
+	  return this.columns;
+	};
+	TableOptions.prototype.setHeader = function(header) {
+	  'use strict';
+	  this.header = header;
+	  return this;
+	};
+	TableOptions.prototype.getHeader = function() {
+	  'use strict';
+	  return this.header;
+	};
+
+	module.exports = TableOptions;
+
+/***/ },
+/* 37 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
 	 * AngularHelperPkg module definition
 	 * 
 	 * @requires {AngularHelper}
 	 */
 
-	var AngularHelper = __webpack_require__(35);
+	var AngularHelper = __webpack_require__(38);
 
 	angular.module('AngularHelperPkg', [])
 	  .service('AngularHelper',  AngularHelper);
 
 /***/ },
-/* 35 */
+/* 38 */
 /***/ function(module, exports) {
 
 	/**
@@ -1604,7 +1786,7 @@
 	module.exports = AngularHelper;
 
 /***/ },
-/* 36 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1616,8 +1798,8 @@
 	 */
 
 	var Element = __webpack_require__(4);
-	var ElementFactory = __webpack_require__(37);
-	var ElementManager = __webpack_require__(38);
+	var ElementFactory = __webpack_require__(40);
+	var ElementManager = __webpack_require__(41);
 
 	angular.module('ElementPkg', [])
 	  .factory('Element', Element)
@@ -1625,7 +1807,7 @@
 	  .service('ElementFactory', ElementFactory);
 
 /***/ },
-/* 37 */
+/* 40 */
 /***/ function(module, exports) {
 
 	/**
@@ -1666,7 +1848,7 @@
 	module.exports = ElementFactory;
 
 /***/ },
-/* 38 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1678,9 +1860,9 @@
 	 * @returns {ElementManager}
 	 */
 
-	var AngularHelper = __webpack_require__(35);
-	var ElementFactory = __webpack_require__(37);
-	var Guid = __webpack_require__(39);
+	var AngularHelper = __webpack_require__(38);
+	var ElementFactory = __webpack_require__(40);
+	var Guid = __webpack_require__(42);
 
 	function ElementManager() {
 	  'use strict';
@@ -1832,7 +2014,7 @@
 	module.exports = ElementManager;
 
 /***/ },
-/* 39 */
+/* 42 */
 /***/ function(module, exports) {
 
 	/**
@@ -1867,7 +2049,7 @@
 	module.exports = Guid;
 
 /***/ },
-/* 40 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1885,22 +2067,22 @@
 	  });
 
 /***/ },
-/* 41 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Classification module definition
 	 */
 
-	var Header = __webpack_require__(42);
-	var Footer = __webpack_require__(43);
+	var Header = __webpack_require__(45);
+	var Footer = __webpack_require__(46);
 
 	angular.module('ClassificationPkg', [])
 	  .service('Header', Header)
 	  .service('Footer', Footer);
 
 /***/ },
-/* 42 */
+/* 45 */
 /***/ function(module, exports) {
 
 	/**
@@ -1931,13 +2113,15 @@
 	    .setTextContent('TOP SECRET');
 
 	  self.component = ElementManager.construct('Banner', headerOptions);
-
+	  self.new = function() {
+	    return ElementManager.construct('Banner', headerOptions);
+	  };
 	}
 
 	module.exports = Header;
 
 /***/ },
-/* 43 */
+/* 46 */
 /***/ function(module, exports) {
 
 	/**
@@ -1968,26 +2152,28 @@
 	    .setTextContent('TOP SECRET');
 
 	  self.component = ElementManager.construct('Banner', footerOptions);
-
+	  self.new = function() {
+	    return ElementManager.construct('Banner', footerOptions);
+	  };
 	}
 
 	module.exports = Footer;
 
 /***/ },
-/* 44 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Glyph module definition
 	 */
 
-	var Glyph = __webpack_require__(45);
+	var Glyph = __webpack_require__(48);
 
 	angular.module('GlyphPkg', [])
 	  .service('Glyph', Glyph);
 
 /***/ },
-/* 45 */
+/* 48 */
 /***/ function(module, exports) {
 
 	/**
@@ -2027,16 +2213,16 @@
 	module.exports = Glyph;
 
 /***/ },
-/* 46 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Panel module definition
 	 */
 
-	var Panel = __webpack_require__(47);
-	var PanelHeader = __webpack_require__(48);
-	var PanelBody = __webpack_require__(49);
+	var Panel = __webpack_require__(50);
+	var PanelHeader = __webpack_require__(51);
+	var PanelBody = __webpack_require__(52);
 
 	angular.module('PanelPkg', [])
 	  .service('Panel', Panel)
@@ -2044,7 +2230,7 @@
 	  .service('PanelBody', PanelBody);
 
 /***/ },
-/* 47 */
+/* 50 */
 /***/ function(module, exports) {
 
 	/**
@@ -2081,13 +2267,15 @@
 	    .setStyle(panelStyle);
 
 	  self.component = ElementManager.construct('Div', panelOptions);
-
+	  self.new = function() {
+	    return ElementManager.construct('Div', panelOptions);
+	  };
 	}
 
 	module.exports = Panel;
 
 /***/ },
-/* 48 */
+/* 51 */
 /***/ function(module, exports) {
 
 	/**
@@ -2124,13 +2312,15 @@
 	    .setStyle(panelHeaderStyle);
 
 	  self.component = ElementManager.construct('Div', panelHeaderOptions);
-
+	  self.new = function() {
+	    return ElementManager.construct('Div', panelHeaderOptions);
+	  };
 	}
 
 	module.exports = PanelHeader;
 
 /***/ },
-/* 49 */
+/* 52 */
 /***/ function(module, exports) {
 
 	/**
@@ -2165,26 +2355,28 @@
 	    .setStyle(panelBodyStyle);
 
 	  self.component = ElementManager.construct('Div', panelBodyOptions);
-
+	  self.new = function() {
+	    return ElementManager.construct('Div', panelBodyOptions);
+	  };
 	}
 
 	module.exports = PanelBody;
 
 /***/ },
-/* 50 */
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Scrollable module definition
 	 */
 
-	var Scrollable = __webpack_require__(51);
+	var Scrollable = __webpack_require__(54);
 
 	angular.module('ScrollablePkg', [])
 	  .service('Scrollable', Scrollable);
 
 /***/ },
-/* 51 */
+/* 54 */
 /***/ function(module, exports) {
 
 	/**
@@ -2212,22 +2404,24 @@
 	    .addClass('scroll-content');
 
 	  self.component = ElementManager.construct('Div', scrollOptions);
-
+	  self.new = function() {
+	    return ElementManager.construct('Div', scrollOptions);
+	  };
 	}
 
 	module.exports = Scrollable;
 
 /***/ },
-/* 52 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Navigation module definition
 	 */
 
-	var NavContainer = __webpack_require__(53);
-	var NavTabs = __webpack_require__(54);
-	var NavBtns = __webpack_require__(55);
+	var NavContainer = __webpack_require__(56);
+	var NavTabs = __webpack_require__(57);
+	var NavBtns = __webpack_require__(58);
 
 	angular.module('NavigationPkg', [])
 	  .service('NavContainer', NavContainer)
@@ -2235,7 +2429,7 @@
 	  .service('NavBtns', NavBtns);
 
 /***/ },
-/* 53 */
+/* 56 */
 /***/ function(module, exports) {
 
 	/**
@@ -2268,13 +2462,15 @@
 	    .setStyle(navContainerStyle);
 
 	  self.component = ElementManager.construct('Div', navContainerOptions);
-
+	  self.new = function() {
+	    return ElementManager.construct('Div', navContainerOptions);
+	  };
 	}
 
 	module.exports = NavContainer;
 
 /***/ },
-/* 54 */
+/* 57 */
 /***/ function(module, exports) {
 
 	/**
@@ -2309,13 +2505,15 @@
 	    .setStyle(navTabStyle);
 
 	  self.component = ElementManager.construct('Nav', navTabOptions);
-
+	  self.new = function() {
+	    return ElementManager.construct('Nav', navTabOptions);
+	  };
 	}
 
 	module.exports = NavTabs;
 
 /***/ },
-/* 55 */
+/* 58 */
 /***/ function(module, exports) {
 
 	/**
@@ -2358,13 +2556,15 @@
 	    .setStyle(navBtnGroupStyle);
 
 	  self.component = ElementManager.construct('Div', navBtnGroupOptions);
-
+	  self.new = function() {
+	    return ElementManager.construct('Div', navBtnGroupOptions);
+	  };
 	}
 
 	module.exports = NavBtns;
 
 /***/ },
-/* 56 */
+/* 59 */
 /***/ function(module, exports) {
 
 	/**
@@ -2389,6 +2589,10 @@
 	  var Img = $injector.get('Img');
 	  var ImgOptions = $injector.get('ImgOptions');
 	  ElementManager.register('Img', Img);
+
+	  var Table = $injector.get('Table');
+	  var TableOptions = $injector.get('TableOptions');
+	  ElementManager.register('Table', Table);
 
 	  var StyleOptions = $injector.get('StyleOptions');
 	  var EventOptions = $injector.get('EventOptions');
@@ -2497,6 +2701,33 @@
 	    .setStyle(infoRowStyle);
 
 	  /* ****************************************
+	   * Row Tables
+	   **************************************** */
+	  var tableOneOptions = new TableOptions();
+	  var tableTwoOptions = new TableOptions();
+	  var tableThreeOptions = new TableOptions();
+	  var tableStyle = new StyleOptions();
+	  tableStyle
+	    .set('margin', 0)
+	    .set('padding', '2.5px 5px')
+	    .set('table-layout', 'fixed');
+	  tableOneOptions
+	    .setHeader('Row One')
+	    .setColumns(4)
+	    .setRows(3)
+	    .setStyle(tableStyle);
+	  tableTwoOptions
+	    .setHeader('Row Two')
+	    .setColumns(4)
+	    .setRows(3)
+	    .setStyle(tableStyle);
+	  tableThreeOptions
+	    .setHeader('Row Three')
+	    .setColumns(4)
+	    .setRows(3)
+	    .setStyle(tableStyle);
+
+	  /* ****************************************
 	   * Footer
 	   **************************************** */ 
 	  var Footer = $injector.get('Footer');
@@ -2505,26 +2736,39 @@
 	   * Create the UI
 	   **************************************** */
 	  // Create the pieces
-	  this.header = Header.component;
-	  this.panel = Panel.component;
-	  this.panelHeader = PanelHeader.component;
+	  this.header = Header.new();
+	  this.panel = Panel.new();
+	  this.panelHeader = PanelHeader.new();
 	  this.flag_pic = ElementManager.construct('Img', flagPicOptions);
 	  this.track_name = ElementManager.construct('Img', trackNameOptions);
 	  this.country = ElementManager.construct('Img', countryOptions);
 	  this.lastUpdated = ElementManager.construct('Span', lastUpdatedOptions);
-	  this.scroll = Scrollable.component;
-	  this.panelBody = PanelBody.component;
+	  this.scroll = Scrollable.new();
+	  this.panelBody = PanelBody.new();
 	  this.ship_pic = ElementManager.construct('Img', shipPicOptions);
-	  this.navigation = NavContainer.component;
-	  this.nav_tabs = NavTabs.component;
-	  this.nav_btns = NavBtns.component;
+	  this.navigation = NavContainer.new();
+	  this.nav_tabs = NavTabs.new();
+	  this.nav_btns = NavBtns.new();
 	  this.refresh_btn = Glyph.new();
 	  this.watch_btn = Glyph.new();
 	  this.tab_content = ElementManager.construct('Div', tabContentOptions);
+
 	  this.row_one = ElementManager.construct('Div', infoRowOptions);
+	  this.row_one_panel = Panel.new();
+	  this.row_one_panelBody = PanelBody.new();
+	  this.table_one = ElementManager.construct('Table', tableOneOptions);
+
 	  this.row_two = ElementManager.construct('Div', infoRowOptions);
+	  this.row_two_panel = Panel.new();
+	  this.row_two_panelBody = PanelBody.new();
+	  this.table_two = ElementManager.construct('Table', tableTwoOptions);
+
 	  this.row_three = ElementManager.construct('Div', infoRowOptions);
-	  this.footer = Footer.component;
+	  this.row_three_panel = Panel.new();
+	  this.row_three_panelBody = PanelBody.new();
+	  this.table_three = ElementManager.construct('Table', tableThreeOptions);
+
+	  this.footer = Footer.new();
 
 	  this.nav_tabs
 	    .addItems([
@@ -2640,6 +2884,27 @@
 	  this.navigation
 	    .addChild(this.nav_tabs);
 
+	  this.row_one_panelBody
+	    .addChild(this.table_one);
+	  this.row_two_panelBody
+	    .addChild(this.table_two);
+	  this.row_three_panelBody
+	    .addChild(this.table_three);
+
+	  this.row_one_panel
+	    .addChild(this.row_one_panelBody);
+	  this.row_two_panel
+	    .addChild(this.row_two_panelBody);
+	  this.row_three_panel
+	    .addChild(this.row_three_panelBody);
+
+	  this.row_one
+	    .addChild(this.row_one_panel);
+	  this.row_two
+	    .addChild(this.row_two_panel);
+	  this.row_three
+	    .addChild(this.row_three_panel);
+
 	  this.tab_content
 	    .addChild(this.row_one)
 	    .addChild(this.row_two)
@@ -2662,7 +2927,7 @@
 	module.exports = Info;
 
 /***/ },
-/* 57 */
+/* 60 */
 /***/ function(module, exports) {
 
 	/**
@@ -2688,7 +2953,7 @@
 	module.exports = run;
 
 /***/ },
-/* 58 */
+/* 61 */
 /***/ function(module, exports) {
 
 	/**

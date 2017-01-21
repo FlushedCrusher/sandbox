@@ -30,7 +30,9 @@ function PanelBody($injector) {
     .setStyle(panelBodyStyle);
 
   self.component = ElementManager.construct('Div', panelBodyOptions);
-
+  self.new = function() {
+    return ElementManager.construct('Div', panelBodyOptions);
+  };
 }
 
 module.exports = PanelBody;

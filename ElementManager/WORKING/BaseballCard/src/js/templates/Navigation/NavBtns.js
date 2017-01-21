@@ -38,7 +38,9 @@ function NavBtns($injector) {
     .setStyle(navBtnGroupStyle);
 
   self.component = ElementManager.construct('Div', navBtnGroupOptions);
-
+  self.new = function() {
+    return ElementManager.construct('Div', navBtnGroupOptions);
+  };
 }
 
 module.exports = NavBtns;

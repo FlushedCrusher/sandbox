@@ -32,7 +32,9 @@ function Panel($injector) {
     .setStyle(panelStyle);
 
   self.component = ElementManager.construct('Div', panelOptions);
-
+  self.new = function() {
+    return ElementManager.construct('Div', panelOptions);
+  };
 }
 
 module.exports = Panel;

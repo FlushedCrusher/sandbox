@@ -26,7 +26,9 @@ function Footer($injector) {
     .setTextContent('TOP SECRET');
 
   self.component = ElementManager.construct('Banner', footerOptions);
-
+  self.new = function() {
+    return ElementManager.construct('Banner', footerOptions);
+  };
 }
 
 module.exports = Footer;

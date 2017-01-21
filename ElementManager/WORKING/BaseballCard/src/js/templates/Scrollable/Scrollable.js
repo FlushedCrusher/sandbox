@@ -23,7 +23,9 @@ function Scrollable($injector) {
     .addClass('scroll-content');
 
   self.component = ElementManager.construct('Div', scrollOptions);
-
+  self.new = function() {
+    return ElementManager.construct('Div', scrollOptions);
+  };
 }
 
 module.exports = Scrollable;

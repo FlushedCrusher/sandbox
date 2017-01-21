@@ -21,6 +21,10 @@ function Info($injector) {
   var ImgOptions = $injector.get('ImgOptions');
   ElementManager.register('Img', Img);
 
+  var Table = $injector.get('Table');
+  var TableOptions = $injector.get('TableOptions');
+  ElementManager.register('Table', Table);
+
   var StyleOptions = $injector.get('StyleOptions');
   var EventOptions = $injector.get('EventOptions');
 
@@ -128,6 +132,33 @@ function Info($injector) {
     .setStyle(infoRowStyle);
 
   /* ****************************************
+   * Row Tables
+   **************************************** */
+  var tableOneOptions = new TableOptions();
+  var tableTwoOptions = new TableOptions();
+  var tableThreeOptions = new TableOptions();
+  var tableStyle = new StyleOptions();
+  tableStyle
+    .set('margin', 0)
+    .set('padding', '2.5px 5px')
+    .set('table-layout', 'fixed');
+  tableOneOptions
+    .setHeader('Row One')
+    .setColumns(4)
+    .setRows(3)
+    .setStyle(tableStyle);
+  tableTwoOptions
+    .setHeader('Row Two')
+    .setColumns(4)
+    .setRows(3)
+    .setStyle(tableStyle);
+  tableThreeOptions
+    .setHeader('Row Three')
+    .setColumns(4)
+    .setRows(3)
+    .setStyle(tableStyle);
+
+  /* ****************************************
    * Footer
    **************************************** */ 
   var Footer = $injector.get('Footer');
@@ -136,26 +167,39 @@ function Info($injector) {
    * Create the UI
    **************************************** */
   // Create the pieces
-  this.header = Header.component;
-  this.panel = Panel.component;
-  this.panelHeader = PanelHeader.component;
+  this.header = Header.new();
+  this.panel = Panel.new();
+  this.panelHeader = PanelHeader.new();
   this.flag_pic = ElementManager.construct('Img', flagPicOptions);
   this.track_name = ElementManager.construct('Img', trackNameOptions);
   this.country = ElementManager.construct('Img', countryOptions);
   this.lastUpdated = ElementManager.construct('Span', lastUpdatedOptions);
-  this.scroll = Scrollable.component;
-  this.panelBody = PanelBody.component;
+  this.scroll = Scrollable.new();
+  this.panelBody = PanelBody.new();
   this.ship_pic = ElementManager.construct('Img', shipPicOptions);
-  this.navigation = NavContainer.component;
-  this.nav_tabs = NavTabs.component;
-  this.nav_btns = NavBtns.component;
+  this.navigation = NavContainer.new();
+  this.nav_tabs = NavTabs.new();
+  this.nav_btns = NavBtns.new();
   this.refresh_btn = Glyph.new();
   this.watch_btn = Glyph.new();
   this.tab_content = ElementManager.construct('Div', tabContentOptions);
+
   this.row_one = ElementManager.construct('Div', infoRowOptions);
+  this.row_one_panel = Panel.new();
+  this.row_one_panelBody = PanelBody.new();
+  this.table_one = ElementManager.construct('Table', tableOneOptions);
+
   this.row_two = ElementManager.construct('Div', infoRowOptions);
+  this.row_two_panel = Panel.new();
+  this.row_two_panelBody = PanelBody.new();
+  this.table_two = ElementManager.construct('Table', tableTwoOptions);
+
   this.row_three = ElementManager.construct('Div', infoRowOptions);
-  this.footer = Footer.component;
+  this.row_three_panel = Panel.new();
+  this.row_three_panelBody = PanelBody.new();
+  this.table_three = ElementManager.construct('Table', tableThreeOptions);
+
+  this.footer = Footer.new();
 
   this.nav_tabs
     .addItems([
@@ -270,6 +314,27 @@ function Info($injector) {
 
   this.navigation
     .addChild(this.nav_tabs);
+
+  this.row_one_panelBody
+    .addChild(this.table_one);
+  this.row_two_panelBody
+    .addChild(this.table_two);
+  this.row_three_panelBody
+    .addChild(this.table_three);
+
+  this.row_one_panel
+    .addChild(this.row_one_panelBody);
+  this.row_two_panel
+    .addChild(this.row_two_panelBody);
+  this.row_three_panel
+    .addChild(this.row_three_panelBody);
+
+  this.row_one
+    .addChild(this.row_one_panel);
+  this.row_two
+    .addChild(this.row_two_panel);
+  this.row_three
+    .addChild(this.row_three_panel);
 
   this.tab_content
     .addChild(this.row_one)
