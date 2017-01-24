@@ -46,377 +46,259 @@
 
 	'use strict'; // eslint-disable-line strict
 
-	var ElementManager = __webpack_require__(1);
-	// var ElementOptions = require('../Element/ElementOptions.js');
-	// var Style = require('../Style/StyleOptions.js');
+	var run = __webpack_require__(1);
+	var InfoCtrl = __webpack_require__(3);
 
-	var elementManager = new ElementManager();
-	window.ElementManager = elementManager;
+	__webpack_require__(4);
+	__webpack_require__(6);
+	__webpack_require__(14);
 
-	var Header = elementManager.createFromTemplate(
-	  '<header class="header class-top-secret">' +
-	    '<p>TOP SECRET</p>' +
-	  '</header>'
-	);
-	var Footer = elementManager.createFromTemplate(
-	  '<footer class="footer class-top-secret">' +
-	    '<p>TOP SECRET</p>' +
-	  '</footer>'
-	);
-	Header.setClassification = _setClassification.bind(Header);
-	Footer.setClassification = _setClassification.bind(Footer);
-
-	function _setClassification(classification) {
-	  'use strict';
-	  var thisClass = '';
-	  if(classification.length > 0) {
-	    if(classification.charAt(0).toUpperCase() === "U") {
-	      thisClass = "class-unclass";
-	    } else if (classification.charAt(0).toUpperCase() === "S"){
-	      thisClass = "class-secret";
-	    } else if (classification.charAt(0).toUpperCase() === "T"){
-	      thisClass = "class-top-secret";
-	    }
-	  } else {
-	    thisClass = "class-noclass";
-	  }
-	  this.removeClasses(classificationClasses);
-	  this.addClass(thisClass);
-	  this.children[0].setTextContent(classification);
-	  return this;
-	}
-
-	function setClassification(classification) {
-	  'use strict';
-	  Header.setClassification(classification);
-	  Footer.setClassification(classification);
-	}
-
-	var classificationClasses = [
-	  'class-noclass',
-	  'class-unclass',
-	  'class-secret',
-	  'class-top-secret'
-	];
-
-	var classifications = [
-	  'UNCLASSIFIED',
-	  'SECRET',
-	  'TOP SECRET',
-	  ''
-	];
-	var idx = -1;
-	setInterval(function() {
-	  'use strict';
-	  idx = (idx + 1) % classifications.length;
-	  setClassification(classifications[idx]);
-	}, 5000);
-
-	elementManager
-	  .addOrReplace('Header', Header)
-	  .addOrReplace('Footer', Footer)
-	  .build();
+	angular.module('app',
+	  [
+	    'ui.bootstrap',
+	    'ConfigPkg',
+	    'ElementPkg',
+	    'TemplatePkg'
+	  ])
+	  .run([
+	    '$injector',
+	    '$compile',
+	    '$templateCache',
+	    '$rootScope',
+	    run
+	  ])
+	  .controller('info-controller', [
+	    '$injector',
+	    '$compile',
+	    '$templateCache',
+	    '$timeout',
+	    '$scope',
+	    InfoCtrl
+	  ]);
 
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Element Manager
+	 * Run State Controller
 	 * 
-	 * @requires {AngularHelper}
-	 * @requires {ElementFactory}
-	 * @requires {Guid}
-	 * @returns {ElementManager}
+	 * @returns {run}
 	 */
 
-	var AngularHelper = __webpack_require__(2);
-	var ElementFactory = __webpack_require__(3);
+	var createBaseballCardTemplates = __webpack_require__(2);
 
-	var Element = __webpack_require__(4);
-	var ElementOptions = __webpack_require__(5);
-	var Guid = __webpack_require__(7);
-
-	function ElementManager() {
+	function run($injector, $compile, $templateCache, $rootScope) { // eslint-disable-line no-unused-vars
 	  'use strict';
 
-	  this.factory = new ElementFactory();
-	  this.helper = new AngularHelper();
-	  this.guid = new Guid();
+	  var ElementManager = $injector.get('ElementManager');
+	  var Template = $injector.get('Template');
+	  createBaseballCardTemplates(Template);
 
-	  this.elements = new Map();
-	  this.UICache = {};
+	  var HeaderTemplate = Template.get('Header');
+	  var Header = ElementManager.createFromTemplate(HeaderTemplate);
+	  $templateCache.put('header.html', HeaderTemplate);
 
-	  this.dom = document.body;
-	  this.component = null;
+	  var FooterTemplate = Template.get('Footer');
+	  var Footer = ElementManager.createFromTemplate(FooterTemplate);
+	  $templateCache.put('footer.html', FooterTemplate);
+
+	  var PanelTemplate = Template.get('Panel');
+	  var Panel = ElementManager.createFromTemplate(PanelTemplate);
+	  $templateCache.put('panel.html', PanelTemplate);
+
+	  ElementManager
+	    .addOrReplace('Header', Header)
+	    .addOrReplace('Panel', Panel)
+	    .addOrReplace('Footer', Footer)
+	    .saveUI('Info');
+
 	}
-	/* *************************
-	 * Configuration
-	 ************************* */
-	ElementManager.prototype.register = function(key, value) {
-	  'use strict';
-	  this.factory.registerElement(key, value);
-	  return this;
-	};
-	ElementManager.prototype.bind = function(scope, compile) {
-	  'use strict';
-	  this.helper.bind(scope, compile);
-	  return this;
-	};
-	/* *************************
-	 * Workers
-	 ************************* */
-	ElementManager.prototype.get = function(key) {
-	  'use strict';
-	  return this.elements.get(key);
-	};
-	ElementManager.prototype.select = function(elementOrKey) {
-	  'use strict';
-	  var element = typeof elementOrKey === 'object' ? elementOrKey : this.get(elementOrKey);
-	  this.component = element;
-	  return this;
-	};
-	ElementManager.prototype.addOrReplace = function(key, value) {
-	  'use strict';
-	  this.elements.set(key, value);
-	  return this;
-	};
-	ElementManager.prototype.end = function() {
-	  'use strict';
-	  this.select(null);
-	  return this;
-	};
-	ElementManager.prototype.addToDom = function(component) {
-	  'use strict';
-	  this.dom.appendChild(component);
-	  return this;
-	};
-	ElementManager.prototype.removeFromDom = function(component) {
-	  'use strict';
-	  if(this.dom.contains(component)) {
-	    this.dom.removeChild(component);
-	  }
-	  return this;
-	};
-	ElementManager.prototype.clearDom = function() {
-	  'use strict';
-	  var self = this;
-	  this.elements.forEach(function(n) {
-	    self.removeFromDom(n.element);
-	  });
-	  this.end();
-	  return this;
-	};
-	ElementManager.prototype._build = function(context, elementMap, add) {
-	  'use strict';
-	  var self = this;
-	  elementMap.forEach(function(e) {
-	    add.call(context, e.element);
-	    if(e.children.length !== 0) {
-	      self._build(e, e.children, e.addElementChild);
-	    }
-	  });
-	};
-	ElementManager.prototype.toArray = function(list) {
-	  'use strict';
-	  var array = [];
-	  for (var i = list.length >>> 0; i--;) { 
-	    array[i] = list[i];
-	  }
-	  return array;
-	};
-	// Creation operations
-	ElementManager.prototype.create = function(key, options) {
-	  'use strict';
-	  var element = this.factory.create(key, options);
-	  var id = this.guid.create();
-	  this.addOrReplace(id, element);
-	  this.select(element);
-	  return this;
-	};
-	ElementManager.prototype.nest = function (key, options, chain) {
-	  'use strict';
-	  var tmp = this.factory.create(key, options);
-	  this.component.addChild(tmp);
-	  if(!chain) {
-	    this.select(tmp);
-	  }
-	  return this;
-	};
-	ElementManager.prototype.createFromTemplate = function(template) {
-	  'use strict';
-	  var self = this;
-	  var container = document.createElement('container');
-	  container.innerHTML = template;
-	  var tmp = container.childNodes[0];
-	  var options = this.createOptionsFromElement(tmp);
-	  var element = new Element(options);
-	  tmp.childNodes.forEach(function(child) {
-	    var _template = '';
-	    if(child.nodeType === 3) {
-	      element.setTextContent(child.textContent.trim());
-	    } else {
-	      _template = child.outerHTML;
-	      element.addChild(self.createFromTemplate(_template));
-	    }
-	  });
-	  return element;
-	};
-	ElementManager.prototype.createOptionsFromElement = function(element) {
-	  'use strict';
-	  var options = new ElementOptions();
-	  options
-	    .setType(element.tagName.toLowerCase())
-	    .setClasses(this.toArray(element.classList));
-	  if(element.textContent && element.tagName === 'text') {
-	    options.setTextContent(element.textContent);
-	  }
-	  return options;
-	};
-	// UI Cache Manipulators
-	ElementManager.prototype.saveUI = function(name) {
-	  'use strict';
-	  var _name = name || this.guid.create();
-	  this.UICache[_name] = this.getUI();
-	  return this;
-	};
-	ElementManager.prototype.getUI = function() {
-	  'use strict';
-	  return new Map(this.elements);
-	};
-	ElementManager.prototype.setUI = function(name) {
-	  'use strict';
-	  this.clearUI();
-	  this.elements = new Map(this.UICache[name]);
-	  return this;
-	};
-	ElementManager.prototype.clearUI = function() {
-	  'use strict';
-	  delete this.elements;
-	  this.elements = new Map();
-	  return this;
-	};
-	ElementManager.prototype.clearUICache = function() {
-	  'use strict';
-	  delete this.UICache;
-	  this.UICache = {};
-	  return this;
-	};
-	// DOM Build operations
-	ElementManager.prototype.compile = function() {
-	  'use strict';
-	  this.helper.compileContent(this.dom);
-	  return this;
-	};
-	ElementManager.prototype.build = function() {
-	  'use strict';
-	  this.clearDom();
-	  this._build(this, this.elements, this.addToDom);
-	  this.compile();
-	  return this;
-	};
-	// Element Constructor
-	ElementManager.prototype.construct = function(key, options) {
-	  'use strict';
-	  var element = this.factory.create(key, options);
-	  return element;
-	};
-	ElementManager.prototype.createElementType = function(options) {
-	  'use strict';
-	  function tmp() {
-	    Element.call(this, this.options);
-	  }
-	  tmp.prototype = Object.create(Element.prototype);
-	  tmp.prototype.options = options;
-	  return tmp;
-	};
 
-	module.exports = ElementManager;
+	module.exports = run;
 
 /***/ },
 /* 2 */
 /***/ function(module, exports) {
 
 	/**
-	 * AngularHelper wrapper
+	 * BaseballCardTemplates Implementation
 	 * 
-	 * @returns {AngularHelper}
+	 * @param {Template} Template
+	 * @returns {BaseballCardTemplates}
 	 */
-	function AngularHelper() {
-	  'use strict';
-	  this.scope;
-	  this.compile;
-	}
-	/*
-	 * Binds a scope and compile to the helper
-	 * 
-	 * @param {object} scope
-	 * @param {object} compile
-	 * @returns {AngularHelper}
-	 */
-	AngularHelper.prototype.bind = function(scope, compile) {
-	  'use strict';
-	  this.scope = scope;
-	  this.compile = compile;
-	  return this;
-	};
-	/*
-	 * Compile angular content to HTMLElement
-	 * 
-	 * @param {String | object} content
-	 * @returns {HTMLElement} _content
-	 */
-	AngularHelper.prototype.compileContent = function(content) {
-	  'use strict';
-	  var _content = this.compile ? this.compile(content)(this.scope) : content;
-	  return _content;
-	};
 
-	module.exports = AngularHelper;
+	function BaseballCardTemplates(Template) {
+	  'use strict';
+
+	  var HeaderTemplate =
+	    '<header class="header class-unclass">' +
+	    ' <p>{{DATA.TRACK.CLASSIFICATION}}</p>' +
+	    '</header>';
+	  Template.set('Header', HeaderTemplate);
+
+	  var FooterTemplate =
+	    '<footer class="footer class-unclass">' +
+	    ' <p>{{DATA.TRACK.CLASSIFICATION}}</p>' +
+	    '</footer>';
+	  Template.set('Footer', FooterTemplate);
+
+	  var PanelTemplate =
+	    '<div class="scroll-content">' +
+	    ' <div class="panel panel-default" style="margin-left: auto; margin-right: auto; max-width: 510px;">' +
+	    '   <div class="panel-heading" style="background-color: white; color: black; padding-top: 3px; padding-bottom: 3px;">' +
+	    '     <img class="flag-pic" ng-src="{{DATA.FLAG_PIC}}">' +
+	    '     <span class="ng-binding">' +
+	    '       <!-- Track Name -->' +
+			'       {{DATA.TRACK.NAME | uppercase}}, ' +
+	    '     </span>' +
+	    '     <span class="ng-binding">' +
+	    '       <!-- Country Code -->' +
+			'       {{DATA.COUNTRY | uppercase}}' +
+	    '     </span>' +
+	    '     <span class="float-right ng-binding" style="float: right;">' +
+	    '       <!-- Last Updated -->' +
+	    '       Last Updated - {{DATA.TRACK.LAST_UPDATE | date:\'dd MMM yyyy HH:mm:ss\' : \'UTC\' | uppercase}}Z' +
+	    '     </span>' +
+	    '   </div>' +
+	    ' </div>' +
+	    '</div>';
+	  Template.set('Panel', PanelTemplate);
+
+	}
+
+	module.exports = BaseballCardTemplates;
 
 /***/ },
 /* 3 */
 /***/ function(module, exports) {
 
 	/**
-	 * Element factory 
+	 * Info State Controller
 	 * 
-	 * @returns {ElementFactory}
+	 * @returns {InfoCtrl}
 	 */
 
-	function ElementFactory() {
+	function InfoCtrl($injector, $compile, $templatecache, $timeout, $scope) {
 	  'use strict';
-	  this.registeredElements = new Map();
+
+	  var ElementManager = $injector.get('ElementManager');
+	  ElementManager.bind($scope, $compile);
+
+	  var Config = $injector.get('Config');
+	  var TEST = Config.BASEBALLCARD.TEST;
+	  var CONST = Config.BASEBALLCARD.CONSTANTS;
+
+	  $scope.DATA = TEST;
+
+	  $scope.$watch('title', function(newValue, oldValue) {
+	    if(newValue !== oldValue) {
+	      var thisClass = '';
+				if(newValue.length > 0) {
+					if(newValue.charAt(0).toUpperCase() === "U") {
+						thisClass = "class-unclass";
+					} else if (newValue.charAt(0).toUpperCase() === "S"){
+						thisClass = "class-secret";
+					} else if (newValue.charAt(0).toUpperCase() === "T"){
+						thisClass = "class-top-secret";
+					}
+				} else {
+					thisClass = "class-noclass";
+				}
+	      ElementManager.get('Header').removeClasses(CONST.CLASSIFICATION_CLASSES);
+	      ElementManager.get('Header').addClass(thisClass);
+	      ElementManager.get('Header').setTextContent(newValue);
+	      ElementManager.get('Footer').removeClasses(CONST.CLASSIFICATION_CLASSES);
+	      ElementManager.get('Footer').addClass(thisClass);
+	      ElementManager.get('Footer').setTextContent(newValue);
+	    }
+	  });
+
+	  ElementManager
+	    .setUI('Info')
+	    .build();
+
 	}
-	/*
-	 * Add an element to the registered element Map
-	 * 
-	 * @param {string} key
-	 * @param {object} value
-	 * @returns {ElementFactory}
-	 */
-	ElementFactory.prototype.registerElement = function(key, value) {
-	  'use strict';
-	  this.registeredElements.set(key, value);
-	  return this;
-	};
-	/*
-	 * Create a DOM Element of type mapped to key with given options
-	 * 
-	 * @param {string} key Key of Element type to create
-	 * @param {object} options Options to use when creating element
-	 * @returns {object} of type mapped to given key
-	 */
-	ElementFactory.prototype.create = function(key, options) {
-	  'use strict';
-	  var Elem = this.registeredElements.get(key);
-	  return new Elem(options);
-	};
 
-	module.exports = ElementFactory;
+	module.exports = InfoCtrl;
 
 /***/ },
 /* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * ConfigPkg module definition
+	 */
+
+	var Config = __webpack_require__(5);
+
+	angular.module('ConfigPkg', [])
+	  .constant('Config', Config);
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	/**
+	 * Config Variables
+	 * 
+	 * @returns {Config}
+	 */
+
+	var Config = {
+	  BASEBALLCARD: {
+	    TEST: {
+	      FLAG_PIC:'../src/js/Test/img/ra-flag.png',
+	      COUNTRY: 'RA',
+	      TRACK: {
+	        CLASSIFICATION: 'UNCLASSIFIED',
+	        IMAGE: '../src/js/Test/img/ship.jpg',
+	        FLAG: 'RA',
+	        NAME: 'Millennium Falcon',
+	        HOME_PORT: 'Corellia',
+	        LAST_UPDATE: 1463014800000,
+	        LOCATION: {
+	          lat: 19.203333333333333,
+	          lon: 121.91388888888889
+	        }
+	      }
+	    },
+	    CONSTANTS: {
+	      CLASSIFICATION_CLASSES: [
+	        'class-noclass',
+	        'class-unclass',
+	        'class-secret',
+	        'class-top-secret'
+	      ]
+	    }
+	  }
+	};
+
+	module.exports = Config;
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * ElementPkg module definition
+	 * 
+	 * @requires {Element}
+	 * @requires {ElementFactory}
+	 * @requires {ElementManager}
+	 */
+
+	var Element = __webpack_require__(7);
+	var ElementFactory = __webpack_require__(10);
+	var ElementManager = __webpack_require__(11);
+
+	angular.module('ElementPkg', [])
+	  .factory('Element', Element)
+	  .service('ElementManager', ElementManager)
+	  .service('ElementFactory', ElementFactory);
+
+/***/ },
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -427,8 +309,8 @@
 	 * @returns {Element}
 	 */
 
-	var ElementOptions = __webpack_require__(5);
-	var EventList = __webpack_require__(6);
+	var ElementOptions = __webpack_require__(8);
+	var EventList = __webpack_require__(9);
 
 	function Element(options) {
 	  'use strict';
@@ -739,7 +621,7 @@
 	module.exports = Element;
 
 /***/ },
-/* 5 */
+/* 8 */
 /***/ function(module, exports) {
 
 	/**
@@ -826,6 +708,11 @@
 	  'use strict';
 	  return this.attributes;
 	};
+	ElementOptions.prototype.setAttributes = function(_attributes) {
+	  'use strict';
+	  this.attributes = _attributes;
+	  return this;
+	};
 	ElementOptions.prototype.clone = function() {
 	  'use strict';
 	  var clone = this._clone(this);
@@ -850,7 +737,7 @@
 	module.exports = ElementOptions;
 
 /***/ },
-/* 6 */
+/* 9 */
 /***/ function(module, exports) {
 
 	/**
@@ -946,7 +833,318 @@
 	module.exports = EventList;
 
 /***/ },
-/* 7 */
+/* 10 */
+/***/ function(module, exports) {
+
+	/**
+	 * Element factory 
+	 * 
+	 * @returns {ElementFactory}
+	 */
+
+	function ElementFactory() {
+	  'use strict';
+	  this.registeredElements = new Map();
+	}
+	/*
+	 * Add an element to the registered element Map
+	 * 
+	 * @param {string} key
+	 * @param {object} value
+	 * @returns {ElementFactory}
+	 */
+	ElementFactory.prototype.registerElement = function(key, value) {
+	  'use strict';
+	  this.registeredElements.set(key, value);
+	  return this;
+	};
+	/*
+	 * Create a DOM Element of type mapped to key with given options
+	 * 
+	 * @param {string} key Key of Element type to create
+	 * @param {object} options Options to use when creating element
+	 * @returns {object} of type mapped to given key
+	 */
+	ElementFactory.prototype.create = function(key, options) {
+	  'use strict';
+	  var Elem = this.registeredElements.get(key);
+	  return new Elem(options);
+	};
+
+	module.exports = ElementFactory;
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Element Manager
+	 * 
+	 * @requires {AngularHelper}
+	 * @requires {ElementFactory}
+	 * @requires {Guid}
+	 * @returns {ElementManager}
+	 */
+
+	var AngularHelper = __webpack_require__(12);
+	var ElementFactory = __webpack_require__(10);
+
+	var Element = __webpack_require__(7);
+	var ElementOptions = __webpack_require__(8);
+	var Guid = __webpack_require__(13);
+
+	function ElementManager() {
+	  'use strict';
+
+	  this.factory = new ElementFactory();
+	  this.helper = new AngularHelper();
+	  this.guid = new Guid();
+
+	  this.elements = new Map();
+	  this.UICache = {};
+
+	  this.dom = document.body;
+	  this.component = null;
+	}
+	/* *************************
+	 * Configuration
+	 ************************* */
+	ElementManager.prototype.register = function(key, value) {
+	  'use strict';
+	  this.factory.registerElement(key, value);
+	  return this;
+	};
+	ElementManager.prototype.bind = function(scope, compile) {
+	  'use strict';
+	  this.helper.bind(scope, compile);
+	  return this;
+	};
+	/* *************************
+	 * Workers
+	 ************************* */
+	ElementManager.prototype.get = function(key) {
+	  'use strict';
+	  return this.elements.get(key);
+	};
+	ElementManager.prototype.select = function(elementOrKey) {
+	  'use strict';
+	  var element = typeof elementOrKey === 'object' ? elementOrKey : this.get(elementOrKey);
+	  this.component = element;
+	  return this;
+	};
+	ElementManager.prototype.addOrReplace = function(key, value) {
+	  'use strict';
+	  this.elements.set(key, value);
+	  return this;
+	};
+	ElementManager.prototype.end = function() {
+	  'use strict';
+	  this.select(null);
+	  return this;
+	};
+	ElementManager.prototype.addToDom = function(component) {
+	  'use strict';
+	  this.dom.appendChild(component);
+	  return this;
+	};
+	ElementManager.prototype.removeFromDom = function(component) {
+	  'use strict';
+	  if(this.dom.contains(component)) {
+	    this.dom.removeChild(component);
+	  }
+	  return this;
+	};
+	ElementManager.prototype.clearDom = function() {
+	  'use strict';
+	  var self = this;
+	  this.elements.forEach(function(n) {
+	    self.removeFromDom(n.element);
+	  });
+	  this.end();
+	  return this;
+	};
+	ElementManager.prototype._build = function(context, elementMap, add) {
+	  'use strict';
+	  var self = this;
+	  elementMap.forEach(function(e) {
+	    add.call(context, e.element);
+	    if(e.children.length !== 0) {
+	      self._build(e, e.children, e.addElementChild);
+	    }
+	  });
+	};
+	ElementManager.prototype.toArray = function(list) {
+	  'use strict';
+	  var array = [];
+	  for (var i = list.length >>> 0; i--;) { 
+	    array[i] = list[i];
+	  }
+	  return array;
+	};
+	ElementManager.prototype.toObject = function(list) {
+	  'use strict';
+	  var obj = {};
+	  for (var i = list.length >>> 0; i--;) { 
+	    var key = list[i];
+	    obj[key] = list[key];
+	  }
+	  return obj;
+	};
+	// Creation operations
+	ElementManager.prototype.create = function(key, options) {
+	  'use strict';
+	  var element = this.factory.create(key, options);
+	  var id = this.guid.create();
+	  this.addOrReplace(id, element);
+	  this.select(element);
+	  return this;
+	};
+	ElementManager.prototype.nest = function (key, options, chain) {
+	  'use strict';
+	  var tmp = this.factory.create(key, options);
+	  this.component.addChild(tmp);
+	  if(!chain) {
+	    this.select(tmp);
+	  }
+	  return this;
+	};
+	ElementManager.prototype.createFromTemplate = function(template) {
+	  'use strict';
+	  var self = this;
+	  var container = document.createElement('container');
+	  container.innerHTML = template;
+	  var tmp = container.childNodes[0];
+	  var options = this.createOptionsFromElement(tmp);
+	  var element = new Element(options);
+	  tmp.childNodes.forEach(function(child) {
+	    var _template = '';
+	    if(child.nodeType === 3) {
+	      element.setTextContent(child.textContent.trim());
+	    } else if(child.nodeType === 8) {
+	      element.setTextContent('<!-- ' + child.textContent.trim() + ' -->');
+	    } else {
+	      _template = child.outerHTML;
+	      element.addChild(self.createFromTemplate(_template));
+	    }
+	  });
+	  return element;
+	};
+	ElementManager.prototype.createOptionsFromElement = function(element) {
+	  'use strict';
+	  var options = new ElementOptions();
+	  options
+	    .setType(element.tagName.toLowerCase())
+	    .setAttributes(this.toArray(element.attributes))
+	    .setStyle(this.toObject(element.style))
+	    .setClasses(this.toArray(element.classList));
+	  if(element.textContent && element.tagName === 'text') {
+	    options.setTextContent(element.textContent);
+	  }
+	  return options;
+	};
+	// UI Cache Manipulators
+	ElementManager.prototype.saveUI = function(name) {
+	  'use strict';
+	  var _name = name || this.guid.create();
+	  this.UICache[_name] = this.getUI();
+	  return this;
+	};
+	ElementManager.prototype.getUI = function() {
+	  'use strict';
+	  return new Map(this.elements);
+	};
+	ElementManager.prototype.setUI = function(name) {
+	  'use strict';
+	  this.clearUI();
+	  this.elements = new Map(this.UICache[name]);
+	  return this;
+	};
+	ElementManager.prototype.clearUI = function() {
+	  'use strict';
+	  delete this.elements;
+	  this.elements = new Map();
+	  return this;
+	};
+	ElementManager.prototype.clearUICache = function() {
+	  'use strict';
+	  delete this.UICache;
+	  this.UICache = {};
+	  return this;
+	};
+	// DOM Build operations
+	ElementManager.prototype.compile = function() {
+	  'use strict';
+	  this.helper.compileContent(this.dom);
+	  return this;
+	};
+	ElementManager.prototype.build = function() {
+	  'use strict';
+	  this.clearDom();
+	  this._build(this, this.elements, this.addToDom);
+	  this.compile();
+	  return this;
+	};
+	// Element Constructor
+	ElementManager.prototype.construct = function(key, options) {
+	  'use strict';
+	  var element = this.factory.create(key, options);
+	  return element;
+	};
+	ElementManager.prototype.createElementType = function(options) {
+	  'use strict';
+	  function tmp() {
+	    Element.call(this, this.options);
+	  }
+	  tmp.prototype = Object.create(Element.prototype);
+	  tmp.prototype.options = options;
+	  return tmp;
+	};
+
+	module.exports = ElementManager;
+
+/***/ },
+/* 12 */
+/***/ function(module, exports) {
+
+	/**
+	 * AngularHelper wrapper
+	 * 
+	 * @returns {AngularHelper}
+	 */
+	function AngularHelper() {
+	  'use strict';
+	  this.scope;
+	  this.compile;
+	}
+	/*
+	 * Binds a scope and compile to the helper
+	 * 
+	 * @param {object} scope
+	 * @param {object} compile
+	 * @returns {AngularHelper}
+	 */
+	AngularHelper.prototype.bind = function(scope, compile) {
+	  'use strict';
+	  this.scope = scope;
+	  this.compile = compile;
+	  return this;
+	};
+	/*
+	 * Compile angular content to HTMLElement
+	 * 
+	 * @param {String | object} content
+	 * @returns {HTMLElement} _content
+	 */
+	AngularHelper.prototype.compileContent = function(content) {
+	  'use strict';
+	  var _content = this.compile ? this.compile(content)(this.scope) : content;
+	  return _content;
+	};
+
+	module.exports = AngularHelper;
+
+/***/ },
+/* 13 */
 /***/ function(module, exports) {
 
 	/**
@@ -979,6 +1177,41 @@
 	};
 
 	module.exports = Guid;
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * TemplatePkg module definition
+	 * 
+	 * @requires {EventOptions}
+	 */
+
+	var Template = __webpack_require__(15);
+
+	angular.module('TemplatePkg', [])
+	  .service('Template', Template);
+
+/***/ },
+/* 15 */
+/***/ function(module, exports) {
+
+	function Template() {
+	  'use strict';
+	  this.cache = new Map();
+	}
+	Template.prototype.set = function(name, template) {
+	  'use strict';
+	  this.cache.set(name, template);
+	  return this;
+	};
+	Template.prototype.get = function(name) {
+	  'use strict';
+	  return this.cache.get(name);
+	};
+
+	module.exports = Template;
 
 /***/ }
 /******/ ]);

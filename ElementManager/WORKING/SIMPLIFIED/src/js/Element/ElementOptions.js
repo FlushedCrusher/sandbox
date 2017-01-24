@@ -82,6 +82,11 @@ ElementOptions.prototype.getAttributes = function() {
   'use strict';
   return this.attributes;
 };
+ElementOptions.prototype.setAttributes = function(_attributes) {
+  'use strict';
+  this.attributes = _attributes;
+  return this;
+};
 ElementOptions.prototype.clone = function() {
   'use strict';
   var clone = this._clone(this);

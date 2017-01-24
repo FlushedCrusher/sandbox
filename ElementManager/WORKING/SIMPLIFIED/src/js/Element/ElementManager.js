@@ -102,6 +102,15 @@ ElementManager.prototype.toArray = function(list) {
   }
   return array;
 };
+ElementManager.prototype.toObject = function(list) {
+  'use strict';
+  var obj = {};
+  for (var i = list.length >>> 0; i--;) { 
+    var key = list[i];
+    obj[key] = list[key];
+  }
+  return obj;
+};
 // Creation operations
 ElementManager.prototype.create = function(key, options) {
   'use strict';
@@ -132,6 +141,8 @@ ElementManager.prototype.createFromTemplate = function(template) {
     var _template = '';
     if(child.nodeType === 3) {
       element.setTextContent(child.textContent.trim());
+    } else if(child.nodeType === 8) {
+      element.setTextContent('<!-- ' + child.textContent.trim() + ' -->');
     } else {
       _template = child.outerHTML;
       element.addChild(self.createFromTemplate(_template));
@@ -144,6 +155,8 @@ ElementManager.prototype.createOptionsFromElement = function(element) {
   var options = new ElementOptions();
   options
     .setType(element.tagName.toLowerCase())
+    .setAttributes(this.toArray(element.attributes))
+    .setStyle(this.toObject(element.style))
     .setClasses(this.toArray(element.classList));
   if(element.textContent && element.tagName === 'text') {
     options.setTextContent(element.textContent);
