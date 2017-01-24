@@ -6,6 +6,7 @@
 
 function ElementOptions() {
   'use strict';
+  this.type = null;
   this.textContent = null;
   this.template = null;
   this.events = null;
@@ -13,6 +14,15 @@ function ElementOptions() {
   this.attributes = [];
   this.classList = [];
 }
+ElementOptions.prototype.setType = function(type) {
+  'use strict';
+  this.type = type;
+  return this;
+};
+ElementOptions.prototype.getType = function() {
+  'use strict';
+  return this.type;
+};
 ElementOptions.prototype.getTextContent = function() {
   'use strict';
   return this.textContent;

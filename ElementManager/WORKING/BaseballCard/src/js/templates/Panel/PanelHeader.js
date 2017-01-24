@@ -32,7 +32,9 @@ function PanelHeader($injector) {
     .setStyle(panelHeaderStyle);
 
   self.component = ElementManager.construct('Div', panelHeaderOptions);
-
+  self.new = function() {
+    return ElementManager.construct('Div', panelHeaderOptions);
+  };
 }
 
 module.exports = PanelHeader;

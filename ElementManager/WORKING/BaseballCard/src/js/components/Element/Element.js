@@ -46,7 +46,6 @@ Element.prototype.assign = function(options) {
   }
   return this;
 };
-
 // Element inner content modifiers
 Element.prototype.setTextContent = function(content) {
   'use strict';
@@ -105,6 +104,11 @@ Element.prototype.addChild = function(component) {
 Element.prototype.removeChild = function(component) { // eslint-disable-line no-unused-vars
   'use strict';
   // TODO: remove component from children array
+  return this;
+};
+Element.prototype.addFirstChild = function(component) {
+  'use strict';
+  this.children.unshift(component);
   return this;
 };
 //  Append content to element

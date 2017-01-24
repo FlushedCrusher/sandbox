@@ -26,7 +26,9 @@ function Header($injector) {
     .setTextContent('TOP SECRET');
 
   self.component = ElementManager.construct('Banner', headerOptions);
-
+  self.new = function() {
+    return ElementManager.construct('Banner', headerOptions);
+  };
 }
 
 module.exports = Header;

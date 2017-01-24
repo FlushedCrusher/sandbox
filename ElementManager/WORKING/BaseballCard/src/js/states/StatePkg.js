@@ -13,6 +13,7 @@ require('../components/Link/LinkPkg.js');
 require('../components/Nav/NavPkg.js');
 require('../components/Span/SpanPkg.js');
 require('../components/Style/StylePkg.js');
+require('../components/Table/TablePkg.js');
 
 require('../components/AngularHelper/AngularHelperPkg.js');
 require('../components/Element/ElementPkg.js');
@@ -37,6 +38,7 @@ angular.module('StatePkg', [
   'NavPkg',
   'SpanPkg',
   'StylePkg',
+  'TablePkg',
 
   'AngularHelperPkg',
   'ElementPkg',

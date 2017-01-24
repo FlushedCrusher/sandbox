@@ -28,7 +28,9 @@ function NavContainer($injector) {
     .setStyle(navContainerStyle);
 
   self.component = ElementManager.construct('Div', navContainerOptions);
-
+  self.new = function() {
+    return ElementManager.construct('Div', navContainerOptions);
+  };
 }
 
 module.exports = NavContainer;

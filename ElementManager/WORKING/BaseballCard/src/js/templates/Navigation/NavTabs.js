@@ -30,7 +30,9 @@ function NavTabs($injector) {
     .setStyle(navTabStyle);
 
   self.component = ElementManager.construct('Nav', navTabOptions);
-
+  self.new = function() {
+    return ElementManager.construct('Nav', navTabOptions);
+  };
 }
 
 module.exports = NavTabs;
