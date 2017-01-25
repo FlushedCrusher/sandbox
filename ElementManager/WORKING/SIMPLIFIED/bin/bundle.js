@@ -162,19 +162,19 @@
 	  
 	  var PanelNavigation =
 	    '<div style="background-color: white;">' +
-	    ' <ul class="nav nav-tabs" style="padding-top: 5px;">' +
+	    ' <ul id="navigation-tabs" class="nav nav-tabs" style="padding-top: 5px;">' +
 	    '   <li role="navigation" class="active">' +
-	    '     <a href="" >' +
+	    '     <a href="" ng-click="tabClick($event)" data-index="0">' +
 	    '       Track Info' +
 	    '     </a>' + 
 	    '   </li>' +
 	    '   <li role="navigation">' +
-	    '     <a ui-sref="info.active-alerts" href="">' +
+	    '     <a href="" ng-click="tabClick($event)" data-index="1">' +
 	    '       Active Alerts' +
 	    '     </a>' +
 	    '   </li>' +
 	    '   <li role="navigation">' +
-	    '     <a ui-sref="info.notes" href="">' +
+	    '     <a href="" ng-click="tabClick($event)" data-index="2">' +
 	    '       Notes' +
 	    '     </a>' +
 	    '   </li>' +
@@ -184,7 +184,7 @@
 	  var PanelBody =
 	    '<div class="panel-body" style="margin: 0px; padding: 0px;">' +
 	    ' <img class="ship-pic" ng-src="{{DATA.TRACK.IMAGE}}">' +
-	    PanelNavigation
+	    PanelNavigation +
 	    '</div>';
 
 	  var PanelTemplate =
@@ -222,8 +222,7 @@
 
 	  $scope.DATA = TEST;
 
-	  $scope.$watch('DATA.TRACK.CLASSIFICATION', function(newValue, oldValue) {
-	    // if(newValue !== oldValue) {
+	  $scope.$watch('DATA.TRACK.CLASSIFICATION', function(newValue, oldValue) { // eslint-disable-line no-unused-vars
 	      var thisClass = '';
 				if(newValue.length > 0) {
 					if(newValue.charAt(0).toUpperCase() === "U") {
@@ -242,8 +241,19 @@
 	      ElementManager.get('Footer').removeClasses(CONST.CLASSIFICATION_CLASSES);
 	      ElementManager.get('Footer').addClass(thisClass);
 	      ElementManager.get('Footer').setTextContent(newValue);
-	    // }
 	  });
+
+	  $scope.tabClick = function(e) {
+	    var nav = ElementManager.get('navigation-tabs');
+	    var _item = e.toElement;
+	    nav.children.forEach(function(child) {
+	      if(child.options.type !== 'li') {
+	        return;
+	      }
+	      child.removeClass('active');
+	    });
+	    nav.children[_item.dataset.index].addClass('active');
+	  };
 
 	  ElementManager
 	    .setUI('Info')
@@ -614,6 +624,10 @@
 	  return this;
 	};
 	// Abstract Attribute modifiers
+	Element.prototype.getAttribute = function(attribute) {
+	  'use strict';
+	  return this.element.getAttribute(attribute);
+	};
 	Element.prototype.hasAttribute = function(attribute) {
 	  'use strict';
 	  return this.element.hasOwnProperty(attribute);
@@ -932,6 +946,7 @@
 	  this.guid = new Guid();
 
 	  this.elements = new Map();
+	  this.elementsById = new Map();
 	  this.UICache = {};
 
 	  this.dom = document.body;
@@ -955,7 +970,7 @@
 	 ************************* */
 	ElementManager.prototype.get = function(key) {
 	  'use strict';
-	  return this.elements.get(key);
+	  return this.elements.get(key) || this.elementsById.get(key);
 	};
 	ElementManager.prototype.select = function(elementOrKey) {
 	  'use strict';
@@ -966,6 +981,11 @@
 	ElementManager.prototype.addOrReplace = function(key, value) {
 	  'use strict';
 	  this.elements.set(key, value);
+	  return this;
+	};
+	ElementManager.prototype.addIdReference = function(id, value) {
+	  'use strict';
+	  this.elementsById.set(id, value);
 	  return this;
 	};
 	ElementManager.prototype.end = function() {
@@ -1058,6 +1078,9 @@
 	  var tmp = container.childNodes[0];
 	  var options = this.createOptionsFromElement(tmp);
 	  var element = new Element(options);
+	  if(element.getAttribute('id')) {
+	    this.addIdReference(element.getAttribute('id'), element);
+	  }
 	  tmp.childNodes.forEach(function(child) {
 	    var _template = '';
 	    if(child.nodeType === 3) {
@@ -1111,6 +1134,12 @@
 	  'use strict';
 	  delete this.UICache;
 	  this.UICache = {};
+	  return this;
+	};
+	ElementManager.prototype.clearIdReference = function() {
+	  'use strict';
+	  delete this.elementsById;
+	  this.elementsById = new Map();
 	  return this;
 	};
 	// DOM Build operations

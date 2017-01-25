@@ -16,8 +16,7 @@ function InfoCtrl($injector, $compile, $templatecache, $timeout, $scope) {
 
   $scope.DATA = TEST;
 
-  $scope.$watch('DATA.TRACK.CLASSIFICATION', function(newValue, oldValue) {
-    // if(newValue !== oldValue) {
+  $scope.$watch('DATA.TRACK.CLASSIFICATION', function(newValue, oldValue) { // eslint-disable-line no-unused-vars
       var thisClass = '';
 			if(newValue.length > 0) {
 				if(newValue.charAt(0).toUpperCase() === "U") {
@@ -36,8 +35,19 @@ function InfoCtrl($injector, $compile, $templatecache, $timeout, $scope) {
       ElementManager.get('Footer').removeClasses(CONST.CLASSIFICATION_CLASSES);
       ElementManager.get('Footer').addClass(thisClass);
       ElementManager.get('Footer').setTextContent(newValue);
-    // }
   });
+
+  $scope.tabClick = function(e) {
+    var nav = ElementManager.get('navigation-tabs');
+    var _item = e.toElement;
+    nav.children.forEach(function(child) {
+      if(child.options.type !== 'li') {
+        return;
+      }
+      child.removeClass('active');
+    });
+    nav.children[_item.dataset.index].addClass('active');
+  };
 
   ElementManager
     .setUI('Info')

@@ -280,6 +280,10 @@ Element.prototype.clearClasses = function() {
   return this;
 };
 // Abstract Attribute modifiers
+Element.prototype.getAttribute = function(attribute) {
+  'use strict';
+  return this.element.getAttribute(attribute);
+};
 Element.prototype.hasAttribute = function(attribute) {
   'use strict';
   return this.element.hasOwnProperty(attribute);

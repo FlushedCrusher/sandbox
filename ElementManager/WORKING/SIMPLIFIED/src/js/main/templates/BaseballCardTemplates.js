@@ -39,19 +39,19 @@ function BaseballCardTemplates(Template) {
   
   var PanelNavigation =
     '<div style="background-color: white;">' +
-    ' <ul class="nav nav-tabs" style="padding-top: 5px;">' +
+    ' <ul id="navigation-tabs" class="nav nav-tabs" style="padding-top: 5px;">' +
     '   <li role="navigation" class="active">' +
-    '     <a href="" >' +
+    '     <a href="" ng-click="tabClick($event)" data-index="0">' +
     '       Track Info' +
     '     </a>' + 
     '   </li>' +
     '   <li role="navigation">' +
-    '     <a ui-sref="info.active-alerts" href="">' +
+    '     <a href="" ng-click="tabClick($event)" data-index="1">' +
     '       Active Alerts' +
     '     </a>' +
     '   </li>' +
     '   <li role="navigation">' +
-    '     <a ui-sref="info.notes" href="">' +
+    '     <a href="" ng-click="tabClick($event)" data-index="2">' +
     '       Notes' +
     '     </a>' +
     '   </li>' +
@@ -61,7 +61,7 @@ function BaseballCardTemplates(Template) {
   var PanelBody =
     '<div class="panel-body" style="margin: 0px; padding: 0px;">' +
     ' <img class="ship-pic" ng-src="{{DATA.TRACK.IMAGE}}">' +
-    PanelNavigation
+    PanelNavigation +
     '</div>';
 
   var PanelTemplate =

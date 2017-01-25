@@ -22,6 +22,7 @@ function ElementManager() {
   this.guid = new Guid();
 
   this.elements = new Map();
+  this.elementsById = new Map();
   this.UICache = {};
 
   this.dom = document.body;
@@ -45,7 +46,7 @@ ElementManager.prototype.bind = function(scope, compile) {
  ************************* */
 ElementManager.prototype.get = function(key) {
   'use strict';
-  return this.elements.get(key);
+  return this.elements.get(key) || this.elementsById.get(key);
 };
 ElementManager.prototype.select = function(elementOrKey) {
   'use strict';
@@ -56,6 +57,11 @@ ElementManager.prototype.select = function(elementOrKey) {
 ElementManager.prototype.addOrReplace = function(key, value) {
   'use strict';
   this.elements.set(key, value);
+  return this;
+};
+ElementManager.prototype.addIdReference = function(id, value) {
+  'use strict';
+  this.elementsById.set(id, value);
   return this;
 };
 ElementManager.prototype.end = function() {
@@ -148,6 +154,9 @@ ElementManager.prototype.createFromTemplate = function(template) {
   var tmp = container.childNodes[0];
   var options = this.createOptionsFromElement(tmp);
   var element = new Element(options);
+  if(element.getAttribute('id')) {
+    this.addIdReference(element.getAttribute('id'), element);
+  }
   tmp.childNodes.forEach(function(child) {
     var _template = '';
     if(child.nodeType === 3) {
@@ -201,6 +210,12 @@ ElementManager.prototype.clearUICache = function() {
   'use strict';
   delete this.UICache;
   this.UICache = {};
+  return this;
+};
+ElementManager.prototype.clearIdReference = function() {
+  'use strict';
+  delete this.elementsById;
+  this.elementsById = new Map();
   return this;
 };
 // DOM Build operations
