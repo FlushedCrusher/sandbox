@@ -29,3 +29,13 @@ html {
 .btn-hover {
   color: #a6a6a6 !important;
 }
+.table-no-border > thead > tr > th,
+.table-no-border > tbody > tr > th,
+.table-no-border > tfoot > tr > th,
+.table-no-border > thead > tr > td,
+.table-no-border > tbody > tr > td,
+.table-no-border > tfoot > tr > td {
+  border-top: none;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}

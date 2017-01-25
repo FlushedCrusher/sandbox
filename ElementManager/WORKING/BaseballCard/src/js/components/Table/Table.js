@@ -1,23 +1,3 @@
-// <table class="table collapsable close-fit-table row-table table-no-border">
-//   <tbody>
-//     <tr>
-//       <td colspan="4">
-//         <i>Last Contact</i>
-//       </td>
-//     </tr>
-//     <tr>
-//       <td>
-//         <label for="home_port">Home Port</label>
-//         <div class="dynamic-color">
-//           <p id="home_port" name="home_port" class="ng-binding" style="color: black;">
-//             Corellia
-//           </p>
-//         </div>
-//       </td>
-//     </tr>
-//   </tbody>
-// </table>
-
 /**
  * Basic Table element wrapper
  * 
@@ -38,6 +18,15 @@ function Table(options) {
 
   this._options = options ? options : new TableOptions();
   Element.call(this, this._options);
+
+  this.cellCache = [];
+  this.cellTemplate =
+    '<label for="{{#id}}" style="color: #bfbfbf;">{{#label}}</label>' +
+    '<div class="{{#class}}">' +
+    ' <p id="{{#id}}" name="{{#id}}">' +
+    '   {{#content}}' +
+    ' </p>' +
+    '</div>';
 
   this.create(this._options);
 
@@ -65,6 +54,7 @@ Table.prototype._createTable = function(rows, columns) {
     for(var j = 0; j < columns; j++ ) {
       var cell = this._createCell();
       row.addChild(cell);
+      this.cellCache.push(cell);
     }
     body.addChild(row);
   }
@@ -79,9 +69,13 @@ Table.prototype._createHeader = function(text, span) {
       key: 'colspan',
       value: span
     })
-    .setType('td')
-    .setTextContent(text);
+    .setType('td');
+  var headerText = new Element({
+    type: 'i',
+    textContent: text
+  });
   var headerCell = this._createCell(headerCellOptions);
+  headerCell.addChild(headerText);
   header.addChild(headerCell);
   return header;
 };
@@ -99,6 +93,32 @@ Table.prototype._createCell = function(_options) {
   'use strict';
   var cell = _options ? new Element(_options) : new Element('td');
   return cell;
+};
+Table.prototype.setCellContent = function(data) {
+  'use strict';
+  this._createCellContent(data);
+  return this;
+};
+Table.prototype._createCellContent = function(data) {
+  'use strict';
+  var i = 0;
+  while(data.length <= this.cellCache.length && data.length > i) {
+    this.cellCache[i].setTemplate(this._processCellTemplate(data[i]));
+    i++;
+  }
+  return this;
+};
+Table.prototype._processCellTemplate = function(data) {
+  'use strict';
+  var template = this.cellTemplate;
+  data.id = data.label.toLowerCase();
+  var keys = Object.keys(data);
+  keys.forEach(function(key) {
+    var _key = '{{#' + key + '}}',
+      pattern = new RegExp(_key, 'g');
+    template = template.replace(pattern, data[key]);
+  });
+  return template;
 };
 
 module.exports = Table;

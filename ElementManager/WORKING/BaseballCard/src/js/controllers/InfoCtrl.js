@@ -4,7 +4,7 @@
  * @returns {InfoCtrl}
  */
 
-function InfoCtrl($injector, $compile, $scope) {
+function InfoCtrl($injector, $compile, $scope, $timeout) {
   'use strict';
 
   var ElementManager = $injector.get('ElementManager');
@@ -31,6 +31,18 @@ function InfoCtrl($injector, $compile, $scope) {
     $scope.track.image = CONST.FAKE.IMAGE;
     $scope.track.location = CONST.FAKE.LOCATION; 
     $scope.track.time_delay = 'Calculating time delay...';
+
+		$timeout(popData, 500);
+  }
+
+  function popData() {
+    $(document).ready(function(){
+      $('.dynamic-color > p').each(function(){
+        if ($(this).text().trim() !== 'No Data') {
+          $(this).css('color','black');
+        }
+      });
+    });
   }
 
 }

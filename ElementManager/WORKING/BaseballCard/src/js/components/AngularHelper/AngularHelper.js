@@ -32,5 +32,17 @@ AngularHelper.prototype.compileContent = function(content) {
   var _content = this.compile(content)(this.scope);
   return _content;
 };
+/*
+ * Trigger digest cycle by calling $scope.$apply()
+ * 
+ * @returns {AngularHelper}
+ */
+AngularHelper.prototype.apply = function() {
+  'use strict';
+  if(!this.scope.$root.$$phase) {
+      this.scope.$apply();
+  }
+  return this;
+};
 
 module.exports = AngularHelper;

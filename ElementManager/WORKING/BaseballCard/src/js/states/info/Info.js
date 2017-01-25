@@ -139,20 +139,24 @@ function Info($injector) {
   var tableThreeOptions = new TableOptions();
   var tableStyle = new StyleOptions();
   tableStyle
-    .set('margin', 0)
+    .set('margin', '0 5px')
     .set('padding', '2.5px 5px')
-    .set('table-layout', 'fixed');
+    .set('table-layout', 'fixed')
+    .set('width', '100%');
   tableOneOptions
+    .addClass('table-no-border')
     .setHeader('Row One')
     .setColumns(4)
     .setRows(3)
     .setStyle(tableStyle);
   tableTwoOptions
+    .addClass('table-no-border')
     .setHeader('Row Two')
     .setColumns(4)
     .setRows(3)
     .setStyle(tableStyle);
   tableThreeOptions
+    .addClass('table-no-border')
     .setHeader('Row Three')
     .setColumns(4)
     .setRows(3)
@@ -188,6 +192,62 @@ function Info($injector) {
   this.row_one_panel = Panel.new();
   this.row_one_panelBody = PanelBody.new();
   this.table_one = ElementManager.construct('Table', tableOneOptions);
+  this.table_one
+    .setCellContent([
+      {
+        label: 'LTN',
+        class: 'dynamic-color',
+        content: 'No Data'
+      }, {
+        label: 'Category',
+        class: 'dynamic-color',
+        content: 'No Data'
+      }, {
+        label: 'Display Name',
+        class: 'dynamic-color',
+        content: 'No Data'
+      }, {
+        label: 'Hull #',
+        class: 'dynamic-color',
+        content: 'No Data'
+      },
+      
+      {
+        label: 'MMSI',
+        class: 'dynamic-color',
+        content: 'No Data'
+      }, {
+        label: 'SCONUM',
+        class: 'dynamic-color',
+        content: 'No Data'
+      }, {
+        label: 'Call Sign',
+        class: 'dynamic-color',
+        content: 'No Data'
+      }, {
+        label: 'Ship Class',
+        class: 'dynamic-color',
+        content: 'No Data'
+      },
+      
+      {
+        label: 'Type/MSN',
+        class: 'dynamic-color',
+        content: 'No Data'
+      }, {
+        label: 'Subordination',
+        class: 'dynamic-color',
+        content: 'No Data'
+      }, {
+        label: 'BE #',
+        class: 'dynamic-color',
+        content: 'No Data'
+      }, {
+        label: 'Threat',
+        class: 'dynamic-color',
+        content: 'No Data'
+      }
+    ]);
 
   this.row_two = ElementManager.construct('Div', infoRowOptions);
   this.row_two_panel = Panel.new();
@@ -289,10 +349,13 @@ function Info($injector) {
         if(this.hasClass('glyphicon-eye-close')) {
           this.removeClass('glyphicon-eye-close');
           this.addClass('glyphicon-eye-open');
+          this.setAttribute('uib-tooltip', 'Remove from Watch List');
         } else {
           this.addClass('glyphicon-eye-close');
           this.removeClass('glyphicon-eye-open');
+          this.setAttribute('uib-tooltip', 'Add to Watch List');
         }
+        ElementManager.apply();
       },
       icon_package: 'glyphicon',
       icon: 'glyphicon-eye-close'

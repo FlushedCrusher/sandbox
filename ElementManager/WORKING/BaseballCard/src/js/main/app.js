@@ -20,5 +20,6 @@ angular.module('app',
     '$injector',
     '$compile',
     '$scope',
+    '$timeout',
     InfoCtrl
   ]);

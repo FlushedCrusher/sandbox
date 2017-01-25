@@ -40,6 +40,11 @@ ElementManager.prototype.bind = function(scope, compile) {
 /* *************************
  * Workers
  ************************* */
+ElementManager.prototype.apply = function() {
+  'use strict';
+  this.helper.apply();
+  return this;
+};
 ElementManager.prototype.get = function(key) {
   'use strict';
   return this.elements.get(key);

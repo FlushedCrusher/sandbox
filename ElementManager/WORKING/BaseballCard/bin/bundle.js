@@ -66,6 +66,7 @@
 	    '$injector',
 	    '$compile',
 	    '$scope',
+	    '$timeout',
 	    InfoCtrl
 	  ]);
 
@@ -1571,26 +1572,6 @@
 /* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// <table class="table collapsable close-fit-table row-table table-no-border">
-	//   <tbody>
-	//     <tr>
-	//       <td colspan="4">
-	//         <i>Last Contact</i>
-	//       </td>
-	//     </tr>
-	//     <tr>
-	//       <td>
-	//         <label for="home_port">Home Port</label>
-	//         <div class="dynamic-color">
-	//           <p id="home_port" name="home_port" class="ng-binding" style="color: black;">
-	//             Corellia
-	//           </p>
-	//         </div>
-	//       </td>
-	//     </tr>
-	//   </tbody>
-	// </table>
-
 	/**
 	 * Basic Table element wrapper
 	 * 
@@ -1611,6 +1592,15 @@
 
 	  this._options = options ? options : new TableOptions();
 	  Element.call(this, this._options);
+
+	  this.cellCache = [];
+	  this.cellTemplate =
+	    '<label for="{{#id}}" style="color: #bfbfbf;">{{#label}}</label>' +
+	    '<div class="{{#class}}">' +
+	    ' <p id="{{#id}}" name="{{#id}}">' +
+	    '   {{#content}}' +
+	    ' </p>' +
+	    '</div>';
 
 	  this.create(this._options);
 
@@ -1638,6 +1628,7 @@
 	    for(var j = 0; j < columns; j++ ) {
 	      var cell = this._createCell();
 	      row.addChild(cell);
+	      this.cellCache.push(cell);
 	    }
 	    body.addChild(row);
 	  }
@@ -1652,9 +1643,13 @@
 	      key: 'colspan',
 	      value: span
 	    })
-	    .setType('td')
-	    .setTextContent(text);
+	    .setType('td');
+	  var headerText = new Element({
+	    type: 'i',
+	    textContent: text
+	  });
 	  var headerCell = this._createCell(headerCellOptions);
+	  headerCell.addChild(headerText);
 	  header.addChild(headerCell);
 	  return header;
 	};
@@ -1672,6 +1667,32 @@
 	  'use strict';
 	  var cell = _options ? new Element(_options) : new Element('td');
 	  return cell;
+	};
+	Table.prototype.setCellContent = function(data) {
+	  'use strict';
+	  this._createCellContent(data);
+	  return this;
+	};
+	Table.prototype._createCellContent = function(data) {
+	  'use strict';
+	  var i = 0;
+	  while(data.length <= this.cellCache.length && data.length > i) {
+	    this.cellCache[i].setTemplate(this._processCellTemplate(data[i]));
+	    i++;
+	  }
+	  return this;
+	};
+	Table.prototype._processCellTemplate = function(data) {
+	  'use strict';
+	  var template = this.cellTemplate;
+	  data.id = data.label.toLowerCase();
+	  var keys = Object.keys(data);
+	  keys.forEach(function(key) {
+	    var _key = '{{#' + key + '}}',
+	      pattern = new RegExp(_key, 'g');
+	    template = template.replace(pattern, data[key]);
+	  });
+	  return template;
 	};
 
 	module.exports = Table;
@@ -1781,6 +1802,18 @@
 	  'use strict';
 	  var _content = this.compile(content)(this.scope);
 	  return _content;
+	};
+	/*
+	 * Trigger digest cycle by calling $scope.$apply()
+	 * 
+	 * @returns {AngularHelper}
+	 */
+	AngularHelper.prototype.apply = function() {
+	  'use strict';
+	  if(!this.scope.$root.$$phase) {
+	      this.scope.$apply();
+	  }
+	  return this;
 	};
 
 	module.exports = AngularHelper;
@@ -1893,6 +1926,11 @@
 	/* *************************
 	 * Workers
 	 ************************* */
+	ElementManager.prototype.apply = function() {
+	  'use strict';
+	  this.helper.apply();
+	  return this;
+	};
 	ElementManager.prototype.get = function(key) {
 	  'use strict';
 	  return this.elements.get(key);
@@ -2708,20 +2746,24 @@
 	  var tableThreeOptions = new TableOptions();
 	  var tableStyle = new StyleOptions();
 	  tableStyle
-	    .set('margin', 0)
+	    .set('margin', '0 5px')
 	    .set('padding', '2.5px 5px')
-	    .set('table-layout', 'fixed');
+	    .set('table-layout', 'fixed')
+	    .set('width', '100%');
 	  tableOneOptions
+	    .addClass('table-no-border')
 	    .setHeader('Row One')
 	    .setColumns(4)
 	    .setRows(3)
 	    .setStyle(tableStyle);
 	  tableTwoOptions
+	    .addClass('table-no-border')
 	    .setHeader('Row Two')
 	    .setColumns(4)
 	    .setRows(3)
 	    .setStyle(tableStyle);
 	  tableThreeOptions
+	    .addClass('table-no-border')
 	    .setHeader('Row Three')
 	    .setColumns(4)
 	    .setRows(3)
@@ -2757,6 +2799,62 @@
 	  this.row_one_panel = Panel.new();
 	  this.row_one_panelBody = PanelBody.new();
 	  this.table_one = ElementManager.construct('Table', tableOneOptions);
+	  this.table_one
+	    .setCellContent([
+	      {
+	        label: 'LTN',
+	        class: 'dynamic-color',
+	        content: 'No Data'
+	      }, {
+	        label: 'Category',
+	        class: 'dynamic-color',
+	        content: 'No Data'
+	      }, {
+	        label: 'Display Name',
+	        class: 'dynamic-color',
+	        content: 'No Data'
+	      }, {
+	        label: 'Hull #',
+	        class: 'dynamic-color',
+	        content: 'No Data'
+	      },
+	      
+	      {
+	        label: 'MMSI',
+	        class: 'dynamic-color',
+	        content: 'No Data'
+	      }, {
+	        label: 'SCONUM',
+	        class: 'dynamic-color',
+	        content: 'No Data'
+	      }, {
+	        label: 'Call Sign',
+	        class: 'dynamic-color',
+	        content: 'No Data'
+	      }, {
+	        label: 'Ship Class',
+	        class: 'dynamic-color',
+	        content: 'No Data'
+	      },
+	      
+	      {
+	        label: 'Type/MSN',
+	        class: 'dynamic-color',
+	        content: 'No Data'
+	      }, {
+	        label: 'Subordination',
+	        class: 'dynamic-color',
+	        content: 'No Data'
+	      }, {
+	        label: 'BE #',
+	        class: 'dynamic-color',
+	        content: 'No Data'
+	      }, {
+	        label: 'Threat',
+	        class: 'dynamic-color',
+	        content: 'No Data'
+	      }
+	    ]);
 
 	  this.row_two = ElementManager.construct('Div', infoRowOptions);
 	  this.row_two_panel = Panel.new();
@@ -2858,10 +2956,13 @@
 	        if(this.hasClass('glyphicon-eye-close')) {
 	          this.removeClass('glyphicon-eye-close');
 	          this.addClass('glyphicon-eye-open');
+	          this.setAttribute('uib-tooltip', 'Remove from Watch List');
 	        } else {
 	          this.addClass('glyphicon-eye-close');
 	          this.removeClass('glyphicon-eye-open');
+	          this.setAttribute('uib-tooltip', 'Add to Watch List');
 	        }
+	        ElementManager.apply();
 	      },
 	      icon_package: 'glyphicon',
 	      icon: 'glyphicon-eye-close'
@@ -2962,7 +3063,7 @@
 	 * @returns {InfoCtrl}
 	 */
 
-	function InfoCtrl($injector, $compile, $scope) {
+	function InfoCtrl($injector, $compile, $scope, $timeout) {
 	  'use strict';
 
 	  var ElementManager = $injector.get('ElementManager');
@@ -2989,6 +3090,18 @@
 	    $scope.track.image = CONST.FAKE.IMAGE;
 	    $scope.track.location = CONST.FAKE.LOCATION; 
 	    $scope.track.time_delay = 'Calculating time delay...';
+
+			$timeout(popData, 500);
+	  }
+
+	  function popData() {
+	    $(document).ready(function(){
+	      $('.dynamic-color > p').each(function(){
+	        if ($(this).text().trim() !== 'No Data') {
+	          $(this).css('color','black');
+	        }
+	      });
+	    });
 	  }
 
 	}
