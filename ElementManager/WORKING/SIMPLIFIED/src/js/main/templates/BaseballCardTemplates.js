@@ -25,7 +25,7 @@ function BaseballCardTemplates(Template) {
     ' <img class="flag-pic" ng-src="{{DATA.FLAG_PIC}}" onerror="this.style.display=\'none\'">' +
     ' <span class="ng-binding">' +
     '   <!-- Track Name -->' +
-		'   {{DATA.TRACK.NAME | uppercase}}, ' +
+		'   {{" " + (DATA.TRACK.NAME | uppercase) + ", "}}' +
     ' </span>' +
     ' <span class="ng-binding">' +
     '   <!-- Country Code -->' +
@@ -37,9 +37,31 @@ function BaseballCardTemplates(Template) {
     ' </span>' +
     '</div>';
   
+  var PanelNavigation =
+    '<div style="background-color: white;">' +
+    ' <ul class="nav nav-tabs" style="padding-top: 5px;">' +
+    '   <li role="navigation" class="active">' +
+    '     <a href="" >' +
+    '       Track Info' +
+    '     </a>' + 
+    '   </li>' +
+    '   <li role="navigation">' +
+    '     <a ui-sref="info.active-alerts" href="">' +
+    '       Active Alerts' +
+    '     </a>' +
+    '   </li>' +
+    '   <li role="navigation">' +
+    '     <a ui-sref="info.notes" href="">' +
+    '       Notes' +
+    '     </a>' +
+    '   </li>' +
+    ' </ul>' +
+    '</div>';
+
   var PanelBody =
     '<div class="panel-body" style="margin: 0px; padding: 0px;">' +
     ' <img class="ship-pic" ng-src="{{DATA.TRACK.IMAGE}}">' +
+    PanelNavigation
     '</div>';
 
   var PanelTemplate =

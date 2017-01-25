@@ -10,7 +10,7 @@ var Config = {
       FLAG_PIC:'../src/Test/img/ra-flag.png',
       COUNTRY: 'RA',
       TRACK: {
-        CLASSIFICATION: 'UNCLASSIFIED',
+        CLASSIFICATION: 'TOP SECRET',
         IMAGE: '../src/Test/img/ship.jpg',
         FLAG: 'RA',
         NAME: 'Millennium Falcon',

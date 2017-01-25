@@ -16,8 +16,8 @@ function InfoCtrl($injector, $compile, $templatecache, $timeout, $scope) {
 
   $scope.DATA = TEST;
 
-  $scope.$watch('title', function(newValue, oldValue) {
-    if(newValue !== oldValue) {
+  $scope.$watch('DATA.TRACK.CLASSIFICATION', function(newValue, oldValue) {
+    // if(newValue !== oldValue) {
       var thisClass = '';
 			if(newValue.length > 0) {
 				if(newValue.charAt(0).toUpperCase() === "U") {
@@ -36,7 +36,7 @@ function InfoCtrl($injector, $compile, $templatecache, $timeout, $scope) {
       ElementManager.get('Footer').removeClasses(CONST.CLASSIFICATION_CLASSES);
       ElementManager.get('Footer').addClass(thisClass);
       ElementManager.get('Footer').setTextContent(newValue);
-    }
+    // }
   });
 
   ElementManager

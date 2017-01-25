@@ -148,7 +148,7 @@
 	    ' <img class="flag-pic" ng-src="{{DATA.FLAG_PIC}}" onerror="this.style.display=\'none\'">' +
 	    ' <span class="ng-binding">' +
 	    '   <!-- Track Name -->' +
-			'   {{DATA.TRACK.NAME | uppercase}}, ' +
+			'   {{" " + (DATA.TRACK.NAME | uppercase) + ", "}}' +
 	    ' </span>' +
 	    ' <span class="ng-binding">' +
 	    '   <!-- Country Code -->' +
@@ -160,9 +160,31 @@
 	    ' </span>' +
 	    '</div>';
 	  
+	  var PanelNavigation =
+	    '<div style="background-color: white;">' +
+	    ' <ul class="nav nav-tabs" style="padding-top: 5px;">' +
+	    '   <li role="navigation" class="active">' +
+	    '     <a href="" >' +
+	    '       Track Info' +
+	    '     </a>' + 
+	    '   </li>' +
+	    '   <li role="navigation">' +
+	    '     <a ui-sref="info.active-alerts" href="">' +
+	    '       Active Alerts' +
+	    '     </a>' +
+	    '   </li>' +
+	    '   <li role="navigation">' +
+	    '     <a ui-sref="info.notes" href="">' +
+	    '       Notes' +
+	    '     </a>' +
+	    '   </li>' +
+	    ' </ul>' +
+	    '</div>';
+
 	  var PanelBody =
 	    '<div class="panel-body" style="margin: 0px; padding: 0px;">' +
 	    ' <img class="ship-pic" ng-src="{{DATA.TRACK.IMAGE}}">' +
+	    PanelNavigation
 	    '</div>';
 
 	  var PanelTemplate =
@@ -200,8 +222,8 @@
 
 	  $scope.DATA = TEST;
 
-	  $scope.$watch('title', function(newValue, oldValue) {
-	    if(newValue !== oldValue) {
+	  $scope.$watch('DATA.TRACK.CLASSIFICATION', function(newValue, oldValue) {
+	    // if(newValue !== oldValue) {
 	      var thisClass = '';
 				if(newValue.length > 0) {
 					if(newValue.charAt(0).toUpperCase() === "U") {
@@ -220,7 +242,7 @@
 	      ElementManager.get('Footer').removeClasses(CONST.CLASSIFICATION_CLASSES);
 	      ElementManager.get('Footer').addClass(thisClass);
 	      ElementManager.get('Footer').setTextContent(newValue);
-	    }
+	    // }
 	  });
 
 	  ElementManager
@@ -260,7 +282,7 @@
 	      FLAG_PIC:'../src/Test/img/ra-flag.png',
 	      COUNTRY: 'RA',
 	      TRACK: {
-	        CLASSIFICATION: 'UNCLASSIFIED',
+	        CLASSIFICATION: 'TOP SECRET',
 	        IMAGE: '../src/Test/img/ship.jpg',
 	        FLAG: 'RA',
 	        NAME: 'Millennium Falcon',
