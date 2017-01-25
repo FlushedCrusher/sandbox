@@ -97,7 +97,7 @@ ElementManager.prototype._build = function(context, elementMap, add) {
 ElementManager.prototype.toArray = function(list) {
   'use strict';
   var array = [];
-  for (var i = list.length >>> 0; i--;) { 
+  for (var i = list.length >>> 0; i--;) {
     array[i] = list[i];
   }
   return array;
@@ -110,6 +110,17 @@ ElementManager.prototype.toObject = function(list) {
     obj[key] = list[key];
   }
   return obj;
+};
+ElementManager.prototype.toFilterArray = function(list, excludes) {
+  'use strict';
+  var array = [];
+  for (var i = list.length >>> 0; i--;) {
+    if(excludes.includes(list[i])) {
+      continue;
+    }
+    array[i] = list[i];
+  }
+  return array;
 };
 // Creation operations
 ElementManager.prototype.create = function(key, options) {
@@ -155,7 +166,7 @@ ElementManager.prototype.createOptionsFromElement = function(element) {
   var options = new ElementOptions();
   options
     .setType(element.tagName.toLowerCase())
-    .setAttributes(this.toArray(element.attributes))
+    .setAttributes(this.toFilterArray(element.attributes, ['class', 'style']))
     .setStyle(this.toObject(element.style))
     .setClasses(this.toArray(element.classList));
   if(element.textContent && element.tagName === 'text') {

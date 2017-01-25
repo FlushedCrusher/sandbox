@@ -7,11 +7,11 @@
 var Config = {
   BASEBALLCARD: {
     TEST: {
-      FLAG_PIC:'../src/js/Test/img/ra-flag.png',
+      FLAG_PIC:'../src/Test/img/ra-flag.png',
       COUNTRY: 'RA',
       TRACK: {
         CLASSIFICATION: 'UNCLASSIFIED',
-        IMAGE: '../src/js/Test/img/ship.jpg',
+        IMAGE: '../src/Test/img/ship.jpg',
         FLAG: 'RA',
         NAME: 'Millennium Falcon',
         HOME_PORT: 'Corellia',

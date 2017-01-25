@@ -284,9 +284,9 @@ Element.prototype.hasAttribute = function(attribute) {
   'use strict';
   return this.element.hasOwnProperty(attribute);
 };
-Element.prototype.setAttribute = function(key, value) {
+Element.prototype.setAttribute = function(name, value) {
   'use strict';
-  this.element.setAttribute(key, value);
+  this.element.setAttribute(name, value);
   return this;
 };
 Element.prototype.removeAttribute = function(key) {
@@ -298,7 +298,7 @@ Element.prototype.setAttributes = function(_attributes) {
   'use strict';
   var self = this;
   _attributes.forEach(function(_attribute) {
-    self.setAttribute(_attribute.key, _attribute.value);
+    self.setAttribute(_attribute.name, _attribute.value);
   });
   return this;
 };

@@ -143,24 +143,33 @@
 	    '</footer>';
 	  Template.set('Footer', FooterTemplate);
 
+	  var PanelHeading =
+	    '<div class="panel-heading" style="background-color: white; color: black; padding-top: 3px; padding-bottom: 3px;">' +
+	    ' <img class="flag-pic" ng-src="{{DATA.FLAG_PIC}}" onerror="this.style.display=\'none\'">' +
+	    ' <span class="ng-binding">' +
+	    '   <!-- Track Name -->' +
+			'   {{DATA.TRACK.NAME | uppercase}}, ' +
+	    ' </span>' +
+	    ' <span class="ng-binding">' +
+	    '   <!-- Country Code -->' +
+			'   {{DATA.COUNTRY | uppercase}}' +
+	    ' </span>' +
+	    ' <span class="float-right ng-binding" style="float: right;">' +
+	    '   <!-- Last Updated -->' +
+	    '   Last Updated - {{DATA.TRACK.LAST_UPDATE | date:\'dd MMM yyyy HH:mm:ss\' : \'UTC\' | uppercase}}Z' +
+	    ' </span>' +
+	    '</div>';
+	  
+	  var PanelBody =
+	    '<div class="panel-body" style="margin: 0px; padding: 0px;">' +
+	    ' <img class="ship-pic" ng-src="{{DATA.TRACK.IMAGE}}">' +
+	    '</div>';
+
 	  var PanelTemplate =
 	    '<div class="scroll-content">' +
 	    ' <div class="panel panel-default" style="margin-left: auto; margin-right: auto; max-width: 510px;">' +
-	    '   <div class="panel-heading" style="background-color: white; color: black; padding-top: 3px; padding-bottom: 3px;">' +
-	    '     <img class="flag-pic" ng-src="{{DATA.FLAG_PIC}}">' +
-	    '     <span class="ng-binding">' +
-	    '       <!-- Track Name -->' +
-			'       {{DATA.TRACK.NAME | uppercase}}, ' +
-	    '     </span>' +
-	    '     <span class="ng-binding">' +
-	    '       <!-- Country Code -->' +
-			'       {{DATA.COUNTRY | uppercase}}' +
-	    '     </span>' +
-	    '     <span class="float-right ng-binding" style="float: right;">' +
-	    '       <!-- Last Updated -->' +
-	    '       Last Updated - {{DATA.TRACK.LAST_UPDATE | date:\'dd MMM yyyy HH:mm:ss\' : \'UTC\' | uppercase}}Z' +
-	    '     </span>' +
-	    '   </div>' +
+	    PanelHeading +
+	    PanelBody +
 	    ' </div>' +
 	    '</div>';
 	  Template.set('Panel', PanelTemplate);
@@ -248,11 +257,11 @@
 	var Config = {
 	  BASEBALLCARD: {
 	    TEST: {
-	      FLAG_PIC:'../src/js/Test/img/ra-flag.png',
+	      FLAG_PIC:'../src/Test/img/ra-flag.png',
 	      COUNTRY: 'RA',
 	      TRACK: {
 	        CLASSIFICATION: 'UNCLASSIFIED',
-	        IMAGE: '../src/js/Test/img/ship.jpg',
+	        IMAGE: '../src/Test/img/ship.jpg',
 	        FLAG: 'RA',
 	        NAME: 'Millennium Falcon',
 	        HOME_PORT: 'Corellia',
@@ -587,9 +596,9 @@
 	  'use strict';
 	  return this.element.hasOwnProperty(attribute);
 	};
-	Element.prototype.setAttribute = function(key, value) {
+	Element.prototype.setAttribute = function(name, value) {
 	  'use strict';
-	  this.element.setAttribute(key, value);
+	  this.element.setAttribute(name, value);
 	  return this;
 	};
 	Element.prototype.removeAttribute = function(key) {
@@ -601,7 +610,7 @@
 	  'use strict';
 	  var self = this;
 	  _attributes.forEach(function(_attribute) {
-	    self.setAttribute(_attribute.key, _attribute.value);
+	    self.setAttribute(_attribute.name, _attribute.value);
 	  });
 	  return this;
 	};
@@ -976,7 +985,7 @@
 	ElementManager.prototype.toArray = function(list) {
 	  'use strict';
 	  var array = [];
-	  for (var i = list.length >>> 0; i--;) { 
+	  for (var i = list.length >>> 0; i--;) {
 	    array[i] = list[i];
 	  }
 	  return array;
@@ -989,6 +998,17 @@
 	    obj[key] = list[key];
 	  }
 	  return obj;
+	};
+	ElementManager.prototype.toFilterArray = function(list, excludes) {
+	  'use strict';
+	  var array = [];
+	  for (var i = list.length >>> 0; i--;) {
+	    if(excludes.includes(list[i])) {
+	      continue;
+	    }
+	    array[i] = list[i];
+	  }
+	  return array;
 	};
 	// Creation operations
 	ElementManager.prototype.create = function(key, options) {
@@ -1034,7 +1054,7 @@
 	  var options = new ElementOptions();
 	  options
 	    .setType(element.tagName.toLowerCase())
-	    .setAttributes(this.toArray(element.attributes))
+	    .setAttributes(this.toFilterArray(element.attributes, ['class', 'style']))
 	    .setStyle(this.toObject(element.style))
 	    .setClasses(this.toArray(element.classList));
 	  if(element.textContent && element.tagName === 'text') {

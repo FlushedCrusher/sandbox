@@ -10,18 +10,18 @@ var EventList = require('./EventList.js');
 function EventOptions() {
   'use strict';
 }
-EventOptions.prototype.get = function(key) {
+EventOptions.prototype.get = function(name) {
   'use strict';
   var action = null;
-  if(EventList.includes(key)) {
-    action = this[key];
+  if(EventList.includes(name)) {
+    action = this[name];
   }
   return action;
 };
-EventOptions.prototype.set = function(key, action) {
+EventOptions.prototype.set = function(name, action) {
   'use strict';
-  if(EventList.includes(key)) {
-    this[key] = action;
+  if(EventList.includes(name)) {
+    this[name] = action;
   }
   return this;
 };
@@ -37,11 +37,11 @@ EventOptions.prototype._clone = function(obj) {
         return obj;
     }
     var temp = new obj.constructor();
-    for (var key in obj) {
-      if (!obj.hasOwnProperty(key)) {
+    for (var name in obj) {
+      if (!obj.hasOwnProperty(name)) {
         continue;
       }
-        temp[key] = self._clone(obj[key]);
+        temp[name] = self._clone(obj[name]);
     }
     return temp;
 };
