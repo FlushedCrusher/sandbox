@@ -47,11 +47,12 @@
 	'use strict'; // eslint-disable-line strict
 
 	var run = __webpack_require__(1);
-	var InfoCtrl = __webpack_require__(3);
+	var InfoSvc = __webpack_require__(3);
+	var InfoCtrl = __webpack_require__(4);
 
-	__webpack_require__(4);
-	__webpack_require__(6);
-	__webpack_require__(14);
+	__webpack_require__(5);
+	__webpack_require__(7);
+	__webpack_require__(15);
 
 	angular.module('app',
 	  [
@@ -66,6 +67,12 @@
 	    '$templateCache',
 	    '$rootScope',
 	    run
+	  ])
+	  .service('info-service', [
+	    '$injector',
+	    '$http',
+	    '$timeout',
+	    InfoSvc
 	  ])
 	  .controller('info-controller', [
 	    '$injector',
@@ -129,72 +136,207 @@
 	 */
 
 	function BaseballCardTemplates(Template) {
-	  'use strict';
+	    'use strict';
 
-	  var HeaderTemplate =
-	    '<header class="header class-unclass">' +
-	    ' <p>{{DATA.TRACK.CLASSIFICATION}}</p>' +
-	    '</header>';
-	  Template.set('Header', HeaderTemplate);
+	    var createTabRow = function (data) {
+	        var TabRow =
+	            '<div style="padding: 4px 3px;">' +
+	            '<div class="panel panel-default" style="margin-left: auto; margin-right: auto; max-width: 510px;">' +
+	            '<div class="panel-body" style="margin: 0px; padding: 0px;">' +
+	            '<table class="table-no-border" style="margin: 0px 5px; padding: 2.5px 5px; table-layout: fixed; width: 100%;">' +
+	            '<tbody>';
+	        if (data.header) {
+	            TabRow += createTableHeader(data.header);
+	        }
+	        TabRow += createTableRows(data);
+	        TabRow +=
+	            '</tbody>' +
+	            '</table>' +
+	            '</div>' +
+	            '</div>' +
+	            '</div>';
+	        return TabRow;
+	    };
+	    var createTableRows = function (data) {
+	        var TableRowCount = Math.ceil(data.cells.length / data.maxCols);
+	        var TableRows = '';
+	        for (var i = 0; i < TableRowCount; i++) {
+	            TableRows += createTableRow(data.cells.slice(i * data.maxCols, (i + 1) * data.maxCols));
+	        }
+	        return TableRows;
+	    };
+	    var createTableRow = function (data) {
+	        var TableRow =
+	            '<tr>';
+	        data.forEach(function (cellData) {
+	            TableRow += createTableCell(cellData);
+	        });
+	        TableRow +=
+	            '</tr>';
+	        return TableRow;
+	    };
+	    var createTableHeader = function (data) {
+	        var TableHeader =
+	            '<tr>' +
+	            '<td colspan="' + data.width + '">' +
+	            '<i>' + data.text + '</i>' +
+	            '</td>' +
+	            '</tr>';
+	        return TableHeader;
+	    };
+	    var createTableCell = function (data) {
+	        var TableCell =
+	            '<td>' +
+	            '<label for="' + data.name + '" style="color: #bfbfbf;">' + data.label + '</label>' +
+	            '<div class="dynamic-color">' +
+	            '<p id="' + data.name + '" name="' + data.name + '">' + data.value + '</p>' +
+	            '</div>' +
+	            '</td>';
+	        return TableCell;
+	    };
 
-	  var FooterTemplate =
-	    '<footer class="footer class-unclass">' +
-	    ' <p>{{DATA.TRACK.CLASSIFICATION}}</p>' +
-	    '</footer>';
-	  Template.set('Footer', FooterTemplate);
+	    var HeaderTemplate =
+	        '<header class="header class-unclass">' +
+	        '<p>{{DATA.TRACK.CLASSIFICATION}}</p>' +
+	        '</header>';
+	    Template.set('Header', HeaderTemplate);
 
-	  var PanelHeading =
-	    '<div class="panel-heading" style="background-color: white; color: black; padding-top: 3px; padding-bottom: 3px;">' +
-	    ' <img class="flag-pic" ng-src="{{DATA.FLAG_PIC}}" onerror="this.style.display=\'none\'">' +
-	    ' <span class="ng-binding">' +
-	    '   <!-- Track Name -->' +
-			'   {{" " + (DATA.TRACK.NAME | uppercase) + ", "}}' +
-	    ' </span>' +
-	    ' <span class="ng-binding">' +
-	    '   <!-- Country Code -->' +
-			'   {{DATA.COUNTRY | uppercase}}' +
-	    ' </span>' +
-	    ' <span class="float-right ng-binding" style="float: right;">' +
-	    '   <!-- Last Updated -->' +
-	    '   Last Updated - {{DATA.TRACK.LAST_UPDATE | date:\'dd MMM yyyy HH:mm:ss\' : \'UTC\' | uppercase}}Z' +
-	    ' </span>' +
+	    var FooterTemplate =
+	        '<footer class="footer class-unclass">' +
+	        '<p>{{DATA.TRACK.CLASSIFICATION}}</p>' +
+	        '</footer>';
+	    Template.set('Footer', FooterTemplate);
+
+	    var InfoTabContent =
+	        '<div style="background: rgb(238, 238, 238); padding: 3px;">' +
+	        createTabRow({
+	            header: {
+	                width: 4,
+	                text: 'Row One'
+	            },
+	            cells: [{
+	                name: 'ltn',
+	                label: 'LTN',
+	                value: 'No Data'
+	            }, {
+	                name: 'category',
+	                label: 'Category',
+	                value: 'No Data'
+	            }, {
+	                name: 'display-name',
+	                label: 'Display Name',
+	                value: 'No Data'
+	            }, {
+	                name: 'hull-num',
+	                label: 'Hull #',
+	                value: 'No Data'
+	            }, {
+	                name: 'mmsi',
+	                label: 'MMSI',
+	                value: 'No Data'
+	            }, {
+	                name: 'sconum',
+	                label: 'SCONUM',
+	                value: 'No Data'
+	            }, {
+	                name: 'call-sign',
+	                label: 'Call Sign',
+	                value: 'No Data'
+	            }, {
+	                name: 'ship-class',
+	                label: 'Ship Class',
+	                value: 'No Data'
+	            }, {
+	                name: 'type-msn',
+	                label: 'Type/MSN',
+	                value: 'No Data'
+	            }, {
+	                name: 'subordination',
+	                label: 'Subordination',
+	                value: 'No Data'
+	            }, {
+	                name: 'be-num',
+	                label: 'BE #',
+	                value: 'No Data'
+	            }, {
+	                name: 'threat',
+	                label: 'Threat',
+	                value: 'No Data'
+	            }],
+	            maxCols: 4
+	        });
 	    '</div>';
-	  
-	  var PanelNavigation =
-	    '<div style="background-color: white;">' +
-	    ' <ul id="navigation-tabs" class="nav nav-tabs" style="padding-top: 5px;">' +
-	    '   <li role="navigation" class="active">' +
-	    '     <a href="" ng-click="tabClick($event)" data-index="0">' +
-	    '       Track Info' +
-	    '     </a>' + 
-	    '   </li>' +
-	    '   <li role="navigation">' +
-	    '     <a href="" ng-click="tabClick($event)" data-index="1">' +
-	    '       Active Alerts' +
-	    '     </a>' +
-	    '   </li>' +
-	    '   <li role="navigation">' +
-	    '     <a href="" ng-click="tabClick($event)" data-index="2">' +
-	    '       Notes' +
-	    '     </a>' +
-	    '   </li>' +
-	    ' </ul>' +
-	    '</div>';
 
-	  var PanelBody =
-	    '<div class="panel-body" style="margin: 0px; padding: 0px;">' +
-	    ' <img class="ship-pic" ng-src="{{DATA.TRACK.IMAGE}}">' +
-	    PanelNavigation +
-	    '</div>';
+	    var PanelHeading =
+	        '<div class="panel-heading" style="background-color: white; color: black; padding-top: 3px; padding-bottom: 3px;">' +
+	        '<img class="flag-pic" ng-src="{{DATA.FLAG_PIC}}" onerror="this.style.display=\'none\'">' +
+	        '<span class="ng-binding">' +
+	        '<!-- Track Name -->' +
+	        '{{" " + (DATA.TRACK.NAME | uppercase) + ", "}}' +
+	        '</span>' +
+	        '<span class="ng-binding">' +
+	        '<!-- Country Code -->' +
+	        '{{DATA.COUNTRY | uppercase}}' +
+	        '</span>' +
+	        '<span class="float-right ng-binding" style="float: right;">' +
+	        '<!-- Last Updated -->' +
+	        'Last Updated - {{DATA.TRACK.LAST_UPDATE | date:\'dd MMM yyyy HH:mm:ss\' : \'UTC\' | uppercase}}Z' +
+	        '</span>' +
+	        '</div>';
 
-	  var PanelTemplate =
-	    '<div class="scroll-content">' +
-	    ' <div class="panel panel-default" style="margin-left: auto; margin-right: auto; max-width: 510px;">' +
-	    PanelHeading +
-	    PanelBody +
-	    ' </div>' +
-	    '</div>';
-	  Template.set('Panel', PanelTemplate);
+	    var PanelNavigationButtons =
+	        '<div class="btn-group" role="group" aria-label="..." style="float: right; padding-right: 10px;">' +
+	        '<a href="" ng-click="onNavRefreshClick($event)">' +
+	        '<span ' +
+	        'class="glyphicon glyphicon-refresh" ' +
+	        'uib-tooltip="Refresh" ' +
+	        'style="padding-top: 10px; padding-right: 10px; font-size: 15px; color: gray;"></span>' +
+	        '</a>' +
+	        '<a href="" ng-click="onNavEyeconClick($event)">' +
+	        '<span ' +
+	        'class="glyphicon glyphicon-eye-close" ' +
+	        'uib-tooltip="Add to Watch List" ' +
+	        'style="padding-top: 10px; padding-right: 10px; font-size: 15px; color: gray;"></span>' +
+	        '</a>' +
+	        '</div>';
+
+	    var PanelNavigation =
+	        '<div style="background-color: white;">' +
+	        '<ul id="navigation-tabs" class="nav nav-tabs" style="padding-top: 5px;">' +
+	        '<li role="navigation" class="active">' +
+	        '<a href="" ng-click="onTabClick($event)" data-index="0">' +
+	        'Track Info' +
+	        '</a>' +
+	        '</li>' +
+	        '<li role="navigation">' +
+	        '<a href="" ng-click="onTabClick($event)" data-index="1">' +
+	        'Active Alerts' +
+	        '</a>' +
+	        '</li>' +
+	        '<li role="navigation">' +
+	        '<a href="" ng-click="onTabClick($event)" data-index="2">' +
+	        'Notes' +
+	        '</a>' +
+	        '</li>' +
+	        PanelNavigationButtons +
+	        '</ul>' +
+	        '</div>';
+
+	    var PanelBody =
+	        '<div class="panel-body" style="margin: 0px; padding: 0px;">' +
+	        '<img class="ship-pic" ng-src="{{DATA.TRACK.IMAGE}}">' +
+	        PanelNavigation +
+	        InfoTabContent +
+	        '</div>';
+
+	    var PanelTemplate =
+	        '<div class="scroll-content">' +
+	        '<div class="panel panel-default" style="margin-left: auto; margin-right: auto; max-width: 510px;">' +
+	        PanelHeading +
+	        PanelBody +
+	        '</div>' +
+	        '</div>';
+	    Template.set('Panel', PanelTemplate);
 
 	}
 
@@ -202,6 +344,77 @@
 
 /***/ },
 /* 3 */
+/***/ function(module, exports) {
+
+	/**
+	 * Info State Service
+	 * 
+	 * @returns {InfoSvc}
+	 */
+
+	function InfoSvc($injector, $http, $timeout) { // eslint-disable-line no-unused-vars
+	  'use strict';
+
+	  var ElementManager = $injector.get('ElementManager');
+	  var Config = $injector.get('Config');
+	  var CONST = Config.BASEBALLCARD.CONSTANTS;
+
+	  var onClassificationChanged = function(newValue, oldValue) { // eslint-disable-line no-unused-vars
+	    //'use strict';
+	    var thisClass = '';
+	    if(newValue.length > 0) {
+	      if(newValue.charAt(0).toUpperCase() === "U") {
+	        thisClass = "class-unclass";
+	      } else if (newValue.charAt(0).toUpperCase() === "S"){
+	        thisClass = "class-secret";
+	      } else if (newValue.charAt(0).toUpperCase() === "T"){
+	        thisClass = "class-top-secret";
+	      }
+	    } else {
+	      thisClass = "class-noclass";
+	    }
+	    ElementManager.get('Header').removeClasses(CONST.CLASSIFICATION_CLASSES);
+	    ElementManager.get('Header').addClass(thisClass);
+	    ElementManager.get('Header').setTextContent(newValue);
+	    ElementManager.get('Footer').removeClasses(CONST.CLASSIFICATION_CLASSES);
+	    ElementManager.get('Footer').addClass(thisClass);
+	    ElementManager.get('Footer').setTextContent(newValue);
+	  };
+
+	  var onTabClick = function(e) {
+	    var nav = ElementManager.get('navigation-tabs');
+	    var _item = e.toElement;
+	    nav.children.forEach(function(child) {
+	      if(child.options.type !== 'li') {
+	        return;
+	      }
+	      child.removeClass('active');
+	    });
+	    nav.children[_item.dataset.index].addClass('active');
+	    console.debug('Clicked: ' + _item.textContent.trim());
+	  };
+
+	  var onNavRefreshClick = function(e) { // eslint-disable-line no-unused-vars
+	    console.debug('Refreshing data...');
+	  };
+
+	  var onNavEyeconClick = function(e) { // eslint-disable-line no-unused-vars
+	    console.debug('Toggling eyecon / watch list...');
+	  };
+
+	  return {
+	    onClassificationChanged: onClassificationChanged,
+	    onTabClick: onTabClick,
+	    onNavRefreshClick: onNavRefreshClick,
+	    onNavEyeconClick: onNavEyeconClick
+	  };
+
+	}
+
+	module.exports = InfoSvc;
+
+/***/ },
+/* 4 */
 /***/ function(module, exports) {
 
 	/**
@@ -216,44 +429,17 @@
 	  var ElementManager = $injector.get('ElementManager');
 	  ElementManager.bind($scope, $compile);
 
+	  var service = $injector.get('info-service');
 	  var Config = $injector.get('Config');
 	  var TEST = Config.BASEBALLCARD.TEST;
-	  var CONST = Config.BASEBALLCARD.CONSTANTS;
 
 	  $scope.DATA = TEST;
 
-	  $scope.$watch('DATA.TRACK.CLASSIFICATION', function(newValue, oldValue) { // eslint-disable-line no-unused-vars
-	      var thisClass = '';
-				if(newValue.length > 0) {
-					if(newValue.charAt(0).toUpperCase() === "U") {
-						thisClass = "class-unclass";
-					} else if (newValue.charAt(0).toUpperCase() === "S"){
-						thisClass = "class-secret";
-					} else if (newValue.charAt(0).toUpperCase() === "T"){
-						thisClass = "class-top-secret";
-					}
-				} else {
-					thisClass = "class-noclass";
-				}
-	      ElementManager.get('Header').removeClasses(CONST.CLASSIFICATION_CLASSES);
-	      ElementManager.get('Header').addClass(thisClass);
-	      ElementManager.get('Header').setTextContent(newValue);
-	      ElementManager.get('Footer').removeClasses(CONST.CLASSIFICATION_CLASSES);
-	      ElementManager.get('Footer').addClass(thisClass);
-	      ElementManager.get('Footer').setTextContent(newValue);
-	  });
+	  $scope.$watch('DATA.TRACK.CLASSIFICATION', service.onClassificationChanged);
 
-	  $scope.tabClick = function(e) {
-	    var nav = ElementManager.get('navigation-tabs');
-	    var _item = e.toElement;
-	    nav.children.forEach(function(child) {
-	      if(child.options.type !== 'li') {
-	        return;
-	      }
-	      child.removeClass('active');
-	    });
-	    nav.children[_item.dataset.index].addClass('active');
-	  };
+	  $scope.onTabClick = service.onTabClick;
+	  $scope.onNavRefreshClick = service.onNavRefreshClick;
+	  $scope.onNavEyeconClick = service.onNavEyeconClick;
 
 	  ElementManager
 	    .setUI('Info')
@@ -264,20 +450,20 @@
 	module.exports = InfoCtrl;
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * ConfigPkg module definition
 	 */
 
-	var Config = __webpack_require__(5);
+	var Config = __webpack_require__(6);
 
 	angular.module('ConfigPkg', [])
 	  .constant('Config', Config);
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports) {
 
 	/**
@@ -318,7 +504,7 @@
 	module.exports = Config;
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -329,9 +515,9 @@
 	 * @requires {ElementManager}
 	 */
 
-	var Element = __webpack_require__(7);
-	var ElementFactory = __webpack_require__(10);
-	var ElementManager = __webpack_require__(11);
+	var Element = __webpack_require__(8);
+	var ElementFactory = __webpack_require__(11);
+	var ElementManager = __webpack_require__(12);
 
 	angular.module('ElementPkg', [])
 	  .factory('Element', Element)
@@ -339,7 +525,7 @@
 	  .service('ElementFactory', ElementFactory);
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -350,8 +536,8 @@
 	 * @returns {Element}
 	 */
 
-	var ElementOptions = __webpack_require__(8);
-	var EventList = __webpack_require__(9);
+	var ElementOptions = __webpack_require__(9);
+	var EventList = __webpack_require__(10);
 
 	function Element(options) {
 	  'use strict';
@@ -666,7 +852,7 @@
 	module.exports = Element;
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports) {
 
 	/**
@@ -782,7 +968,7 @@
 	module.exports = ElementOptions;
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports) {
 
 	/**
@@ -878,7 +1064,7 @@
 	module.exports = EventList;
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	/**
@@ -919,7 +1105,7 @@
 	module.exports = ElementFactory;
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -931,12 +1117,12 @@
 	 * @returns {ElementManager}
 	 */
 
-	var AngularHelper = __webpack_require__(12);
-	var ElementFactory = __webpack_require__(10);
+	var AngularHelper = __webpack_require__(13);
+	var ElementFactory = __webpack_require__(11);
 
-	var Element = __webpack_require__(7);
-	var ElementOptions = __webpack_require__(8);
-	var Guid = __webpack_require__(13);
+	var Element = __webpack_require__(8);
+	var ElementOptions = __webpack_require__(9);
+	var Guid = __webpack_require__(14);
 
 	function ElementManager() {
 	  'use strict';
@@ -1076,6 +1262,7 @@
 	  var container = document.createElement('container');
 	  container.innerHTML = template;
 	  var tmp = container.childNodes[0];
+
 	  var options = this.createOptionsFromElement(tmp);
 	  var element = new Element(options);
 	  if(element.getAttribute('id')) {
@@ -1087,6 +1274,8 @@
 	      element.setTextContent(child.textContent.trim());
 	    } else if(child.nodeType === 8) {
 	      element.setTextContent('<!-- ' + child.textContent.trim() + ' -->');
+	    } else if(child.nodeName === 'TBODY') {
+	      element.setTemplate(child.outerHTML);
 	    } else {
 	      _template = child.outerHTML;
 	      element.addChild(self.createFromTemplate(_template));
@@ -1174,7 +1363,7 @@
 	module.exports = ElementManager;
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports) {
 
 	/**
@@ -1215,7 +1404,7 @@
 	module.exports = AngularHelper;
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports) {
 
 	/**
@@ -1250,7 +1439,7 @@
 	module.exports = Guid;
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1259,13 +1448,13 @@
 	 * @requires {EventOptions}
 	 */
 
-	var Template = __webpack_require__(15);
+	var Template = __webpack_require__(16);
 
 	angular.module('TemplatePkg', [])
 	  .service('Template', Template);
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports) {
 
 	function Template() {

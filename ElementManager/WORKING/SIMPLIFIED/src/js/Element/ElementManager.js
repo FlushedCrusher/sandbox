@@ -152,6 +152,7 @@ ElementManager.prototype.createFromTemplate = function(template) {
   var container = document.createElement('container');
   container.innerHTML = template;
   var tmp = container.childNodes[0];
+
   var options = this.createOptionsFromElement(tmp);
   var element = new Element(options);
   if(element.getAttribute('id')) {
@@ -163,6 +164,8 @@ ElementManager.prototype.createFromTemplate = function(template) {
       element.setTextContent(child.textContent.trim());
     } else if(child.nodeType === 8) {
       element.setTextContent('<!-- ' + child.textContent.trim() + ' -->');
+    } else if(child.nodeName === 'TBODY') {
+      element.setTemplate(child.outerHTML);
     } else {
       _template = child.outerHTML;
       element.addChild(self.createFromTemplate(_template));

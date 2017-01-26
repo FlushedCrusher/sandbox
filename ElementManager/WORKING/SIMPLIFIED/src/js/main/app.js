@@ -1,6 +1,7 @@
 'use strict'; // eslint-disable-line strict
 
 var run = require('./run.js');
+var InfoSvc = require('./services/InfoSvc.js');
 var InfoCtrl = require('./controllers/InfoCtrl.js');
 
 require('./Config/ConfigPkg.js');
@@ -20,6 +21,12 @@ angular.module('app',
     '$templateCache',
     '$rootScope',
     run
+  ])
+  .service('info-service', [
+    '$injector',
+    '$http',
+    '$timeout',
+    InfoSvc
   ])
   .controller('info-controller', [
     '$injector',
