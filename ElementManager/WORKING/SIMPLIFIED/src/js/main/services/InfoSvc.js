@@ -32,7 +32,6 @@ function InfoSvc($injector, $http, $timeout) { // eslint-disable-line no-unused-
     ElementManager.get('Footer').addClass(thisClass);
     ElementManager.get('Footer').setTextContent(newValue);
   };
-
   var onTabClick = function(e) {
     var nav = ElementManager.get('navigation-tabs');
     var _item = e.toElement;
@@ -45,20 +44,28 @@ function InfoSvc($injector, $http, $timeout) { // eslint-disable-line no-unused-
     nav.children[_item.dataset.index].addClass('active');
     console.debug('Clicked: ' + _item.textContent.trim());
   };
-
   var onNavRefreshClick = function(e) { // eslint-disable-line no-unused-vars
     console.debug('Refreshing data...');
   };
-
   var onNavEyeconClick = function(e) { // eslint-disable-line no-unused-vars
     console.debug('Toggling eyecon / watch list...');
+  };
+  var popData = function() {
+    $(document).ready(function(){
+      $('.dynamic-color > p').each(function(){
+        if ($(this).text().trim() !== 'No Data') {
+          $(this).css('color','black');
+        }
+      });
+    });
   };
 
   return {
     onClassificationChanged: onClassificationChanged,
     onTabClick: onTabClick,
     onNavRefreshClick: onNavRefreshClick,
-    onNavEyeconClick: onNavEyeconClick
+    onNavEyeconClick: onNavEyeconClick,
+    popData: popData
   };
 
 }

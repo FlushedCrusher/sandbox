@@ -21,6 +21,7 @@ function InfoCtrl($injector, $compile, $templatecache, $timeout, $scope) {
   $scope.onTabClick = service.onTabClick;
   $scope.onNavRefreshClick = service.onNavRefreshClick;
   $scope.onNavEyeconClick = service.onNavEyeconClick;
+  $timeout(service.popData, 500);
 
   ElementManager
     .setUI('Info')
