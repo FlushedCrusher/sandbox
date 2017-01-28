@@ -52,14 +52,17 @@ function BaseballCardTemplates(Template) {
       '<div class="btn-group" role="group" aria-label="..." style="' + Styles.PanelNavigationButtonGroupStyle + '">' +
       '<a href="" ng-click="onNavRefreshClick($event)">' +
       '<span ' +
-      'class="glyphicon glyphicon-refresh" ' +
+      'id="nav-refresh"' +
+      'class="glyphicon glyphicon-refresh btn-hover" ' +
       'uib-tooltip="Refresh" ' +
       'style="' + Styles.PanelNavigationButtonStyle + '"></span>' +
       '</a>' +
       '<a href="" ng-click="onNavEyeconClick($event)">' +
       '<span ' +
-      'class="glyphicon glyphicon-eye-close" ' +
-      'uib-tooltip="Add to Watch List" ' +
+      'id="nav-eyecon"' +
+      'class="glyphicon glyphicon-eye-close btn-hover" ' +
+      'ng-mouseover="getEyeConTip()" ' +
+      'data-uib-tooltip-html="eyeconTip" ' +
       'style="' + Styles.PanelNavigationButtonStyle + '"></span>' +
       '</a>' +
       '</div>';

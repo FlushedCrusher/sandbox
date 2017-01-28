@@ -2,7 +2,8 @@
 
 var run = require('./run.js');
 var InfoSvc = require('./services/InfoSvc.js');
-var TrackService = require('./services/external/TrackService.js');
+var TrackSvc = require('./services/external/TrackSvc.js');
+var WatchListSvc = require('./services/external/WatchListSvc.js');
 var InfoCtrl = require('./controllers/InfoCtrl.js');
 
 require('./config/ConfigPkg.js');
@@ -23,20 +24,26 @@ angular.module('app',
     '$rootScope',
     run
   ])
-  .service('TrackService', [
-    TrackService
+  .service('ex-track-service', [
+    '$http',
+    '$q',
+    TrackSvc
+  ])
+  .service('ex-watch-list-service', [
+    '$http',
+    '$q',
+    WatchListSvc
   ])
   .service('info-service', [
     '$injector',
-    '$http',
     '$timeout',
     '$interval',
-    'TrackService',
     InfoSvc
   ])
   .controller('info-controller', [
     '$injector',
     '$compile',
+    '$sce',
     '$scope',
     InfoCtrl
   ]);

@@ -13,6 +13,8 @@ var Config = {
       DATA: TestData,
     },
     CONSTANTS: {
+      EYECON_ADD_TIP: 'Add to Watch List.',
+      EYECON_REMOVE_TIP: 'Remove from Watch List.',
       CLASSIFICATION_CLASSES: [
         'class-noclass',
         'class-unclass',

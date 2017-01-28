@@ -6,15 +6,36 @@
 
 /* global $ */
 
-function InfoSvc($injector, $http, $timeout, $interval, TrackService) { // eslint-disable-line no-unused-vars
+function InfoSvc($injector, $timeout, $interval) { // eslint-disable-line no-unused-vars
   'use strict';
 
   var ElementManager = $injector.get('ElementManager');
   var Config = $injector.get('Config');
+  var exTrackService = $injector.get('ex-track-service');
+  var exWatchListSvc = $injector.get('ex-watch-list-service');
   var CONST = Config.BASEBALLCARD.CONSTANTS;
 
   var _timeDelayCalculator = undefined;
 
+  var _popData = function() {
+    $(document).ready(function(){
+      $('.dynamic-color > p').each(function(){
+        if ($(this).text().trim() !== 'No Data') {
+          $(this).css('color', 'black');
+        }
+      });
+    });
+  };
+  var isWatched = function() {
+    return exWatchListSvc.isWatched();
+  };
+  var _toggleWatched = function() {
+    exWatchListSvc.toggleWatched();
+  };
+
+  var getTrackData = function() {
+    return exTrackService.getTrackData();
+  };
   var onClassificationChanged = function(newValue, oldValue) { // eslint-disable-line no-unused-vars
     //'use strict';
     var thisClass = 'class-noclass';
@@ -34,6 +55,21 @@ function InfoSvc($injector, $http, $timeout, $interval, TrackService) { // eslin
     ElementManager.get('Footer').addClass(thisClass);
     ElementManager.get('Footer').setTextContent(newValue);
   };
+  var startTimeDelayCaluculator = function(toDo, every) {
+    if(_timeDelayCalculator) {
+      return;
+    }
+    _timeDelayCalculator = $interval(toDo, every);
+  };
+  var stopTimeDelayCaluculator = function() {
+    if(_timeDelayCalculator) {
+      $interval.cancel(_timeDelayCalculator);
+      _timeDelayCalculator = undefined;
+    }
+  };
+  var popDataOnDelay = function() {
+    $timeout(_popData, 500);
+  };
   var onTabClick = function(e) {
     var nav = ElementManager.get('navigation-tabs');
     var _item = e.toElement;
@@ -51,33 +87,21 @@ function InfoSvc($injector, $http, $timeout, $interval, TrackService) { // eslin
   };
   var onNavEyeconClick = function(e) { // eslint-disable-line no-unused-vars
     console.debug('Toggling eyecon / watch list...');
+    _toggleWatched();
+    setEyeCon();
   };
-  var popDataOnDelay = function() {
-    $timeout(_popData, 500);
-  };
-  var _popData = function() {
-    $(document).ready(function(){
-      $('.dynamic-color > p').each(function(){
-        if ($(this).text().trim() !== 'No Data') {
-          $(this).css('color', 'black');
-        }
-      });
-    });
-  };
-  var getTrackData = function() {
-    return TrackService.getTrackData();
-  };
-  var startTimeDelayCaluculator = function(toDo, every) {
-    if(_timeDelayCalculator) {
-      return;
+  var setEyeCon = function() {
+    if(isWatched()) {
+      ElementManager.get('nav-eyecon').removeClass('glyphicon-eye-close');
+      ElementManager.get('nav-eyecon').addClass('glyphicon-eye-open');
+    } else {
+      ElementManager.get('nav-eyecon').removeClass('glyphicon-eye-open');
+      ElementManager.get('nav-eyecon').addClass('glyphicon-eye-close');
     }
-    _timeDelayCalculator = $interval(toDo, every);
+
   };
-  var stopTimeDelayCaluculator = function() {
-    if(_timeDelayCalculator) {
-      $interval.cancel(_timeDelayCalculator);
-      _timeDelayCalculator = undefined;
-    }
+  var getEyeConTip = function() {
+    return exWatchListSvc.getEyeConTip();
   };
 
   return {
@@ -88,7 +112,10 @@ function InfoSvc($injector, $http, $timeout, $interval, TrackService) { // eslin
     popDataOnDelay: popDataOnDelay,
     getTrackData: getTrackData,
     startTimeDelayCaluculator: startTimeDelayCaluculator,
-    stopTimeDelayCaluculator: stopTimeDelayCaluculator
+    stopTimeDelayCaluculator: stopTimeDelayCaluculator,
+    isWatched: isWatched,
+    setEyeCon: setEyeCon,
+    getEyeConTip: getEyeConTip
   };
 
 }

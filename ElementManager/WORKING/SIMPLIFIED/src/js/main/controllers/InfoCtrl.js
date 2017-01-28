@@ -4,7 +4,7 @@
  * @returns {InfoCtrl}
  */
 
-function InfoCtrl($injector, $compile, $scope) {
+function InfoCtrl($injector, $compile, $sce, $scope) {
   'use strict';
 
   var ElementManager = $injector.get('ElementManager');
@@ -28,6 +28,10 @@ function InfoCtrl($injector, $compile, $scope) {
   $scope.onTabClick = service.onTabClick;
   $scope.onNavRefreshClick = service.onNavRefreshClick;
   $scope.onNavEyeconClick = service.onNavEyeconClick;
+  $scope.eyeconTip = '';
+  $scope.getEyeConTip = function() {
+    $scope.eyeconTip = $sce.trustAsHtml(service.getEyeConTip());
+  };
   
   var _setTimeDelay = function() {
     $scope.TRACK.setTimeDelay();

@@ -48,12 +48,13 @@
 
 	var run = __webpack_require__(1);
 	var InfoSvc = __webpack_require__(7);
-	var TrackService = __webpack_require__(8);
-	var InfoCtrl = __webpack_require__(12);
+	var TrackSvc = __webpack_require__(8);
+	var WatchListSvc = __webpack_require__(12);
+	var InfoCtrl = __webpack_require__(13);
 
-	__webpack_require__(13);
 	__webpack_require__(14);
-	__webpack_require__(22);
+	__webpack_require__(15);
+	__webpack_require__(23);
 
 	angular.module('app',
 	  [
@@ -69,20 +70,26 @@
 	    '$rootScope',
 	    run
 	  ])
-	  .service('TrackService', [
-	    TrackService
+	  .service('ex-track-service', [
+	    '$http',
+	    '$q',
+	    TrackSvc
+	  ])
+	  .service('ex-watch-list-service', [
+	    '$http',
+	    '$q',
+	    WatchListSvc
 	  ])
 	  .service('info-service', [
 	    '$injector',
-	    '$http',
 	    '$timeout',
 	    '$interval',
-	    'TrackService',
 	    InfoSvc
 	  ])
 	  .controller('info-controller', [
 	    '$injector',
 	    '$compile',
+	    '$sce',
 	    '$scope',
 	    InfoCtrl
 	  ]);
@@ -186,14 +193,17 @@
 	      '<div class="btn-group" role="group" aria-label="..." style="' + Styles.PanelNavigationButtonGroupStyle + '">' +
 	      '<a href="" ng-click="onNavRefreshClick($event)">' +
 	      '<span ' +
-	      'class="glyphicon glyphicon-refresh" ' +
+	      'id="nav-refresh"' +
+	      'class="glyphicon glyphicon-refresh btn-hover" ' +
 	      'uib-tooltip="Refresh" ' +
 	      'style="' + Styles.PanelNavigationButtonStyle + '"></span>' +
 	      '</a>' +
 	      '<a href="" ng-click="onNavEyeconClick($event)">' +
 	      '<span ' +
-	      'class="glyphicon glyphicon-eye-close" ' +
-	      'uib-tooltip="Add to Watch List" ' +
+	      'id="nav-eyecon"' +
+	      'class="glyphicon glyphicon-eye-close btn-hover" ' +
+	      'ng-mouseover="getEyeConTip()" ' +
+	      'data-uib-tooltip-html="eyeconTip" ' +
 	      'style="' + Styles.PanelNavigationButtonStyle + '"></span>' +
 	      '</a>' +
 	      '</div>';
@@ -474,15 +484,36 @@
 
 	/* global $ */
 
-	function InfoSvc($injector, $http, $timeout, $interval, TrackService) { // eslint-disable-line no-unused-vars
+	function InfoSvc($injector, $timeout, $interval) { // eslint-disable-line no-unused-vars
 	  'use strict';
 
 	  var ElementManager = $injector.get('ElementManager');
 	  var Config = $injector.get('Config');
+	  var exTrackService = $injector.get('ex-track-service');
+	  var exWatchListSvc = $injector.get('ex-watch-list-service');
 	  var CONST = Config.BASEBALLCARD.CONSTANTS;
 
 	  var _timeDelayCalculator = undefined;
 
+	  var _popData = function() {
+	    $(document).ready(function(){
+	      $('.dynamic-color > p').each(function(){
+	        if ($(this).text().trim() !== 'No Data') {
+	          $(this).css('color', 'black');
+	        }
+	      });
+	    });
+	  };
+	  var isWatched = function() {
+	    return exWatchListSvc.isWatched();
+	  };
+	  var _toggleWatched = function() {
+	    exWatchListSvc.toggleWatched();
+	  };
+
+	  var getTrackData = function() {
+	    return exTrackService.getTrackData();
+	  };
 	  var onClassificationChanged = function(newValue, oldValue) { // eslint-disable-line no-unused-vars
 	    //'use strict';
 	    var thisClass = 'class-noclass';
@@ -502,6 +533,21 @@
 	    ElementManager.get('Footer').addClass(thisClass);
 	    ElementManager.get('Footer').setTextContent(newValue);
 	  };
+	  var startTimeDelayCaluculator = function(toDo, every) {
+	    if(_timeDelayCalculator) {
+	      return;
+	    }
+	    _timeDelayCalculator = $interval(toDo, every);
+	  };
+	  var stopTimeDelayCaluculator = function() {
+	    if(_timeDelayCalculator) {
+	      $interval.cancel(_timeDelayCalculator);
+	      _timeDelayCalculator = undefined;
+	    }
+	  };
+	  var popDataOnDelay = function() {
+	    $timeout(_popData, 500);
+	  };
 	  var onTabClick = function(e) {
 	    var nav = ElementManager.get('navigation-tabs');
 	    var _item = e.toElement;
@@ -519,33 +565,21 @@
 	  };
 	  var onNavEyeconClick = function(e) { // eslint-disable-line no-unused-vars
 	    console.debug('Toggling eyecon / watch list...');
+	    _toggleWatched();
+	    setEyeCon();
 	  };
-	  var popDataOnDelay = function() {
-	    $timeout(_popData, 500);
-	  };
-	  var _popData = function() {
-	    $(document).ready(function(){
-	      $('.dynamic-color > p').each(function(){
-	        if ($(this).text().trim() !== 'No Data') {
-	          $(this).css('color', 'black');
-	        }
-	      });
-	    });
-	  };
-	  var getTrackData = function() {
-	    return TrackService.getTrackData();
-	  };
-	  var startTimeDelayCaluculator = function(toDo, every) {
-	    if(_timeDelayCalculator) {
-	      return;
+	  var setEyeCon = function() {
+	    if(isWatched()) {
+	      ElementManager.get('nav-eyecon').removeClass('glyphicon-eye-close');
+	      ElementManager.get('nav-eyecon').addClass('glyphicon-eye-open');
+	    } else {
+	      ElementManager.get('nav-eyecon').removeClass('glyphicon-eye-open');
+	      ElementManager.get('nav-eyecon').addClass('glyphicon-eye-close');
 	    }
-	    _timeDelayCalculator = $interval(toDo, every);
+
 	  };
-	  var stopTimeDelayCaluculator = function() {
-	    if(_timeDelayCalculator) {
-	      $interval.cancel(_timeDelayCalculator);
-	      _timeDelayCalculator = undefined;
-	    }
+	  var getEyeConTip = function() {
+	    return exWatchListSvc.getEyeConTip();
 	  };
 
 	  return {
@@ -556,7 +590,10 @@
 	    popDataOnDelay: popDataOnDelay,
 	    getTrackData: getTrackData,
 	    startTimeDelayCaluculator: startTimeDelayCaluculator,
-	    stopTimeDelayCaluculator: stopTimeDelayCaluculator
+	    stopTimeDelayCaluculator: stopTimeDelayCaluculator,
+	    isWatched: isWatched,
+	    setEyeCon: setEyeCon,
+	    getEyeConTip: getEyeConTip
 	  };
 
 	}
@@ -571,17 +608,17 @@
 	var GeoserverTrack = __webpack_require__(9);
 	var Config = __webpack_require__(10);
 
-	function TrackService() {
+	function TrackSvc($http, $q) {
 	  'use strict';
 	  this.isTest = Config.BASEBALLCARD.TEST.VALUE;
 	}
-	TrackService.prototype.getTrackData = function(data) {
+	TrackSvc.prototype.getTrackData = function(data) {
 	  'use strict';
 	  var _data = this.isTest ? Config.BASEBALLCARD.TEST.DATA : data;
 	  return new GeoserverTrack(_data);
 	};
 
-	module.exports = TrackService;
+	module.exports = TrackSvc;
 
 /***/ },
 /* 9 */
@@ -763,6 +800,8 @@
 	      DATA: TestData,
 	    },
 	    CONSTANTS: {
+	      EYECON_ADD_TIP: 'Add to Watch List.',
+	      EYECON_REMOVE_TIP: 'Remove from Watch List.',
 	      CLASSIFICATION_CLASSES: [
 	        'class-noclass',
 	        'class-unclass',
@@ -836,6 +875,48 @@
 
 /***/ },
 /* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var Config = __webpack_require__(10);
+	var CONST = Config.BASEBALLCARD.CONSTANTS;
+
+	function WatchListSvc($http, $q) {
+	  'use strict';
+	  this.watched = false;
+	  this.eyeConTip = CONST.EYECON_ADD_TIP;
+	}
+	WatchListSvc.prototype.getEyeConTip = function() {
+	  'use strict';
+	  return this.eyeConTip;
+	};
+	WatchListSvc.prototype.isWatched = function() {
+	  'use strict';
+	  return this.watched;
+	};
+	WatchListSvc.prototype.addToWatchList = function() {
+	  'use strict';
+	  this.eyeConTip = CONST.EYECON_REMOVE_TIP;
+	  this.watched = true;
+	  return this;
+	};
+	WatchListSvc.prototype.removeFromWatchList = function() {
+	  'use strict';
+	  this.eyeConTip = CONST.EYECON_ADD_TIP;
+	  this.watched = false;
+	  return this;
+	};
+	WatchListSvc.prototype.toggleWatched = function() {
+	  'use strict';
+	  this.eyeConTip = (this.eyeConTip === CONST.EYECON_ADD_TIP) ? CONST.EYECON_REMOVE_TIP : CONST.EYECON_ADD_TIP;
+	  this.watched = !this.watched;
+	  return this;
+	};
+
+	module.exports = WatchListSvc;
+
+/***/ },
+/* 13 */
 /***/ function(module, exports) {
 
 	/**
@@ -844,7 +925,7 @@
 	 * @returns {InfoCtrl}
 	 */
 
-	function InfoCtrl($injector, $compile, $scope) {
+	function InfoCtrl($injector, $compile, $sce, $scope) {
 	  'use strict';
 
 	  var ElementManager = $injector.get('ElementManager');
@@ -868,6 +949,10 @@
 	  $scope.onTabClick = service.onTabClick;
 	  $scope.onNavRefreshClick = service.onNavRefreshClick;
 	  $scope.onNavEyeconClick = service.onNavEyeconClick;
+	  $scope.eyeconTip = '';
+	  $scope.getEyeConTip = function() {
+	    $scope.eyeconTip = $sce.trustAsHtml(service.getEyeConTip());
+	  };
 	  
 	  var _setTimeDelay = function() {
 	    $scope.TRACK.setTimeDelay();
@@ -888,7 +973,7 @@
 	module.exports = InfoCtrl;
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -901,7 +986,7 @@
 	  .constant('Config', Config);
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -912,9 +997,9 @@
 	 * @requires {ElementManager}
 	 */
 
-	var Element = __webpack_require__(15);
-	var ElementFactory = __webpack_require__(18);
-	var ElementManager = __webpack_require__(19);
+	var Element = __webpack_require__(16);
+	var ElementFactory = __webpack_require__(19);
+	var ElementManager = __webpack_require__(20);
 
 	angular.module('ElementPkg', [])
 	  .factory('Element', Element)
@@ -922,7 +1007,7 @@
 	  .service('ElementFactory', ElementFactory);
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -933,8 +1018,8 @@
 	 * @returns {Element}
 	 */
 
-	var ElementOptions = __webpack_require__(16);
-	var EventList = __webpack_require__(17);
+	var ElementOptions = __webpack_require__(17);
+	var EventList = __webpack_require__(18);
 
 	function Element(options) {
 	  'use strict';
@@ -1249,7 +1334,7 @@
 	module.exports = Element;
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports) {
 
 	/**
@@ -1365,7 +1450,7 @@
 	module.exports = ElementOptions;
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports) {
 
 	/**
@@ -1461,7 +1546,7 @@
 	module.exports = EventList;
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports) {
 
 	/**
@@ -1502,7 +1587,7 @@
 	module.exports = ElementFactory;
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1514,12 +1599,12 @@
 	 * @returns {ElementManager}
 	 */
 
-	var AngularHelper = __webpack_require__(20);
-	var ElementFactory = __webpack_require__(18);
+	var AngularHelper = __webpack_require__(21);
+	var ElementFactory = __webpack_require__(19);
 
-	var Element = __webpack_require__(15);
-	var ElementOptions = __webpack_require__(16);
-	var Guid = __webpack_require__(21);
+	var Element = __webpack_require__(16);
+	var ElementOptions = __webpack_require__(17);
+	var Guid = __webpack_require__(22);
 
 	function ElementManager() {
 	  'use strict';
@@ -1760,7 +1845,7 @@
 	module.exports = ElementManager;
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports) {
 
 	/**
@@ -1801,7 +1886,7 @@
 	module.exports = AngularHelper;
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports) {
 
 	/**
@@ -1836,7 +1921,7 @@
 	module.exports = Guid;
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1845,13 +1930,13 @@
 	 * @requires {EventOptions}
 	 */
 
-	var Template = __webpack_require__(23);
+	var Template = __webpack_require__(24);
 
 	angular.module('TemplatePkg', [])
 	  .service('Template', Template);
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports) {
 
 	/**
