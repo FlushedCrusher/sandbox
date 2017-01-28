@@ -4,7 +4,7 @@
  * @returns {InfoCtrl}
  */
 
-function InfoCtrl($injector, $compile, $templatecache, $timeout, $scope) {
+function InfoCtrl($injector, $compile, $scope) {
   'use strict';
 
   var ElementManager = $injector.get('ElementManager');
@@ -28,8 +28,12 @@ function InfoCtrl($injector, $compile, $templatecache, $timeout, $scope) {
   $scope.onTabClick = service.onTabClick;
   $scope.onNavRefreshClick = service.onNavRefreshClick;
   $scope.onNavEyeconClick = service.onNavEyeconClick;
-  $timeout(service.popData, 500);
-  service.startTimeDelayCaluculator($scope.TRACK.setTimeDelay.bind($scope.TRACK), 1000);
+  
+  var _setTimeDelay = function() {
+    $scope.TRACK.setTimeDelay();
+  };
+  service.startTimeDelayCaluculator(_setTimeDelay, 1000);
+  service.popDataOnDelay();
 
   $scope.$on('$destroy', function() {
     service.stopTimeDelayCaluculator();

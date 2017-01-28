@@ -19,6 +19,7 @@ module.exports = function(grunt) {
         './commonjs/src/js/**/*.js',
         './angularjs/src/js/**/*.js',
         './WORKING/BaseballCard/src/js/**/*.js',
+        './WORKING/SIMPLIFIED/src/Test/**/*.js',
         './WORKING/SIMPLIFIED/src/js/**/*.js'
       ],
       tasks: [

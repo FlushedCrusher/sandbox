@@ -1,5 +1,5 @@
 
-var GeoserverTrack = require('../../../Track/GeoserverTrack.js');
+var GeoserverTrack = require('../../../components/Track/GeoserverTrack.js');
 var Config = require('../../config/Config.js');
 
 function TrackService() {

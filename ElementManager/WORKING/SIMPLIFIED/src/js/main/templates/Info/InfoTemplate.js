@@ -5,15 +5,19 @@
  * @returns {BaseballCardTemplates}
  */
 
+var InfoStyles = require('./InfoStyles.js');
+
 function InfoTemplate() {
   'use strict';
 
+  var Styles = new InfoStyles();
+
   var createTabRow = function (data) {
     var TabRow =
-      '<div style="padding: 4px 3px;">' +
-      '<div class="panel panel-default" style="margin: 0px; padding: 0px;">' +
-      '<div class="panel-body" style="margin: 0px; padding: 0px;">' +
-      '<table class="table table-no-border" style="margin: 0; padding: 2.5px 5px; table-layout: fixed;">' +
+      '<div style="' + Styles.TabRowContainerStyle +'">' +
+      '<div class="panel panel-default" style="' + Styles.ZeroMarginZeroPadding + '">' +
+      '<div class="panel-body" style="' + Styles.ZeroMarginZeroPadding + '">' +
+      '<table class="table table-no-border" style="' + Styles.TabTableStyle + '">' +
       '<tbody>';
     if (data.header) {
       TabRow += createTableHeader(data.header);
@@ -57,16 +61,16 @@ function InfoTemplate() {
   var createTableCell = function (data) {
     var TableCell =
       '<td>' +
-      '<label for="' + data.name + '" style="margin: 0; padding: 0; color: #bfbfbf;">' + data.label + '</label>' +
+      '<label for="' + data.name + '" style="' + Styles.TableCellLabelStyle + '">' + data.label + '</label>' +
       '<div class="dynamic-color">' +
-      '<p id="' + data.name + '" style="margin: 0; padding: 0; color: #666666;" name="' + data.name + '">' + data.value + '</p>' +
+      '<p id="' + data.name + '" style="' + Styles.TableCellTextStyle + '" name="' + data.name + '">' + data.value + '</p>' +
       '</div>' +
       '</td>';
     return TableCell;
   };
 
   this.tabContent =
-    '<div style="background: rgb(238, 238, 238); padding: 3px;">' +
+    '<div style="' + Styles.TabContentContainerStyle + '">' +
       createTabRow({
         header: {
           text: 'Identification Information',

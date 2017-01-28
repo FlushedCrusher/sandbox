@@ -5,14 +5,17 @@
  * @returns {BaseballCardTemplates}
  */
 
-var InfoTemplate = require('./InfoTemplate.js');
+var InfoTemplate = require('./Info/InfoTemplate.js');
+var BaseballCardStyles = require('./BaseballCardStyles.js');
 
 function BaseballCardTemplates(Template) {
     'use strict';
 
+    var Styles = new BaseballCardStyles();
+
     var createPanelBody = function(data) {
       var PanelBody =
-        '<div class="panel-body" style="margin: 0px; padding: 0px;">' +
+        '<div class="panel-body" style="' + Styles.ZeroMarginZeroPadding + '">' +
         '<img class="ship-pic" ng-src="{{TRACK.image}}" onerror="this.style.display=\'none\'">' +
         PanelNavigation +
         data +
@@ -22,14 +25,14 @@ function BaseballCardTemplates(Template) {
 
     var HeaderTemplate =
       '<header class="header class-noclass">' +
-      '<p style="margin: 0; padding: 0;">{{TRACK.classification}}</p>' +
+      '<p style="' + Styles.ZeroMarginZeroPadding + '">{{TRACK.classification}}</p>' +
       '</header>';
     Template.set('Header', HeaderTemplate);
 
     var InfoTabContent = new InfoTemplate().tabContent;
 
     var PanelHeading =
-      '<div class="panel-heading" style="background-color: white; color: black; padding-top: 3px; padding-bottom: 3px;">' +
+      '<div class="panel-heading" style="' + Styles.PanelHeadingStyle + '">' +
       '<img class="flag-pic" ng-src="{{TRACK.flagPic}}" onerror="this.style.display=\'none\'">' +
       '<span class="ng-binding">' +
       '<!-- Track Name -->' +
@@ -39,31 +42,31 @@ function BaseballCardTemplates(Template) {
       '<!-- Country Code -->' +
       '{{COUNTRY | uppercase}}' +
       '</span>' +
-      '<span class="float-right ng-binding" style="float: right;">' +
+      '<span class="float-right ng-binding" style="' + Styles.FloatRight + '">' +
       '<!-- Last Updated -->' +
       'Last Updated - {{TRACK.lastUpdate | date:\'dd MMM yyyy HH:mm:ss\' : \'UTC\' | uppercase}}Z' +
       '</span>' +
       '</div>';
 
     var PanelNavigationButtons =
-      '<div class="btn-group" role="group" aria-label="..." style="float: right; padding-right: 10px;">' +
+      '<div class="btn-group" role="group" aria-label="..." style="' + Styles.PanelNavigationButtonGroupStyle + '">' +
       '<a href="" ng-click="onNavRefreshClick($event)">' +
       '<span ' +
       'class="glyphicon glyphicon-refresh" ' +
       'uib-tooltip="Refresh" ' +
-      'style="padding-top: 10px; padding-right: 10px; font-size: 15px; color: gray;"></span>' +
+      'style="' + Styles.PanelNavigationButtonStyle + '"></span>' +
       '</a>' +
       '<a href="" ng-click="onNavEyeconClick($event)">' +
       '<span ' +
       'class="glyphicon glyphicon-eye-close" ' +
       'uib-tooltip="Add to Watch List" ' +
-      'style="padding-top: 10px; padding-right: 10px; font-size: 15px; color: gray;"></span>' +
+      'style="' + Styles.PanelNavigationButtonStyle + '"></span>' +
       '</a>' +
       '</div>';
 
     var PanelNavigation =
-      '<div style="background-color: white;">' +
-      '<ul id="navigation-tabs" class="nav nav-tabs" style="padding-top: 5px;">' +
+      '<div style="' + Styles.PanelNavigationStyle + '">' +
+      '<ul id="navigation-tabs" class="nav nav-tabs" style="' + Styles.PanelNavigationTabStyle + '">' +
       '<li role="navigation" class="active">' +
       '<a href="" ng-click="onTabClick($event)" data-index="0">' +
       'Track Info' +
@@ -86,7 +89,7 @@ function BaseballCardTemplates(Template) {
     var PanelBody = createPanelBody(InfoTabContent);
     var PanelTemplate =
       '<div class="scroll-content">' +
-      '<div class="panel panel-default" style="margin-left: auto; margin-right: auto; max-width: 510px;">' +
+      '<div class="panel panel-default" style="' + Styles.PanelTemplateStyle + '">' +
       PanelHeading +
       PanelBody +
       '</div>' +
@@ -95,7 +98,7 @@ function BaseballCardTemplates(Template) {
 
     var FooterTemplate =
       '<footer class="footer class-noclass">' +
-      '<p style="margin: 0; padding: 0;">{{TRACK.classification}}</p>' +
+      '<p style="' + Styles.ZeroMarginZeroPadding + '">{{TRACK.classification}}</p>' +
       '</footer>';
     Template.set('Footer', FooterTemplate);
 

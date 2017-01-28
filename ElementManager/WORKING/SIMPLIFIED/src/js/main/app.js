@@ -6,8 +6,8 @@ var TrackService = require('./services/external/TrackService.js');
 var InfoCtrl = require('./controllers/InfoCtrl.js');
 
 require('./config/ConfigPkg.js');
-require('../Element/ElementPkg.js');
-require('../Template/TemplatePkg.js');
+require('../lib/Element/ElementPkg.js');
+require('../lib/Template/TemplatePkg.js');
 
 angular.module('app',
   [
@@ -37,8 +37,6 @@ angular.module('app',
   .controller('info-controller', [
     '$injector',
     '$compile',
-    '$templateCache',
-    '$timeout',
     '$scope',
     InfoCtrl
   ]);

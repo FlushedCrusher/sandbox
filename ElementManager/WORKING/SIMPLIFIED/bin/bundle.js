@@ -47,13 +47,13 @@
 	'use strict'; // eslint-disable-line strict
 
 	var run = __webpack_require__(1);
-	var InfoSvc = __webpack_require__(4);
-	var TrackService = __webpack_require__(5);
-	var InfoCtrl = __webpack_require__(8);
+	var InfoSvc = __webpack_require__(7);
+	var TrackService = __webpack_require__(8);
+	var InfoCtrl = __webpack_require__(12);
 
-	__webpack_require__(9);
-	__webpack_require__(10);
-	__webpack_require__(18);
+	__webpack_require__(13);
+	__webpack_require__(14);
+	__webpack_require__(22);
 
 	angular.module('app',
 	  [
@@ -83,8 +83,6 @@
 	  .controller('info-controller', [
 	    '$injector',
 	    '$compile',
-	    '$templateCache',
-	    '$timeout',
 	    '$scope',
 	    InfoCtrl
 	  ]);
@@ -142,13 +140,16 @@
 	 */
 
 	var InfoTemplate = __webpack_require__(3);
+	var BaseballCardStyles = __webpack_require__(6);
 
 	function BaseballCardTemplates(Template) {
 	    'use strict';
 
+	    var Styles = new BaseballCardStyles();
+
 	    var createPanelBody = function(data) {
 	      var PanelBody =
-	        '<div class="panel-body" style="margin: 0px; padding: 0px;">' +
+	        '<div class="panel-body" style="' + Styles.ZeroMarginZeroPadding + '">' +
 	        '<img class="ship-pic" ng-src="{{TRACK.image}}" onerror="this.style.display=\'none\'">' +
 	        PanelNavigation +
 	        data +
@@ -158,14 +159,14 @@
 
 	    var HeaderTemplate =
 	      '<header class="header class-noclass">' +
-	      '<p style="margin: 0; padding: 0;">{{TRACK.classification}}</p>' +
+	      '<p style="' + Styles.ZeroMarginZeroPadding + '">{{TRACK.classification}}</p>' +
 	      '</header>';
 	    Template.set('Header', HeaderTemplate);
 
 	    var InfoTabContent = new InfoTemplate().tabContent;
 
 	    var PanelHeading =
-	      '<div class="panel-heading" style="background-color: white; color: black; padding-top: 3px; padding-bottom: 3px;">' +
+	      '<div class="panel-heading" style="' + Styles.PanelHeadingStyle + '">' +
 	      '<img class="flag-pic" ng-src="{{TRACK.flagPic}}" onerror="this.style.display=\'none\'">' +
 	      '<span class="ng-binding">' +
 	      '<!-- Track Name -->' +
@@ -175,31 +176,31 @@
 	      '<!-- Country Code -->' +
 	      '{{COUNTRY | uppercase}}' +
 	      '</span>' +
-	      '<span class="float-right ng-binding" style="float: right;">' +
+	      '<span class="float-right ng-binding" style="' + Styles.FloatRight + '">' +
 	      '<!-- Last Updated -->' +
 	      'Last Updated - {{TRACK.lastUpdate | date:\'dd MMM yyyy HH:mm:ss\' : \'UTC\' | uppercase}}Z' +
 	      '</span>' +
 	      '</div>';
 
 	    var PanelNavigationButtons =
-	      '<div class="btn-group" role="group" aria-label="..." style="float: right; padding-right: 10px;">' +
+	      '<div class="btn-group" role="group" aria-label="..." style="' + Styles.PanelNavigationButtonGroupStyle + '">' +
 	      '<a href="" ng-click="onNavRefreshClick($event)">' +
 	      '<span ' +
 	      'class="glyphicon glyphicon-refresh" ' +
 	      'uib-tooltip="Refresh" ' +
-	      'style="padding-top: 10px; padding-right: 10px; font-size: 15px; color: gray;"></span>' +
+	      'style="' + Styles.PanelNavigationButtonStyle + '"></span>' +
 	      '</a>' +
 	      '<a href="" ng-click="onNavEyeconClick($event)">' +
 	      '<span ' +
 	      'class="glyphicon glyphicon-eye-close" ' +
 	      'uib-tooltip="Add to Watch List" ' +
-	      'style="padding-top: 10px; padding-right: 10px; font-size: 15px; color: gray;"></span>' +
+	      'style="' + Styles.PanelNavigationButtonStyle + '"></span>' +
 	      '</a>' +
 	      '</div>';
 
 	    var PanelNavigation =
-	      '<div style="background-color: white;">' +
-	      '<ul id="navigation-tabs" class="nav nav-tabs" style="padding-top: 5px;">' +
+	      '<div style="' + Styles.PanelNavigationStyle + '">' +
+	      '<ul id="navigation-tabs" class="nav nav-tabs" style="' + Styles.PanelNavigationTabStyle + '">' +
 	      '<li role="navigation" class="active">' +
 	      '<a href="" ng-click="onTabClick($event)" data-index="0">' +
 	      'Track Info' +
@@ -222,7 +223,7 @@
 	    var PanelBody = createPanelBody(InfoTabContent);
 	    var PanelTemplate =
 	      '<div class="scroll-content">' +
-	      '<div class="panel panel-default" style="margin-left: auto; margin-right: auto; max-width: 510px;">' +
+	      '<div class="panel panel-default" style="' + Styles.PanelTemplateStyle + '">' +
 	      PanelHeading +
 	      PanelBody +
 	      '</div>' +
@@ -231,7 +232,7 @@
 
 	    var FooterTemplate =
 	      '<footer class="footer class-noclass">' +
-	      '<p style="margin: 0; padding: 0;">{{TRACK.classification}}</p>' +
+	      '<p style="' + Styles.ZeroMarginZeroPadding + '">{{TRACK.classification}}</p>' +
 	      '</footer>';
 	    Template.set('Footer', FooterTemplate);
 
@@ -241,7 +242,7 @@
 
 /***/ },
 /* 3 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Info State Templates
@@ -250,15 +251,19 @@
 	 * @returns {BaseballCardTemplates}
 	 */
 
+	var InfoStyles = __webpack_require__(4);
+
 	function InfoTemplate() {
 	  'use strict';
 
+	  var Styles = new InfoStyles();
+
 	  var createTabRow = function (data) {
 	    var TabRow =
-	      '<div style="padding: 4px 3px;">' +
-	      '<div class="panel panel-default" style="margin: 0px; padding: 0px;">' +
-	      '<div class="panel-body" style="margin: 0px; padding: 0px;">' +
-	      '<table class="table table-no-border" style="margin: 0; padding: 2.5px 5px; table-layout: fixed;">' +
+	      '<div style="' + Styles.TabRowContainerStyle +'">' +
+	      '<div class="panel panel-default" style="' + Styles.ZeroMarginZeroPadding + '">' +
+	      '<div class="panel-body" style="' + Styles.ZeroMarginZeroPadding + '">' +
+	      '<table class="table table-no-border" style="' + Styles.TabTableStyle + '">' +
 	      '<tbody>';
 	    if (data.header) {
 	      TabRow += createTableHeader(data.header);
@@ -302,16 +307,16 @@
 	  var createTableCell = function (data) {
 	    var TableCell =
 	      '<td>' +
-	      '<label for="' + data.name + '" style="margin: 0; padding: 0; color: #bfbfbf;">' + data.label + '</label>' +
+	      '<label for="' + data.name + '" style="' + Styles.TableCellLabelStyle + '">' + data.label + '</label>' +
 	      '<div class="dynamic-color">' +
-	      '<p id="' + data.name + '" style="margin: 0; padding: 0; color: #666666;" name="' + data.name + '">' + data.value + '</p>' +
+	      '<p id="' + data.name + '" style="' + Styles.TableCellTextStyle + '" name="' + data.name + '">' + data.value + '</p>' +
 	      '</div>' +
 	      '</td>';
 	    return TableCell;
 	  };
 
 	  this.tabContent =
-	    '<div style="background: rgb(238, 238, 238); padding: 3px;">' +
+	    '<div style="' + Styles.TabContentContainerStyle + '">' +
 	      createTabRow({
 	        header: {
 	          text: 'Identification Information',
@@ -373,6 +378,92 @@
 
 /***/ },
 /* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var GlobalStyles = __webpack_require__(5);
+
+	function InfoStyles() {
+	  'use strict';
+
+	  GlobalStyles.call(this);
+
+	  this.TabContentContainerStyle =
+	    'background: rgb(238, 238, 238);' +
+	    'padding: 3px;';
+	  this.TabRowContainerStyle =
+	    'padding: 4px 3px;';
+	  this.TabTableStyle = 
+	    'margin: 0;' + 
+	    'padding: 2.5px 5px;' +
+	    'table-layout: fixed;';
+	  this.TableCellLabelStyle =
+	    'margin: 0;' +
+	    'padding: 0;' +
+	    'color: #bfbfbf;';
+	  this.TableCellTextStyle =
+	    this.ZeroMarginZeroPadding +
+	    'color: #666666;';
+
+	}
+	module.exports = InfoStyles;
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	function GlobalStyles() {
+	  'use strict';
+
+	  this.FloatRight =
+	    'float: right;';
+	  this.ZeroMarginZeroPadding =
+	    'margin: 0px;' +
+	    'padding: 0px;';
+
+	}
+
+	module.exports = GlobalStyles;
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var GlobalStyles = __webpack_require__(5);
+
+	function BaseballCardStyles() {
+	  'use strict';
+
+	  GlobalStyles.call(this);
+	  
+	  this.PanelTemplateStyle =
+	    'margin-left: auto;' +
+	    'margin-right: auto;' +
+	    'max-width: 510px;';
+	  this.PanelHeadingStyle =
+	    'background-color: white;' +
+	    'color: black;' +
+	    'padding-top: 3px;' +
+	    'padding-bottom: 3px;';
+	  this.PanelNavigationStyle =
+	    'background-color: white;';
+	  this.PanelNavigationTabStyle =
+	    'padding-top: 5px;';
+	  this.PanelNavigationButtonGroupStyle =
+	    'float: right;' +
+	    'padding-right: 10px;';
+	  this.PanelNavigationButtonStyle =
+	    'padding-top: 10px;' +
+	    'padding-right: 10px;' +
+	    'font-size: 15px;' +
+	    'color: gray;';
+	}
+
+	module.exports = BaseballCardStyles;
+
+/***/ },
+/* 7 */
 /***/ function(module, exports) {
 
 	/**
@@ -429,7 +520,10 @@
 	  var onNavEyeconClick = function(e) { // eslint-disable-line no-unused-vars
 	    console.debug('Toggling eyecon / watch list...');
 	  };
-	  var popData = function() {
+	  var popDataOnDelay = function() {
+	    $timeout(_popData, 500);
+	  };
+	  var _popData = function() {
 	    $(document).ready(function(){
 	      $('.dynamic-color > p').each(function(){
 	        if ($(this).text().trim() !== 'No Data') {
@@ -459,7 +553,7 @@
 	    onTabClick: onTabClick,
 	    onNavRefreshClick: onNavRefreshClick,
 	    onNavEyeconClick: onNavEyeconClick,
-	    popData: popData,
+	    popDataOnDelay: popDataOnDelay,
 	    getTrackData: getTrackData,
 	    startTimeDelayCaluculator: startTimeDelayCaluculator,
 	    stopTimeDelayCaluculator: stopTimeDelayCaluculator
@@ -470,12 +564,12 @@
 	module.exports = InfoSvc;
 
 /***/ },
-/* 5 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
-	var GeoserverTrack = __webpack_require__(6);
-	var Config = __webpack_require__(7);
+	var GeoserverTrack = __webpack_require__(9);
+	var Config = __webpack_require__(10);
 
 	function TrackService() {
 	  'use strict';
@@ -490,7 +584,7 @@
 	module.exports = TrackService;
 
 /***/ },
-/* 6 */
+/* 9 */
 /***/ function(module, exports) {
 
 	/**
@@ -651,8 +745,8 @@
 	module.exports = GeoserverTrack;
 
 /***/ },
-/* 7 */
-/***/ function(module, exports) {
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Config Variables
@@ -660,62 +754,13 @@
 	 * @returns {Config}
 	 */
 
+	var TestData = __webpack_require__(11);
+
 	var Config = {
 	  BASEBALLCARD: {
 	    TEST: {
-	      VALUE: false,
-	      DATA: {
-	        totalFeatures: 1,
-	        features: [{
-	          geometry: {
-	            coordinates: [121.91388888888889, 19.203333333333333],
-	          },
-	          properties: {
-	            avg_speed: "averageSpeed",
-	            beNumber: "beNumber",
-	            blueprints: "blueprints",
-	            callsign: "callSign",
-	            cargo: "cargo",
-	            charterOwner: "charterOwner",
-	            CLASSIFICATION: "SECRET",
-	            crewComp: "crewComp",
-	            days_deployed: "daysDeployed",
-	            DISPLAY_NAME: "displayName",
-	            FLAG: "RA",
-	            freeboard: "freeboard",
-	            home_port: "Corellia",
-	            HULL_NUMBER: "hullNumber",
-	            last_port: "lastPort",
-	            LAST_REFUEL: "lastRefuel",
-	            length: "length",
-	            LTN: "ltn",
-	            MAJOR_WEAPONS: "majorWeapons",
-	            MMSI: "mmsi",
-	            next_port: "nextPort",
-	            owner: "owner",
-	            READINESS_LEVEL: "readiness",
-	            S2A_TRACK_TYPE: "s2aType",
-	            SCONUM: "sconum",
-	            SHIP_CLASS: "shipClass",
-	            source: "source",
-	            speed_cap: "speedCap",
-	            SUBORDINATION: "subordination",
-	            THREAT: "threat",
-	            TIME_STAMP: 1463014800000,
-	            TRACK_GUID: "guid",
-	            TRACK_ID: "trackNumber",
-	            TRACK_TYPE: "trackType",
-	            upRightRigSeq: "upRightRigSeq",
-	            VESSEL_CATEGORY: "category",
-	            VESSEL_NAME: "Millennium Falcon",
-	            VESSEL_TYPE: "vesselType",
-	            width: "width"
-	          }
-	        }],
-	        FLAG_PIC:'../src/Test/img/ra-flag.png',
-	        COUNTRY: 'RA',
-	        IMAGE: '../src/Test/img/ship.jpg',
-	      }
+	      VALUE: true,
+	      DATA: TestData,
 	    },
 	    CONSTANTS: {
 	      CLASSIFICATION_CLASSES: [
@@ -731,7 +776,66 @@
 	module.exports = Config;
 
 /***/ },
-/* 8 */
+/* 11 */
+/***/ function(module, exports) {
+
+	var TestData = {
+	  totalFeatures: 1,
+	  features: [{
+	    geometry: {
+	      coordinates: [121.91388888888889, 19.203333333333333],
+	    },
+	    properties: {
+	      avg_speed: "averageSpeed",
+	      beNumber: "beNumber",
+	      blueprints: "blueprints",
+	      callsign: "callSign",
+	      cargo: "cargo",
+	      charterOwner: "charterOwner",
+	      CLASSIFICATION: "SECRET",
+	      crewComp: "crewComp",
+	      days_deployed: "daysDeployed",
+	      DISPLAY_NAME: "displayName",
+	      FLAG: "RA",
+	      freeboard: "freeboard",
+	      home_port: "Corellia",
+	      HULL_NUMBER: "hullNumber",
+	      last_port: "lastPort",
+	      LAST_REFUEL: "lastRefuel",
+	      length: "length",
+	      LTN: "ltn",
+	      MAJOR_WEAPONS: "majorWeapons",
+	      MMSI: "mmsi",
+	      next_port: "nextPort",
+	      owner: "owner",
+	      READINESS_LEVEL: "readiness",
+	      S2A_TRACK_TYPE: "s2aType",
+	      SCONUM: "sconum",
+	      SHIP_CLASS: "shipClass",
+	      source: "source",
+	      speed_cap: "speedCap",
+	      SUBORDINATION: "subordination",
+	      THREAT: "threat",
+	      TIME_STAMP: 1463014800000,
+	      TRACK_GUID: "guid",
+	      TRACK_ID: "trackNumber",
+	      TRACK_TYPE: "trackType",
+	      upRightRigSeq: "upRightRigSeq",
+	      VESSEL_CATEGORY: "category",
+	      VESSEL_NAME: "Millennium Falcon",
+	      VESSEL_TYPE: "vesselType",
+	      width: "width"
+	    }
+	  }],
+	  FLAG_PIC:'../src/Test/data/img/ra-flag.png',
+	  COUNTRY: 'RA',
+	  IMAGE: '../src/Test/data/img/ship.jpg',
+	};
+
+	module.exports = TestData;
+
+/***/ },
+/* 12 */
 /***/ function(module, exports) {
 
 	/**
@@ -740,7 +844,7 @@
 	 * @returns {InfoCtrl}
 	 */
 
-	function InfoCtrl($injector, $compile, $templatecache, $timeout, $scope) {
+	function InfoCtrl($injector, $compile, $scope) {
 	  'use strict';
 
 	  var ElementManager = $injector.get('ElementManager');
@@ -764,8 +868,12 @@
 	  $scope.onTabClick = service.onTabClick;
 	  $scope.onNavRefreshClick = service.onNavRefreshClick;
 	  $scope.onNavEyeconClick = service.onNavEyeconClick;
-	  $timeout(service.popData, 500);
-	  service.startTimeDelayCaluculator($scope.TRACK.setTimeDelay.bind($scope.TRACK), 1000);
+	  
+	  var _setTimeDelay = function() {
+	    $scope.TRACK.setTimeDelay();
+	  };
+	  service.startTimeDelayCaluculator(_setTimeDelay, 1000);
+	  service.popDataOnDelay();
 
 	  $scope.$on('$destroy', function() {
 	    service.stopTimeDelayCaluculator();
@@ -780,20 +888,20 @@
 	module.exports = InfoCtrl;
 
 /***/ },
-/* 9 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * ConfigPkg module definition
 	 */
 
-	var Config = __webpack_require__(7);
+	var Config = __webpack_require__(10);
 
 	angular.module('ConfigPkg', [])
 	  .constant('Config', Config);
 
 /***/ },
-/* 10 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -804,9 +912,9 @@
 	 * @requires {ElementManager}
 	 */
 
-	var Element = __webpack_require__(11);
-	var ElementFactory = __webpack_require__(14);
-	var ElementManager = __webpack_require__(15);
+	var Element = __webpack_require__(15);
+	var ElementFactory = __webpack_require__(18);
+	var ElementManager = __webpack_require__(19);
 
 	angular.module('ElementPkg', [])
 	  .factory('Element', Element)
@@ -814,7 +922,7 @@
 	  .service('ElementFactory', ElementFactory);
 
 /***/ },
-/* 11 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -825,8 +933,8 @@
 	 * @returns {Element}
 	 */
 
-	var ElementOptions = __webpack_require__(12);
-	var EventList = __webpack_require__(13);
+	var ElementOptions = __webpack_require__(16);
+	var EventList = __webpack_require__(17);
 
 	function Element(options) {
 	  'use strict';
@@ -1141,7 +1249,7 @@
 	module.exports = Element;
 
 /***/ },
-/* 12 */
+/* 16 */
 /***/ function(module, exports) {
 
 	/**
@@ -1257,7 +1365,7 @@
 	module.exports = ElementOptions;
 
 /***/ },
-/* 13 */
+/* 17 */
 /***/ function(module, exports) {
 
 	/**
@@ -1353,7 +1461,7 @@
 	module.exports = EventList;
 
 /***/ },
-/* 14 */
+/* 18 */
 /***/ function(module, exports) {
 
 	/**
@@ -1394,7 +1502,7 @@
 	module.exports = ElementFactory;
 
 /***/ },
-/* 15 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1406,12 +1514,12 @@
 	 * @returns {ElementManager}
 	 */
 
-	var AngularHelper = __webpack_require__(16);
-	var ElementFactory = __webpack_require__(14);
+	var AngularHelper = __webpack_require__(20);
+	var ElementFactory = __webpack_require__(18);
 
-	var Element = __webpack_require__(11);
-	var ElementOptions = __webpack_require__(12);
-	var Guid = __webpack_require__(17);
+	var Element = __webpack_require__(15);
+	var ElementOptions = __webpack_require__(16);
+	var Guid = __webpack_require__(21);
 
 	function ElementManager() {
 	  'use strict';
@@ -1652,7 +1760,7 @@
 	module.exports = ElementManager;
 
 /***/ },
-/* 16 */
+/* 20 */
 /***/ function(module, exports) {
 
 	/**
@@ -1693,7 +1801,7 @@
 	module.exports = AngularHelper;
 
 /***/ },
-/* 17 */
+/* 21 */
 /***/ function(module, exports) {
 
 	/**
@@ -1728,7 +1836,7 @@
 	module.exports = Guid;
 
 /***/ },
-/* 18 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1737,13 +1845,13 @@
 	 * @requires {EventOptions}
 	 */
 
-	var Template = __webpack_require__(19);
+	var Template = __webpack_require__(23);
 
 	angular.module('TemplatePkg', [])
 	  .service('Template', Template);
 
 /***/ },
-/* 19 */
+/* 23 */
 /***/ function(module, exports) {
 
 	/**

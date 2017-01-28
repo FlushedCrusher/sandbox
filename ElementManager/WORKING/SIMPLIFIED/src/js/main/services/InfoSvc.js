@@ -52,7 +52,10 @@ function InfoSvc($injector, $http, $timeout, $interval, TrackService) { // eslin
   var onNavEyeconClick = function(e) { // eslint-disable-line no-unused-vars
     console.debug('Toggling eyecon / watch list...');
   };
-  var popData = function() {
+  var popDataOnDelay = function() {
+    $timeout(_popData, 500);
+  };
+  var _popData = function() {
     $(document).ready(function(){
       $('.dynamic-color > p').each(function(){
         if ($(this).text().trim() !== 'No Data') {
@@ -82,7 +85,7 @@ function InfoSvc($injector, $http, $timeout, $interval, TrackService) { // eslin
     onTabClick: onTabClick,
     onNavRefreshClick: onNavRefreshClick,
     onNavEyeconClick: onNavEyeconClick,
-    popData: popData,
+    popDataOnDelay: popDataOnDelay,
     getTrackData: getTrackData,
     startTimeDelayCaluculator: startTimeDelayCaluculator,
     stopTimeDelayCaluculator: stopTimeDelayCaluculator
