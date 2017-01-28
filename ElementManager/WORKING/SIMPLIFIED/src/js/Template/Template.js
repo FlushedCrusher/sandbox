@@ -1,3 +1,9 @@
+/**
+ * Template Map
+ * 
+ * @returns {Template}
+ */
+
 function Template() {
   'use strict';
   this.cache = new Map();

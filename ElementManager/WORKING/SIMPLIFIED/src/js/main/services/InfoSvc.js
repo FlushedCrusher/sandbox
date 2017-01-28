@@ -4,26 +4,28 @@
  * @returns {InfoSvc}
  */
 
-function InfoSvc($injector, $http, $timeout) { // eslint-disable-line no-unused-vars
+/* global $ */
+
+function InfoSvc($injector, $http, $timeout, $interval, TrackService) { // eslint-disable-line no-unused-vars
   'use strict';
 
   var ElementManager = $injector.get('ElementManager');
   var Config = $injector.get('Config');
   var CONST = Config.BASEBALLCARD.CONSTANTS;
 
+  var _timeDelayCalculator = undefined;
+
   var onClassificationChanged = function(newValue, oldValue) { // eslint-disable-line no-unused-vars
     //'use strict';
-    var thisClass = '';
+    var thisClass = 'class-noclass';
     if(newValue.length > 0) {
-      if(newValue.charAt(0).toUpperCase() === "U") {
-        thisClass = "class-unclass";
-      } else if (newValue.charAt(0).toUpperCase() === "S"){
-        thisClass = "class-secret";
-      } else if (newValue.charAt(0).toUpperCase() === "T"){
-        thisClass = "class-top-secret";
+      if(newValue.charAt(0).toUpperCase() === 'U') {
+        thisClass = 'class-unclass';
+      } else if (newValue.charAt(0).toUpperCase() === 'S'){
+        thisClass = 'class-secret';
+      } else if (newValue.charAt(0).toUpperCase() === 'T'){
+        thisClass = 'class-top-secret';
       }
-    } else {
-      thisClass = "class-noclass";
     }
     ElementManager.get('Header').removeClasses(CONST.CLASSIFICATION_CLASSES);
     ElementManager.get('Header').addClass(thisClass);
@@ -54,10 +56,25 @@ function InfoSvc($injector, $http, $timeout) { // eslint-disable-line no-unused-
     $(document).ready(function(){
       $('.dynamic-color > p').each(function(){
         if ($(this).text().trim() !== 'No Data') {
-          $(this).css('color','black');
+          $(this).css('color', 'black');
         }
       });
     });
+  };
+  var getTrackData = function() {
+    return TrackService.getTrackData();
+  };
+  var startTimeDelayCaluculator = function(toDo, every) {
+    if(_timeDelayCalculator) {
+      return;
+    }
+    _timeDelayCalculator = $interval(toDo, every);
+  };
+  var stopTimeDelayCaluculator = function() {
+    if(_timeDelayCalculator) {
+      $interval.cancel(_timeDelayCalculator);
+      _timeDelayCalculator = undefined;
+    }
   };
 
   return {
@@ -65,7 +82,10 @@ function InfoSvc($injector, $http, $timeout) { // eslint-disable-line no-unused-
     onTabClick: onTabClick,
     onNavRefreshClick: onNavRefreshClick,
     onNavEyeconClick: onNavEyeconClick,
-    popData: popData
+    popData: popData,
+    getTrackData: getTrackData,
+    startTimeDelayCaluculator: startTimeDelayCaluculator,
+    stopTimeDelayCaluculator: stopTimeDelayCaluculator
   };
 
 }

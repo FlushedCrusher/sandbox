@@ -12,16 +12,28 @@ function InfoCtrl($injector, $compile, $templatecache, $timeout, $scope) {
 
   var service = $injector.get('info-service');
   var Config = $injector.get('Config');
-  var TEST = Config.BASEBALLCARD.TEST;
+  var isTest = Config.BASEBALLCARD.TEST.VALUE;
 
-  $scope.DATA = TEST;
+  $scope.TRACK = service.getTrackData();
 
-  $scope.$watch('DATA.TRACK.CLASSIFICATION', service.onClassificationChanged);
+  if(isTest) {
+    var TEST = Config.BASEBALLCARD.TEST.DATA;
+    $scope.TRACK.image = TEST.IMAGE;
+    $scope.TRACK.flagPic = TEST.FLAG_PIC;
+    $scope.COUNTRY = TEST.COUNTRY;
+  }
+
+  $scope.$watch('TRACK.classification', service.onClassificationChanged);
 
   $scope.onTabClick = service.onTabClick;
   $scope.onNavRefreshClick = service.onNavRefreshClick;
   $scope.onNavEyeconClick = service.onNavEyeconClick;
   $timeout(service.popData, 500);
+  service.startTimeDelayCaluculator($scope.TRACK.setTimeDelay.bind($scope.TRACK), 1000);
+
+  $scope.$on('$destroy', function() {
+    service.stopTimeDelayCaluculator();
+  });
 
   ElementManager
     .setUI('Info')

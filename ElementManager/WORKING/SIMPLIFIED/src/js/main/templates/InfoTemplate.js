@@ -1,3 +1,10 @@
+/**
+ * Info State Templates
+ * 
+ * @param {Template} Template
+ * @returns {BaseballCardTemplates}
+ */
+
 function InfoTemplate() {
   'use strict';
 
@@ -66,18 +73,18 @@ function InfoTemplate() {
           width: 4
         },
         cells: [
-          { name: 'ltn', label: 'LTN', value: 'No Data'},
-          { name: 'category', label: 'Category', value: 'No Data'},
-          { name: 'display-name', label: 'Display Name', value: 'No Data'},
-          { name: 'hull-num', label: 'Hull #', value: 'No Data' },
-          { name: 'mmsi', label: 'MMSI', value: 'No Data'},
-          { name: 'sconum', label: 'SCONUM', value: 'No Data'},
-          { name: 'call-sign', label: 'Call Sign', value: 'No Data'},
-          { name: 'ship-class', label: 'Ship Class', value: 'No Data'},
-          { name: 'type-msn', label: 'Type/MSN', value: 'No Data'},
-          { name: 'subordination', label: 'Subordination', value: 'No Data'},
-          { name: 'be-num', label: 'BE #', value: 'No Data'},
-          { name: 'threat', label: 'Threat', value: 'No Data'}
+          { name: 'ltn', label: 'LTN', value: '{{TRACK.ltn}}'},
+          { name: 'category', label: 'Category', value: '{{TRACK.category}}'},
+          { name: 'display-name', label: 'Display Name', value: '{{TRACK.displayName}}'},
+          { name: 'hull-num', label: 'Hull #', value: '{{TRACK.hullNumber}}' },
+          { name: 'mmsi', label: 'MMSI', value: '{{TRACK.mmsi}}'},
+          { name: 'sconum', label: 'SCONUM', value: '{{TRACK.sconum}}'},
+          { name: 'call-sign', label: 'Call Sign', value: '{{TRACK.callSign}}'},
+          { name: 'ship-class', label: 'Ship Class', value: '{{TRACK.shipClass}}'},
+          { name: 'type-msn', label: 'Type/MSN', value: '{{TRACK.trackType}}'},
+          { name: 'subordination', label: 'Subordination', value: '{{TRACK.subordination}}'},
+          { name: 'be-num', label: 'BE #', value: '{{TRACK.beNumber}}'},
+          { name: 'threat', label: 'Threat', value: '{{TRACK.threat}}'}
         ],
         maxCols: 4
       }) +
@@ -87,16 +94,16 @@ function InfoTemplate() {
           width: 4
         },
         cells: [
-          { name: 'location', label: 'Location', value: 'No Data'},
-          { name: 'time-late', label: 'Time Late', value: 'No Data'},
-          { name: 'source', label: 'Source', value: 'No Data'},
-          { name: 'track-type', label: 'Track Type', value: 'No Data' },
-          { name: 's2a-type', label: 'S2A Type', value: 'No Data'},
-          { name: 'vessel-type', label: 'Vessel Type', value: 'No Data'},
-          { name: 'days-underway', label: 'Days Underway', value: 'No Data'},
-          { name: 'last-port', label: 'Last Port', value: 'No Data'},
-          { name: 'next-port', label: 'Next Port', value: 'No Data'},
-          { name: 'home-port', label: 'Home Port', value: 'No Data'},
+          { name: 'location', label: 'Location', value: '{{TRACK.location.lat}}<br>{{TRACK.location.lon}}'},
+          { name: 'time-delay', label: 'Time Delay', value: '{{TRACK.timeDelay}}'},
+          { name: 'source', label: 'Source', value: '{{TRACK.source}}'},
+          { name: 'track-type', label: 'Track Type', value: '{{TRACK.trackType}}' },
+          { name: 's2a-type', label: 'S2A Type', value: '{{TRACK.s2aType}}'},
+          { name: 'vessel-type', label: 'Vessel Type', value: '{{TRACK.vesselType}}'},
+          { name: 'days-deployed', label: 'Days Underway', value: '{{TRACK.daysDeployed}}'},
+          { name: 'last-port', label: 'Last Port', value: '{{TRACK.lastPort}}'},
+          { name: 'next-port', label: 'Next Port', value: '{{TRACK.nextPort}}'},
+          { name: 'home-port', label: 'Home Port', value: '{{TRACK.homePort}}'},
         ],
         maxCols: 4
       }) +
@@ -106,11 +113,11 @@ function InfoTemplate() {
           width: 4
         },
         cells: [
-          { name: 'speed-capability', label: 'Speed Capability', value: 'No Data'},
-          { name: 'avg-reported-speed', label: 'Avg Reported Speed', value: 'No Data'},
-          { name: 'last-refuel', label: 'last Refuel', value: 'No Data'},
-          { name: 'readiness', label: 'Readiness', value: 'No Data' },
-          { name: 'major-weapons', label: 'Major Weapons', value: 'No Data'}
+          { name: 'speed-capability', label: 'Speed Capability', value: '{{TRACK.speedCap}}'},
+          { name: 'avg-reported-speed', label: 'Avg Reported Speed', value: '{{TRACK.averageSpeed}}'},
+          { name: 'last-refuel', label: 'last Refuel', value: '{{TRACK.lastRefuel}}'},
+          { name: 'readiness', label: 'Readiness', value: '{{TRACK.readiness}}' },
+          { name: 'major-weapons', label: 'Major Weapons', value: '{{TRACK.majorWeapons}}'}
         ],
         maxCols: 4
       });

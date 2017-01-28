@@ -48,11 +48,12 @@
 
 	var run = __webpack_require__(1);
 	var InfoSvc = __webpack_require__(4);
-	var InfoCtrl = __webpack_require__(5);
+	var TrackService = __webpack_require__(5);
+	var InfoCtrl = __webpack_require__(8);
 
-	__webpack_require__(6);
-	__webpack_require__(8);
-	__webpack_require__(16);
+	__webpack_require__(9);
+	__webpack_require__(10);
+	__webpack_require__(18);
 
 	angular.module('app',
 	  [
@@ -68,10 +69,15 @@
 	    '$rootScope',
 	    run
 	  ])
+	  .service('TrackService', [
+	    TrackService
+	  ])
 	  .service('info-service', [
 	    '$injector',
 	    '$http',
 	    '$timeout',
+	    '$interval',
+	    'TrackService',
 	    InfoSvc
 	  ])
 	  .controller('info-controller', [
@@ -143,7 +149,7 @@
 	    var createPanelBody = function(data) {
 	      var PanelBody =
 	        '<div class="panel-body" style="margin: 0px; padding: 0px;">' +
-	        '<img class="ship-pic" ng-src="{{DATA.TRACK.IMAGE}}">' +
+	        '<img class="ship-pic" ng-src="{{TRACK.image}}" onerror="this.style.display=\'none\'">' +
 	        PanelNavigation +
 	        data +
 	        '</div>';
@@ -151,8 +157,8 @@
 	    };
 
 	    var HeaderTemplate =
-	      '<header class="header class-unclass">' +
-	      '<p>{{DATA.TRACK.CLASSIFICATION}}</p>' +
+	      '<header class="header class-noclass">' +
+	      '<p style="margin: 0; padding: 0;">{{TRACK.classification}}</p>' +
 	      '</header>';
 	    Template.set('Header', HeaderTemplate);
 
@@ -160,18 +166,18 @@
 
 	    var PanelHeading =
 	      '<div class="panel-heading" style="background-color: white; color: black; padding-top: 3px; padding-bottom: 3px;">' +
-	      '<img class="flag-pic" ng-src="{{DATA.FLAG_PIC}}" onerror="this.style.display=\'none\'">' +
+	      '<img class="flag-pic" ng-src="{{TRACK.flagPic}}" onerror="this.style.display=\'none\'">' +
 	      '<span class="ng-binding">' +
 	      '<!-- Track Name -->' +
-	      '{{" " + (DATA.TRACK.NAME | uppercase) + ", "}}' +
+	      '{{" " + (TRACK.name | uppercase) + ", "}}' +
 	      '</span>' +
 	      '<span class="ng-binding">' +
 	      '<!-- Country Code -->' +
-	      '{{DATA.COUNTRY | uppercase}}' +
+	      '{{COUNTRY | uppercase}}' +
 	      '</span>' +
 	      '<span class="float-right ng-binding" style="float: right;">' +
 	      '<!-- Last Updated -->' +
-	      'Last Updated - {{DATA.TRACK.LAST_UPDATE | date:\'dd MMM yyyy HH:mm:ss\' : \'UTC\' | uppercase}}Z' +
+	      'Last Updated - {{TRACK.lastUpdate | date:\'dd MMM yyyy HH:mm:ss\' : \'UTC\' | uppercase}}Z' +
 	      '</span>' +
 	      '</div>';
 
@@ -224,8 +230,8 @@
 	    Template.set('Panel', PanelTemplate);
 
 	    var FooterTemplate =
-	      '<footer class="footer class-unclass">' +
-	      '<p>{{DATA.TRACK.CLASSIFICATION}}</p>' +
+	      '<footer class="footer class-noclass">' +
+	      '<p style="margin: 0; padding: 0;">{{TRACK.classification}}</p>' +
 	      '</footer>';
 	    Template.set('Footer', FooterTemplate);
 
@@ -236,6 +242,13 @@
 /***/ },
 /* 3 */
 /***/ function(module, exports) {
+
+	/**
+	 * Info State Templates
+	 * 
+	 * @param {Template} Template
+	 * @returns {BaseballCardTemplates}
+	 */
 
 	function InfoTemplate() {
 	  'use strict';
@@ -305,18 +318,18 @@
 	          width: 4
 	        },
 	        cells: [
-	          { name: 'ltn', label: 'LTN', value: 'No Data'},
-	          { name: 'category', label: 'Category', value: 'No Data'},
-	          { name: 'display-name', label: 'Display Name', value: 'No Data'},
-	          { name: 'hull-num', label: 'Hull #', value: 'No Data' },
-	          { name: 'mmsi', label: 'MMSI', value: 'No Data'},
-	          { name: 'sconum', label: 'SCONUM', value: 'No Data'},
-	          { name: 'call-sign', label: 'Call Sign', value: 'No Data'},
-	          { name: 'ship-class', label: 'Ship Class', value: 'No Data'},
-	          { name: 'type-msn', label: 'Type/MSN', value: 'No Data'},
-	          { name: 'subordination', label: 'Subordination', value: 'No Data'},
-	          { name: 'be-num', label: 'BE #', value: 'No Data'},
-	          { name: 'threat', label: 'Threat', value: 'No Data'}
+	          { name: 'ltn', label: 'LTN', value: '{{TRACK.ltn}}'},
+	          { name: 'category', label: 'Category', value: '{{TRACK.category}}'},
+	          { name: 'display-name', label: 'Display Name', value: '{{TRACK.displayName}}'},
+	          { name: 'hull-num', label: 'Hull #', value: '{{TRACK.hullNumber}}' },
+	          { name: 'mmsi', label: 'MMSI', value: '{{TRACK.mmsi}}'},
+	          { name: 'sconum', label: 'SCONUM', value: '{{TRACK.sconum}}'},
+	          { name: 'call-sign', label: 'Call Sign', value: '{{TRACK.callSign}}'},
+	          { name: 'ship-class', label: 'Ship Class', value: '{{TRACK.shipClass}}'},
+	          { name: 'type-msn', label: 'Type/MSN', value: '{{TRACK.trackType}}'},
+	          { name: 'subordination', label: 'Subordination', value: '{{TRACK.subordination}}'},
+	          { name: 'be-num', label: 'BE #', value: '{{TRACK.beNumber}}'},
+	          { name: 'threat', label: 'Threat', value: '{{TRACK.threat}}'}
 	        ],
 	        maxCols: 4
 	      }) +
@@ -326,16 +339,16 @@
 	          width: 4
 	        },
 	        cells: [
-	          { name: 'location', label: 'Location', value: 'No Data'},
-	          { name: 'time-late', label: 'Time Late', value: 'No Data'},
-	          { name: 'source', label: 'Source', value: 'No Data'},
-	          { name: 'track-type', label: 'Track Type', value: 'No Data' },
-	          { name: 's2a-type', label: 'S2A Type', value: 'No Data'},
-	          { name: 'vessel-type', label: 'Vessel Type', value: 'No Data'},
-	          { name: 'days-underway', label: 'Days Underway', value: 'No Data'},
-	          { name: 'last-port', label: 'Last Port', value: 'No Data'},
-	          { name: 'next-port', label: 'Next Port', value: 'No Data'},
-	          { name: 'home-port', label: 'Home Port', value: 'No Data'},
+	          { name: 'location', label: 'Location', value: '{{TRACK.location.lat}}<br>{{TRACK.location.lon}}'},
+	          { name: 'time-delay', label: 'Time Delay', value: '{{TRACK.timeDelay}}'},
+	          { name: 'source', label: 'Source', value: '{{TRACK.source}}'},
+	          { name: 'track-type', label: 'Track Type', value: '{{TRACK.trackType}}' },
+	          { name: 's2a-type', label: 'S2A Type', value: '{{TRACK.s2aType}}'},
+	          { name: 'vessel-type', label: 'Vessel Type', value: '{{TRACK.vesselType}}'},
+	          { name: 'days-deployed', label: 'Days Underway', value: '{{TRACK.daysDeployed}}'},
+	          { name: 'last-port', label: 'Last Port', value: '{{TRACK.lastPort}}'},
+	          { name: 'next-port', label: 'Next Port', value: '{{TRACK.nextPort}}'},
+	          { name: 'home-port', label: 'Home Port', value: '{{TRACK.homePort}}'},
 	        ],
 	        maxCols: 4
 	      }) +
@@ -345,11 +358,11 @@
 	          width: 4
 	        },
 	        cells: [
-	          { name: 'speed-capability', label: 'Speed Capability', value: 'No Data'},
-	          { name: 'avg-reported-speed', label: 'Avg Reported Speed', value: 'No Data'},
-	          { name: 'last-refuel', label: 'last Refuel', value: 'No Data'},
-	          { name: 'readiness', label: 'Readiness', value: 'No Data' },
-	          { name: 'major-weapons', label: 'Major Weapons', value: 'No Data'}
+	          { name: 'speed-capability', label: 'Speed Capability', value: '{{TRACK.speedCap}}'},
+	          { name: 'avg-reported-speed', label: 'Avg Reported Speed', value: '{{TRACK.averageSpeed}}'},
+	          { name: 'last-refuel', label: 'last Refuel', value: '{{TRACK.lastRefuel}}'},
+	          { name: 'readiness', label: 'Readiness', value: '{{TRACK.readiness}}' },
+	          { name: 'major-weapons', label: 'Major Weapons', value: '{{TRACK.majorWeapons}}'}
 	        ],
 	        maxCols: 4
 	      });
@@ -368,26 +381,28 @@
 	 * @returns {InfoSvc}
 	 */
 
-	function InfoSvc($injector, $http, $timeout) { // eslint-disable-line no-unused-vars
+	/* global $ */
+
+	function InfoSvc($injector, $http, $timeout, $interval, TrackService) { // eslint-disable-line no-unused-vars
 	  'use strict';
 
 	  var ElementManager = $injector.get('ElementManager');
 	  var Config = $injector.get('Config');
 	  var CONST = Config.BASEBALLCARD.CONSTANTS;
 
+	  var _timeDelayCalculator = undefined;
+
 	  var onClassificationChanged = function(newValue, oldValue) { // eslint-disable-line no-unused-vars
 	    //'use strict';
-	    var thisClass = '';
+	    var thisClass = 'class-noclass';
 	    if(newValue.length > 0) {
-	      if(newValue.charAt(0).toUpperCase() === "U") {
-	        thisClass = "class-unclass";
-	      } else if (newValue.charAt(0).toUpperCase() === "S"){
-	        thisClass = "class-secret";
-	      } else if (newValue.charAt(0).toUpperCase() === "T"){
-	        thisClass = "class-top-secret";
+	      if(newValue.charAt(0).toUpperCase() === 'U') {
+	        thisClass = 'class-unclass';
+	      } else if (newValue.charAt(0).toUpperCase() === 'S'){
+	        thisClass = 'class-secret';
+	      } else if (newValue.charAt(0).toUpperCase() === 'T'){
+	        thisClass = 'class-top-secret';
 	      }
-	    } else {
-	      thisClass = "class-noclass";
 	    }
 	    ElementManager.get('Header').removeClasses(CONST.CLASSIFICATION_CLASSES);
 	    ElementManager.get('Header').addClass(thisClass);
@@ -418,10 +433,25 @@
 	    $(document).ready(function(){
 	      $('.dynamic-color > p').each(function(){
 	        if ($(this).text().trim() !== 'No Data') {
-	          $(this).css('color','black');
+	          $(this).css('color', 'black');
 	        }
 	      });
 	    });
+	  };
+	  var getTrackData = function() {
+	    return TrackService.getTrackData();
+	  };
+	  var startTimeDelayCaluculator = function(toDo, every) {
+	    if(_timeDelayCalculator) {
+	      return;
+	    }
+	    _timeDelayCalculator = $interval(toDo, every);
+	  };
+	  var stopTimeDelayCaluculator = function() {
+	    if(_timeDelayCalculator) {
+	      $interval.cancel(_timeDelayCalculator);
+	      _timeDelayCalculator = undefined;
+	    }
 	  };
 
 	  return {
@@ -429,7 +459,10 @@
 	    onTabClick: onTabClick,
 	    onNavRefreshClick: onNavRefreshClick,
 	    onNavEyeconClick: onNavEyeconClick,
-	    popData: popData
+	    popData: popData,
+	    getTrackData: getTrackData,
+	    startTimeDelayCaluculator: startTimeDelayCaluculator,
+	    stopTimeDelayCaluculator: stopTimeDelayCaluculator
 	  };
 
 	}
@@ -438,53 +471,184 @@
 
 /***/ },
 /* 5 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	/**
-	 * Info State Controller
-	 * 
-	 * @returns {InfoCtrl}
-	 */
+	
+	var GeoserverTrack = __webpack_require__(6);
+	var Config = __webpack_require__(7);
 
-	function InfoCtrl($injector, $compile, $templatecache, $timeout, $scope) {
+	function TrackService() {
 	  'use strict';
-
-	  var ElementManager = $injector.get('ElementManager');
-	  ElementManager.bind($scope, $compile);
-
-	  var service = $injector.get('info-service');
-	  var Config = $injector.get('Config');
-	  var TEST = Config.BASEBALLCARD.TEST;
-
-	  $scope.DATA = TEST;
-
-	  $scope.$watch('DATA.TRACK.CLASSIFICATION', service.onClassificationChanged);
-
-	  $scope.onTabClick = service.onTabClick;
-	  $scope.onNavRefreshClick = service.onNavRefreshClick;
-	  $scope.onNavEyeconClick = service.onNavEyeconClick;
-	  $timeout(service.popData, 500);
-
-	  ElementManager
-	    .setUI('Info')
-	    .build();
-
+	  this.isTest = Config.BASEBALLCARD.TEST.VALUE;
 	}
+	TrackService.prototype.getTrackData = function(data) {
+	  'use strict';
+	  var _data = this.isTest ? Config.BASEBALLCARD.TEST.DATA : data;
+	  return new GeoserverTrack(_data);
+	};
 
-	module.exports = InfoCtrl;
+	module.exports = TrackService;
 
 /***/ },
 /* 6 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	/**
-	 * ConfigPkg module definition
+	 * GeoserverTrack
+	 * 
+	 * @returns {GeoserverTrack}
 	 */
 
-	var Config = __webpack_require__(7);
+	function GeoserverTrack(data) {
+	  'use strict';
 
-	angular.module('ConfigPkg', [])
-	  .constant('Config', Config);
+	   this.new(data);
+
+	}
+	GeoserverTrack.prototype.new = function(data) {
+	  'use strict';
+
+	  var idx = (data && data.totalFeatures) ? data.totalFeatures - 1 : undefined;
+	  var feature = (data && data.features) ? data.features[idx] : undefined;
+	  var properties = (feature && feature.properties) ? feature.properties : {};
+
+	  var flagPicUrl = 'https://dcgsn-a-portal1.sd.spawar.navy.mil/weaver/pm/apps/flags/render?_accept=image/png&dataSource=iso3&nationality=';
+	  var shipPicUrl = 'https://dcgsn-d-portal1.sd.spawar.navy.mil/images';
+
+	  this.geometry =  (feature && feature.geometry) ? feature.geometry : undefined;
+	  this.lat =  (this.geometry && this.geometry.coordinates) ? this.geometry.coordinates[1] : undefined;
+	  this.lon =  (this.geometry && this.geometry.coordinates) ? this.geometry.coordinates[0] : undefined;
+	  this.location =  (this.lat && this.lon) ? this.getLocation(this.lat, this.lon) : {
+	    lat: 'No Data',
+	    lon: 'No Data'
+	  };
+
+	  this.assetInfo =  properties.CURRENT_ASSESSMENT || 'No Data';
+	  this.averageSpeed =  properties.avg_speed || 'No Data';
+	  this.beNumber =  properties.beNumber || 'No Data';
+	  this.blueprints =  properties.blueprints || 'No Data';
+	  this.callSign =  properties.callsign || 'No Data';
+	  this.cargo =  properties.cargo || 'No Data';
+	  this.category =  properties.VESSEL_CATEGORY || 'No Data';
+	  this.charterOwner =  properties.charterOwner || 'No Data';
+	  this.classification =  properties.CLASSIFICATION || 'No Data';
+	  this.crewComp =  properties.crewComp || 'No Data';
+	  this.daysDeployed =  properties.days_deployed || 'No Data';
+	  this.displayName =  properties.DISPLAY_NAME || 'No Data';
+	  this.flag =  properties.FLAG || 'No Data';
+	  this.flagPic =  flagPicUrl + properties.flag;
+	  this.freeboard =  properties.freeboard || 'No Data';
+	  this.guid =  properties.TRACK_GUID || 'No Data';
+	  this.homePort =  properties.home_port || 'No Data';
+	  this.hullNumber =  properties.HULL_NUMBER || 'No Data';
+	  this.image =  shipPicUrl + properties.stockPhotoUrl;
+	  this.lastPort =  properties.last_port || 'No Data';
+	  this.lastRefuel =  properties.LAST_REFUEL || 'No Data';
+	  this.lastUpdate =  properties.TIME_STAMP || 'No Data';
+	  this.length =  properties.length || 'No Data';
+	  this.ltn =  properties.LTN || 'No Data';
+	  this.majorWeapons =  properties.MAJOR_WEAPONS || 'No Data';
+	  this.mmsi =  properties.MMSI || 'No Data';
+	  this.name =  properties.VESSEL_NAME || 'No Data';
+	  this.nextPort =  properties.next_port || 'No Data';
+	  this.owner =  properties.owner || 'No Data';
+	  this.readiness =  properties.READINESS_LEVEL || 'No Data';
+	  this.s2aType =  properties.S2A_TRACK_TYPE || 'No Data';
+	  this.sconum =  properties.SCONUM || 'No Data';
+	  this.shipClass =  properties.SHIP_CLASS || 'No Data';
+	  this.source =  properties.source || 'No Data';
+	  this.speedCap =  properties.speed_cap || 'No Data';
+	  this.subordination =  properties.SUBORDINATION || 'No Data';
+	  this.threat =  properties.THREAT || 'No Data';
+	  this.timeDelay =  'Calculating time delay...';
+	  this.trackNumber =  properties.TRACK_ID || 'No Data';
+	  this.trackType =  properties.TRACK_TYPE || 'No Data';
+	  this.upRightRigSeq =  properties.upRightRigSeq || 'No Data';
+	  this.vesselType =  properties.VESSEL_TYPE || 'No Data';
+	  this.width =  properties.width || 'No Data';
+
+	};
+	GeoserverTrack.prototype.setTimeDelay = function() {
+	  'use strict';
+	  var milliseconds = Date.now() - this.lastUpdate;
+	  var newDate = new Date(milliseconds);
+		var seconds = newDate.getUTCSeconds();
+		var minutes = newDate.getUTCMinutes();
+		var hours   = newDate.getUTCHours();
+		var days   = newDate.getUTCDate() - 1;
+		var months = newDate.getUTCMonth();
+		var years = newDate.getUTCFullYear() - 1970;
+		var result = '';
+
+		if(years > 0) {
+			result = years + ' Y ' + months + ' M ' + days + ' D ' + hours + ':' + minutes + ':' + seconds;
+		} else if(months > 0) {
+			result = months + ' M ' + days + ' D ' + hours + ':' + minutes + ':' + seconds;
+		}else if(days > 0) {
+			result = days + ' D ' + hours + ':' + minutes + ':' + seconds;
+		} else {
+			result = hours + ':' + minutes + ':' + seconds;
+		}
+
+		this.timeDelay = result;
+		
+	  return result;
+	};
+	GeoserverTrack.prototype.getLocation = function(lat, lon) {
+	  'use strict';
+
+	  // Creating a variable to store the degree symbol.
+	  var ds = String.fromCharCode(parseInt("00B0", 16));
+	  
+	  var location = {}, tmp = '',
+	    lat_hem = '', lat_d = '', lat_m = '', lat_s = '',
+	    lon_hem = '', lon_d = '', lon_m = '', lon_s = '';
+	  
+	  if(lat > 0){
+	    lat_hem = 'N';
+	  }
+	  else if(lat < 0) {
+	    lat_hem = 'S';
+	  }
+	  
+	  if(lon > 0){
+	    lon_hem = 'E';
+	  }
+	  else if(lon < 0) {
+	    lon_hem = 'W';
+	  }
+	  
+	  var _lat = Math.abs(lat);
+	  var _lon = Math.abs(lon);
+	  
+	  /* -- Latitude --*/
+	  lat_d = Math.floor(_lat);
+	  tmp = (_lat % 1) * 60;
+	  
+	  lat_m = Math.floor(tmp);
+	  lat_s = ((tmp % 1) * 60).toFixed();
+	  
+	  /* -- Longitude --*/
+	  lon_d = Math.floor(_lon);
+	  tmp = (_lon % 1) * 60;
+	  
+	  lon_m = Math.floor(tmp);
+	  lon_s = ((tmp % 1) * 60).toFixed();
+	  
+	  /*
+	   * We need to correct for the rounding that is done with tofixed(2)
+	   * Since this may result in seconds value of 60.
+	   */
+	  if(lat_s === "60.00") { lat_s = "0.00"; lat_m += 1; }
+	  if(lon_s === "60.00") { lon_s = "0.00"; lon_m += 1; }
+
+	  location.lat = lat_d + ds + lat_m + '\'' + lat_s + '"' + lat_hem;
+	  location.lon = lon_d + ds + lon_m + '\'' + lon_s + '"' + lon_hem;
+	  
+	  return location;
+	};
+
+	module.exports = GeoserverTrack;
 
 /***/ },
 /* 7 */
@@ -499,19 +663,58 @@
 	var Config = {
 	  BASEBALLCARD: {
 	    TEST: {
-	      FLAG_PIC:'../src/Test/img/ra-flag.png',
-	      COUNTRY: 'RA',
-	      TRACK: {
-	        CLASSIFICATION: 'TOP SECRET',
+	      VALUE: false,
+	      DATA: {
+	        totalFeatures: 1,
+	        features: [{
+	          geometry: {
+	            coordinates: [121.91388888888889, 19.203333333333333],
+	          },
+	          properties: {
+	            avg_speed: "averageSpeed",
+	            beNumber: "beNumber",
+	            blueprints: "blueprints",
+	            callsign: "callSign",
+	            cargo: "cargo",
+	            charterOwner: "charterOwner",
+	            CLASSIFICATION: "SECRET",
+	            crewComp: "crewComp",
+	            days_deployed: "daysDeployed",
+	            DISPLAY_NAME: "displayName",
+	            FLAG: "RA",
+	            freeboard: "freeboard",
+	            home_port: "Corellia",
+	            HULL_NUMBER: "hullNumber",
+	            last_port: "lastPort",
+	            LAST_REFUEL: "lastRefuel",
+	            length: "length",
+	            LTN: "ltn",
+	            MAJOR_WEAPONS: "majorWeapons",
+	            MMSI: "mmsi",
+	            next_port: "nextPort",
+	            owner: "owner",
+	            READINESS_LEVEL: "readiness",
+	            S2A_TRACK_TYPE: "s2aType",
+	            SCONUM: "sconum",
+	            SHIP_CLASS: "shipClass",
+	            source: "source",
+	            speed_cap: "speedCap",
+	            SUBORDINATION: "subordination",
+	            THREAT: "threat",
+	            TIME_STAMP: 1463014800000,
+	            TRACK_GUID: "guid",
+	            TRACK_ID: "trackNumber",
+	            TRACK_TYPE: "trackType",
+	            upRightRigSeq: "upRightRigSeq",
+	            VESSEL_CATEGORY: "category",
+	            VESSEL_NAME: "Millennium Falcon",
+	            VESSEL_TYPE: "vesselType",
+	            width: "width"
+	          }
+	        }],
+	        FLAG_PIC:'../src/Test/img/ra-flag.png',
+	        COUNTRY: 'RA',
 	        IMAGE: '../src/Test/img/ship.jpg',
-	        FLAG: 'RA',
-	        NAME: 'Millennium Falcon',
-	        HOME_PORT: 'Corellia',
-	        LAST_UPDATE: 1463014800000,
-	        LOCATION: {
-	          lat: 19.203333333333333,
-	          lon: 121.91388888888889
-	        }
 	      }
 	    },
 	    CONSTANTS: {
@@ -529,6 +732,68 @@
 
 /***/ },
 /* 8 */
+/***/ function(module, exports) {
+
+	/**
+	 * Info State Controller
+	 * 
+	 * @returns {InfoCtrl}
+	 */
+
+	function InfoCtrl($injector, $compile, $templatecache, $timeout, $scope) {
+	  'use strict';
+
+	  var ElementManager = $injector.get('ElementManager');
+	  ElementManager.bind($scope, $compile);
+
+	  var service = $injector.get('info-service');
+	  var Config = $injector.get('Config');
+	  var isTest = Config.BASEBALLCARD.TEST.VALUE;
+
+	  $scope.TRACK = service.getTrackData();
+
+	  if(isTest) {
+	    var TEST = Config.BASEBALLCARD.TEST.DATA;
+	    $scope.TRACK.image = TEST.IMAGE;
+	    $scope.TRACK.flagPic = TEST.FLAG_PIC;
+	    $scope.COUNTRY = TEST.COUNTRY;
+	  }
+
+	  $scope.$watch('TRACK.classification', service.onClassificationChanged);
+
+	  $scope.onTabClick = service.onTabClick;
+	  $scope.onNavRefreshClick = service.onNavRefreshClick;
+	  $scope.onNavEyeconClick = service.onNavEyeconClick;
+	  $timeout(service.popData, 500);
+	  service.startTimeDelayCaluculator($scope.TRACK.setTimeDelay.bind($scope.TRACK), 1000);
+
+	  $scope.$on('$destroy', function() {
+	    service.stopTimeDelayCaluculator();
+	  });
+
+	  ElementManager
+	    .setUI('Info')
+	    .build();
+
+	}
+
+	module.exports = InfoCtrl;
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * ConfigPkg module definition
+	 */
+
+	var Config = __webpack_require__(7);
+
+	angular.module('ConfigPkg', [])
+	  .constant('Config', Config);
+
+/***/ },
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -539,9 +804,9 @@
 	 * @requires {ElementManager}
 	 */
 
-	var Element = __webpack_require__(9);
-	var ElementFactory = __webpack_require__(12);
-	var ElementManager = __webpack_require__(13);
+	var Element = __webpack_require__(11);
+	var ElementFactory = __webpack_require__(14);
+	var ElementManager = __webpack_require__(15);
 
 	angular.module('ElementPkg', [])
 	  .factory('Element', Element)
@@ -549,7 +814,7 @@
 	  .service('ElementFactory', ElementFactory);
 
 /***/ },
-/* 9 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -560,8 +825,8 @@
 	 * @returns {Element}
 	 */
 
-	var ElementOptions = __webpack_require__(10);
-	var EventList = __webpack_require__(11);
+	var ElementOptions = __webpack_require__(12);
+	var EventList = __webpack_require__(13);
 
 	function Element(options) {
 	  'use strict';
@@ -876,7 +1141,7 @@
 	module.exports = Element;
 
 /***/ },
-/* 10 */
+/* 12 */
 /***/ function(module, exports) {
 
 	/**
@@ -992,7 +1257,7 @@
 	module.exports = ElementOptions;
 
 /***/ },
-/* 11 */
+/* 13 */
 /***/ function(module, exports) {
 
 	/**
@@ -1088,7 +1353,7 @@
 	module.exports = EventList;
 
 /***/ },
-/* 12 */
+/* 14 */
 /***/ function(module, exports) {
 
 	/**
@@ -1129,7 +1394,7 @@
 	module.exports = ElementFactory;
 
 /***/ },
-/* 13 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1141,12 +1406,12 @@
 	 * @returns {ElementManager}
 	 */
 
-	var AngularHelper = __webpack_require__(14);
-	var ElementFactory = __webpack_require__(12);
+	var AngularHelper = __webpack_require__(16);
+	var ElementFactory = __webpack_require__(14);
 
-	var Element = __webpack_require__(9);
-	var ElementOptions = __webpack_require__(10);
-	var Guid = __webpack_require__(15);
+	var Element = __webpack_require__(11);
+	var ElementOptions = __webpack_require__(12);
+	var Guid = __webpack_require__(17);
 
 	function ElementManager() {
 	  'use strict';
@@ -1387,7 +1652,7 @@
 	module.exports = ElementManager;
 
 /***/ },
-/* 14 */
+/* 16 */
 /***/ function(module, exports) {
 
 	/**
@@ -1428,7 +1693,7 @@
 	module.exports = AngularHelper;
 
 /***/ },
-/* 15 */
+/* 17 */
 /***/ function(module, exports) {
 
 	/**
@@ -1463,7 +1728,7 @@
 	module.exports = Guid;
 
 /***/ },
-/* 16 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1472,14 +1737,20 @@
 	 * @requires {EventOptions}
 	 */
 
-	var Template = __webpack_require__(17);
+	var Template = __webpack_require__(19);
 
 	angular.module('TemplatePkg', [])
 	  .service('Template', Template);
 
 /***/ },
-/* 17 */
+/* 19 */
 /***/ function(module, exports) {
+
+	/**
+	 * Template Map
+	 * 
+	 * @returns {Template}
+	 */
 
 	function Template() {
 	  'use strict';

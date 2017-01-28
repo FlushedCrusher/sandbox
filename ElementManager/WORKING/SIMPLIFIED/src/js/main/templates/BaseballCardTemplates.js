@@ -13,7 +13,7 @@ function BaseballCardTemplates(Template) {
     var createPanelBody = function(data) {
       var PanelBody =
         '<div class="panel-body" style="margin: 0px; padding: 0px;">' +
-        '<img class="ship-pic" ng-src="{{DATA.TRACK.IMAGE}}">' +
+        '<img class="ship-pic" ng-src="{{TRACK.image}}" onerror="this.style.display=\'none\'">' +
         PanelNavigation +
         data +
         '</div>';
@@ -21,8 +21,8 @@ function BaseballCardTemplates(Template) {
     };
 
     var HeaderTemplate =
-      '<header class="header class-unclass">' +
-      '<p>{{DATA.TRACK.CLASSIFICATION}}</p>' +
+      '<header class="header class-noclass">' +
+      '<p style="margin: 0; padding: 0;">{{TRACK.classification}}</p>' +
       '</header>';
     Template.set('Header', HeaderTemplate);
 
@@ -30,18 +30,18 @@ function BaseballCardTemplates(Template) {
 
     var PanelHeading =
       '<div class="panel-heading" style="background-color: white; color: black; padding-top: 3px; padding-bottom: 3px;">' +
-      '<img class="flag-pic" ng-src="{{DATA.FLAG_PIC}}" onerror="this.style.display=\'none\'">' +
+      '<img class="flag-pic" ng-src="{{TRACK.flagPic}}" onerror="this.style.display=\'none\'">' +
       '<span class="ng-binding">' +
       '<!-- Track Name -->' +
-      '{{" " + (DATA.TRACK.NAME | uppercase) + ", "}}' +
+      '{{" " + (TRACK.name | uppercase) + ", "}}' +
       '</span>' +
       '<span class="ng-binding">' +
       '<!-- Country Code -->' +
-      '{{DATA.COUNTRY | uppercase}}' +
+      '{{COUNTRY | uppercase}}' +
       '</span>' +
       '<span class="float-right ng-binding" style="float: right;">' +
       '<!-- Last Updated -->' +
-      'Last Updated - {{DATA.TRACK.LAST_UPDATE | date:\'dd MMM yyyy HH:mm:ss\' : \'UTC\' | uppercase}}Z' +
+      'Last Updated - {{TRACK.lastUpdate | date:\'dd MMM yyyy HH:mm:ss\' : \'UTC\' | uppercase}}Z' +
       '</span>' +
       '</div>';
 
@@ -94,8 +94,8 @@ function BaseballCardTemplates(Template) {
     Template.set('Panel', PanelTemplate);
 
     var FooterTemplate =
-      '<footer class="footer class-unclass">' +
-      '<p>{{DATA.TRACK.CLASSIFICATION}}</p>' +
+      '<footer class="footer class-noclass">' +
+      '<p style="margin: 0; padding: 0;">{{TRACK.classification}}</p>' +
       '</footer>';
     Template.set('Footer', FooterTemplate);
 
