@@ -19,6 +19,7 @@ function InfoSvc($injector) { // eslint-disable-line no-unused-vars
   var _timeDelayCalculator = undefined;
 
   var _popData = function() {
+    // TODO: Refactor to use the new Element wrapper.
     $(document).ready(function(){
       $('.dynamic-color > p').each(function(){
         if ($(this).text().trim() !== 'No Data') {
@@ -73,12 +74,9 @@ function InfoSvc($injector) { // eslint-disable-line no-unused-vars
   var onTabClick = function(e) {
     var nav = ElementManager.get('navigation-tabs');
     var _item = e.toElement;
-    nav.children.forEach(function(child) {
-      if(child.options.type !== 'li') {
-        return;
-      }
-      child.removeClass('active');
-    });
+    // nav.removeClassFromChildren('active')
+    nav.getChildren().removeClass('active');
+    // nav.addClassToChildAtIndex(_item.dataset.index);
     nav.children[_item.dataset.index].addClass('active');
     console.debug('Clicked: ' + _item.textContent.trim());
   };

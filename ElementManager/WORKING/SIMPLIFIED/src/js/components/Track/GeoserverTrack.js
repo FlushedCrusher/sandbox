@@ -6,9 +6,7 @@
 
 function GeoserverTrack(data) {
   'use strict';
-
    this.new(data);
-
 }
 GeoserverTrack.prototype.new = function(data) {
   'use strict';
@@ -17,8 +15,8 @@ GeoserverTrack.prototype.new = function(data) {
   var feature = (data && data.features) ? data.features[idx] : undefined;
   var properties = (feature && feature.properties) ? feature.properties : {};
 
-  var flagPicUrl = 'https://dcgsn-a-portal1.sd.spawar.navy.mil/weaver/pm/apps/flags/render?_accept=image/png&dataSource=iso3&nationality=';
-  var shipPicUrl = 'https://dcgsn-d-portal1.sd.spawar.navy.mil/images';
+  var flagPicUrl = '';
+  var shipPicUrl = '';
 
   this.geometry =  (feature && feature.geometry) ? feature.geometry : undefined;
   this.lat =  (this.geometry && this.geometry.coordinates) ? this.geometry.coordinates[1] : undefined;

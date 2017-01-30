@@ -7,12 +7,12 @@
  * @returns {ElementManager}
  */
 
-var AngularHelper = require('../AngularHelper/AngularHelper.js');
-var ElementFactory = require('./ElementFactory.js');
+var AngularHelper = require('../../AngularHelper/AngularHelper.js');
+var ElementFactory = require('../ElementFactory.js');
 
 var Element = require('./Element.js');
 var ElementOptions = require('./ElementOptions.js');
-var Guid = require('../Guid/Guid.js');
+var Guid = require('../../Guid/Guid.js');
 
 function ElementManager() {
   'use strict';
