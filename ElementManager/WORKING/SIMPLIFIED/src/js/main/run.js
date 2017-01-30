@@ -6,8 +6,10 @@
 
 var createBaseballCardTemplates = require('./templates/BaseballCardTemplates.js');
 
-function run($injector, $compile, $templateCache, $rootScope) { // eslint-disable-line no-unused-vars
+function run($injector) {
   'use strict';
+
+  var $templateCache = $injector.get('$templateCache');
 
   var ElementManager = $injector.get('ElementManager');
   var Template = $injector.get('Template');

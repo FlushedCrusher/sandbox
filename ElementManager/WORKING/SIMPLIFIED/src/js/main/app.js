@@ -4,46 +4,44 @@ var run = require('./run.js');
 var InfoSvc = require('./services/InfoSvc.js');
 var TrackSvc = require('./services/external/TrackSvc.js');
 var WatchListSvc = require('./services/external/WatchListSvc.js');
+var ConfiguratorSvc = require('./services/external/ConfiguratorSvc.js');
 var InfoCtrl = require('./controllers/InfoCtrl.js');
 
 require('./config/ConfigPkg.js');
 require('../lib/Element/ElementPkg.js');
 require('../lib/Template/TemplatePkg.js');
+require('../components/Track/TrackPkg.js');
 
 angular.module('app',
   [
     'ui.bootstrap',
     'ConfigPkg',
     'ElementPkg',
-    'TemplatePkg'
+    'TemplatePkg',
+    'TrackPkg'
   ])
   .run([
     '$injector',
-    '$compile',
-    '$templateCache',
-    '$rootScope',
     run
   ])
+  .service('ex-configurator-service', [
+    '$injector',
+    ConfiguratorSvc
+  ])
   .service('ex-track-service', [
-    '$http',
-    '$q',
+    '$injector',
     TrackSvc
   ])
   .service('ex-watch-list-service', [
-    '$http',
-    '$q',
+    '$injector',
     WatchListSvc
   ])
   .service('info-service', [
     '$injector',
-    '$timeout',
-    '$interval',
     InfoSvc
   ])
   .controller('info-controller', [
     '$injector',
-    '$compile',
-    '$sce',
     '$scope',
     InfoCtrl
   ]);

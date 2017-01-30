@@ -11,6 +11,8 @@ var ElementFactory = require('./ElementFactory.js');
 var ElementManager = require('./ElementManager.js');
 
 angular.module('ElementPkg', [])
-  .factory('Element', Element)
+  .factory('Element', function() {
+    return Element; 
+  })
   .service('ElementManager', ElementManager)
   .service('ElementFactory', ElementFactory);

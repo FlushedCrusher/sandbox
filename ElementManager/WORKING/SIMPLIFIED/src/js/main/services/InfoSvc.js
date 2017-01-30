@@ -6,15 +6,16 @@
 
 /* global $ */
 
-function InfoSvc($injector, $timeout, $interval) { // eslint-disable-line no-unused-vars
+function InfoSvc($injector) { // eslint-disable-line no-unused-vars
   'use strict';
-
+  var CONFIG = $injector.get('Config');
+  var $timeout = $injector.get('$timeout');
+  var $interval = $injector.get('$interval');
   var ElementManager = $injector.get('ElementManager');
-  var Config = $injector.get('Config');
   var exTrackService = $injector.get('ex-track-service');
   var exWatchListSvc = $injector.get('ex-watch-list-service');
-  var CONST = Config.BASEBALLCARD.CONSTANTS;
 
+  var CONST = CONFIG.BASEBALLCARD;
   var _timeDelayCalculator = undefined;
 
   var _popData = function() {
@@ -32,7 +33,6 @@ function InfoSvc($injector, $timeout, $interval) { // eslint-disable-line no-unu
   var _toggleWatched = function() {
     exWatchListSvc.toggleWatched();
   };
-
   var getTrackData = function() {
     return exTrackService.getTrackData();
   };

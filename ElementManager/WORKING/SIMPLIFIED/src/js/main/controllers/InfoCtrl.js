@@ -4,20 +4,22 @@
  * @returns {InfoCtrl}
  */
 
-function InfoCtrl($injector, $compile, $sce, $scope) {
+function InfoCtrl($injector, $scope) {
   'use strict';
 
+  var CONFIG = $injector.get('Config');
+  var $compile = $injector.get('$compile');
+  var $sce = $injector.get('$sce');
   var ElementManager = $injector.get('ElementManager');
-  ElementManager.bind($scope, $compile);
-
   var service = $injector.get('info-service');
-  var Config = $injector.get('Config');
-  var isTest = Config.BASEBALLCARD.TEST.VALUE;
+  var isTest = CONFIG.TEST.VALUE;
+
+  ElementManager.bind($scope, $compile);
 
   $scope.TRACK = service.getTrackData();
 
   if(isTest) {
-    var TEST = Config.BASEBALLCARD.TEST.DATA;
+    var TEST = CONFIG.TEST.DATA;
     $scope.TRACK.image = TEST.IMAGE;
     $scope.TRACK.flagPic = TEST.FLAG_PIC;
     $scope.COUNTRY = TEST.COUNTRY;

@@ -49,47 +49,45 @@
 	var run = __webpack_require__(1);
 	var InfoSvc = __webpack_require__(7);
 	var TrackSvc = __webpack_require__(8);
-	var WatchListSvc = __webpack_require__(12);
-	var InfoCtrl = __webpack_require__(13);
+	var WatchListSvc = __webpack_require__(9);
+	var ConfiguratorSvc = __webpack_require__(10);
+	var InfoCtrl = __webpack_require__(11);
 
-	__webpack_require__(14);
+	__webpack_require__(12);
 	__webpack_require__(15);
 	__webpack_require__(23);
+	__webpack_require__(25);
 
 	angular.module('app',
 	  [
 	    'ui.bootstrap',
 	    'ConfigPkg',
 	    'ElementPkg',
-	    'TemplatePkg'
+	    'TemplatePkg',
+	    'TrackPkg'
 	  ])
 	  .run([
 	    '$injector',
-	    '$compile',
-	    '$templateCache',
-	    '$rootScope',
 	    run
 	  ])
+	  .service('ex-configurator-service', [
+	    '$injector',
+	    ConfiguratorSvc
+	  ])
 	  .service('ex-track-service', [
-	    '$http',
-	    '$q',
+	    '$injector',
 	    TrackSvc
 	  ])
 	  .service('ex-watch-list-service', [
-	    '$http',
-	    '$q',
+	    '$injector',
 	    WatchListSvc
 	  ])
 	  .service('info-service', [
 	    '$injector',
-	    '$timeout',
-	    '$interval',
 	    InfoSvc
 	  ])
 	  .controller('info-controller', [
 	    '$injector',
-	    '$compile',
-	    '$sce',
 	    '$scope',
 	    InfoCtrl
 	  ]);
@@ -106,8 +104,10 @@
 
 	var createBaseballCardTemplates = __webpack_require__(2);
 
-	function run($injector, $compile, $templateCache, $rootScope) { // eslint-disable-line no-unused-vars
+	function run($injector) {
 	  'use strict';
+
+	  var $templateCache = $injector.get('$templateCache');
 
 	  var ElementManager = $injector.get('ElementManager');
 	  var Template = $injector.get('Template');
@@ -484,15 +484,16 @@
 
 	/* global $ */
 
-	function InfoSvc($injector, $timeout, $interval) { // eslint-disable-line no-unused-vars
+	function InfoSvc($injector) { // eslint-disable-line no-unused-vars
 	  'use strict';
-
+	  var CONFIG = $injector.get('Config');
+	  var $timeout = $injector.get('$timeout');
+	  var $interval = $injector.get('$interval');
 	  var ElementManager = $injector.get('ElementManager');
-	  var Config = $injector.get('Config');
 	  var exTrackService = $injector.get('ex-track-service');
 	  var exWatchListSvc = $injector.get('ex-watch-list-service');
-	  var CONST = Config.BASEBALLCARD.CONSTANTS;
 
+	  var CONST = CONFIG.BASEBALLCARD;
 	  var _timeDelayCalculator = undefined;
 
 	  var _popData = function() {
@@ -510,7 +511,6 @@
 	  var _toggleWatched = function() {
 	    exWatchListSvc.toggleWatched();
 	  };
-
 	  var getTrackData = function() {
 	    return exTrackService.getTrackData();
 	  };
@@ -602,20 +602,25 @@
 
 /***/ },
 /* 8 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	
-	var GeoserverTrack = __webpack_require__(9);
-	var Config = __webpack_require__(10);
-
-	function TrackSvc($http, $q) {
+	function TrackSvc($injector) {
 	  'use strict';
-	  this.isTest = Config.BASEBALLCARD.TEST.VALUE;
+	  this.CONFIG = $injector.get('Config');
+	  this._http = $injector.get('$http');
+	  this._q = $injector.get('$q');
+	  this._track = $injector.get('GeoserverTrack');
+	  var exConfiguratorSvc = $injector.get('ex-configurator-service');
+	  
+	  this.CONST = this.CONFIG.TRACK_SVC;
+	  this.isTest = this.CONST.TEST || this.CONFIG.TEST.VALUE;
+	  this.URL = exConfiguratorSvc.get(this.CONST.KEY);
 	}
 	TrackSvc.prototype.getTrackData = function(data) {
 	  'use strict';
-	  var _data = this.isTest ? Config.BASEBALLCARD.TEST.DATA : data;
-	  return new GeoserverTrack(_data);
+	  var _data = this.isTest ? this.CONFIG.TEST.DATA : data;
+	  return new this._track(_data);
 	};
 
 	module.exports = TrackSvc;
@@ -624,198 +629,219 @@
 /* 9 */
 /***/ function(module, exports) {
 
-	/**
-	 * GeoserverTrack
-	 * 
-	 * @returns {GeoserverTrack}
-	 */
-
-	function GeoserverTrack(data) {
+	
+	function WatchListSvc($injector) {
 	  'use strict';
+	  this.CONFIG = $injector.get('Config');
+	  this._http = $injector.get('$http');
+	  this._q = $injector.get('$q');
+	  var exConfiguratorSvc = $injector.get('ex-configurator-service');
 
-	   this.new(data);
-
+	  this.CONST = this.CONFIG.WATCHLIST_SVC;
+	  this.isTest = this.CONST.TEST || this.CONFIG.TEST.VALUE;
+	  this.URL = exConfiguratorSvc.get(this.CONST.KEY);
+	  this.watched = false;
+	  this.eyeConTip = this.CONST.EYECON_ADD_TIP;
 	}
-	GeoserverTrack.prototype.new = function(data) {
+	WatchListSvc.prototype.getEyeConTip = function() {
 	  'use strict';
-
-	  var idx = (data && data.totalFeatures) ? data.totalFeatures - 1 : undefined;
-	  var feature = (data && data.features) ? data.features[idx] : undefined;
-	  var properties = (feature && feature.properties) ? feature.properties : {};
-
-	  var flagPicUrl = 'https://dcgsn-a-portal1.sd.spawar.navy.mil/weaver/pm/apps/flags/render?_accept=image/png&dataSource=iso3&nationality=';
-	  var shipPicUrl = 'https://dcgsn-d-portal1.sd.spawar.navy.mil/images';
-
-	  this.geometry =  (feature && feature.geometry) ? feature.geometry : undefined;
-	  this.lat =  (this.geometry && this.geometry.coordinates) ? this.geometry.coordinates[1] : undefined;
-	  this.lon =  (this.geometry && this.geometry.coordinates) ? this.geometry.coordinates[0] : undefined;
-	  this.location =  (this.lat && this.lon) ? this.getLocation(this.lat, this.lon) : {
-	    lat: 'No Data',
-	    lon: 'No Data'
-	  };
-
-	  this.assetInfo =  properties.CURRENT_ASSESSMENT || 'No Data';
-	  this.averageSpeed =  properties.avg_speed || 'No Data';
-	  this.beNumber =  properties.beNumber || 'No Data';
-	  this.blueprints =  properties.blueprints || 'No Data';
-	  this.callSign =  properties.callsign || 'No Data';
-	  this.cargo =  properties.cargo || 'No Data';
-	  this.category =  properties.VESSEL_CATEGORY || 'No Data';
-	  this.charterOwner =  properties.charterOwner || 'No Data';
-	  this.classification =  properties.CLASSIFICATION || 'No Data';
-	  this.crewComp =  properties.crewComp || 'No Data';
-	  this.daysDeployed =  properties.days_deployed || 'No Data';
-	  this.displayName =  properties.DISPLAY_NAME || 'No Data';
-	  this.flag =  properties.FLAG || 'No Data';
-	  this.flagPic =  flagPicUrl + properties.flag;
-	  this.freeboard =  properties.freeboard || 'No Data';
-	  this.guid =  properties.TRACK_GUID || 'No Data';
-	  this.homePort =  properties.home_port || 'No Data';
-	  this.hullNumber =  properties.HULL_NUMBER || 'No Data';
-	  this.image =  shipPicUrl + properties.stockPhotoUrl;
-	  this.lastPort =  properties.last_port || 'No Data';
-	  this.lastRefuel =  properties.LAST_REFUEL || 'No Data';
-	  this.lastUpdate =  properties.TIME_STAMP || 'No Data';
-	  this.length =  properties.length || 'No Data';
-	  this.ltn =  properties.LTN || 'No Data';
-	  this.majorWeapons =  properties.MAJOR_WEAPONS || 'No Data';
-	  this.mmsi =  properties.MMSI || 'No Data';
-	  this.name =  properties.VESSEL_NAME || 'No Data';
-	  this.nextPort =  properties.next_port || 'No Data';
-	  this.owner =  properties.owner || 'No Data';
-	  this.readiness =  properties.READINESS_LEVEL || 'No Data';
-	  this.s2aType =  properties.S2A_TRACK_TYPE || 'No Data';
-	  this.sconum =  properties.SCONUM || 'No Data';
-	  this.shipClass =  properties.SHIP_CLASS || 'No Data';
-	  this.source =  properties.source || 'No Data';
-	  this.speedCap =  properties.speed_cap || 'No Data';
-	  this.subordination =  properties.SUBORDINATION || 'No Data';
-	  this.threat =  properties.THREAT || 'No Data';
-	  this.timeDelay =  'Calculating time delay...';
-	  this.trackNumber =  properties.TRACK_ID || 'No Data';
-	  this.trackType =  properties.TRACK_TYPE || 'No Data';
-	  this.upRightRigSeq =  properties.upRightRigSeq || 'No Data';
-	  this.vesselType =  properties.VESSEL_TYPE || 'No Data';
-	  this.width =  properties.width || 'No Data';
-
+	  return this.eyeConTip;
 	};
-	GeoserverTrack.prototype.setTimeDelay = function() {
+	WatchListSvc.prototype.isWatched = function() {
 	  'use strict';
-	  var milliseconds = Date.now() - this.lastUpdate;
-	  var newDate = new Date(milliseconds);
-		var seconds = newDate.getUTCSeconds();
-		var minutes = newDate.getUTCMinutes();
-		var hours   = newDate.getUTCHours();
-		var days   = newDate.getUTCDate() - 1;
-		var months = newDate.getUTCMonth();
-		var years = newDate.getUTCFullYear() - 1970;
-		var result = '';
-
-		if(years > 0) {
-			result = years + ' Y ' + months + ' M ' + days + ' D ' + hours + ':' + minutes + ':' + seconds;
-		} else if(months > 0) {
-			result = months + ' M ' + days + ' D ' + hours + ':' + minutes + ':' + seconds;
-		}else if(days > 0) {
-			result = days + ' D ' + hours + ':' + minutes + ':' + seconds;
-		} else {
-			result = hours + ':' + minutes + ':' + seconds;
-		}
-
-		this.timeDelay = result;
-		
-	  return result;
+	  return this.watched;
 	};
-	GeoserverTrack.prototype.getLocation = function(lat, lon) {
+	WatchListSvc.prototype.addToWatchList = function() {
 	  'use strict';
-
-	  // Creating a variable to store the degree symbol.
-	  var ds = String.fromCharCode(parseInt("00B0", 16));
-	  
-	  var location = {}, tmp = '',
-	    lat_hem = '', lat_d = '', lat_m = '', lat_s = '',
-	    lon_hem = '', lon_d = '', lon_m = '', lon_s = '';
-	  
-	  if(lat > 0){
-	    lat_hem = 'N';
-	  }
-	  else if(lat < 0) {
-	    lat_hem = 'S';
-	  }
-	  
-	  if(lon > 0){
-	    lon_hem = 'E';
-	  }
-	  else if(lon < 0) {
-	    lon_hem = 'W';
-	  }
-	  
-	  var _lat = Math.abs(lat);
-	  var _lon = Math.abs(lon);
-	  
-	  /* -- Latitude --*/
-	  lat_d = Math.floor(_lat);
-	  tmp = (_lat % 1) * 60;
-	  
-	  lat_m = Math.floor(tmp);
-	  lat_s = ((tmp % 1) * 60).toFixed();
-	  
-	  /* -- Longitude --*/
-	  lon_d = Math.floor(_lon);
-	  tmp = (_lon % 1) * 60;
-	  
-	  lon_m = Math.floor(tmp);
-	  lon_s = ((tmp % 1) * 60).toFixed();
-	  
-	  /*
-	   * We need to correct for the rounding that is done with tofixed(2)
-	   * Since this may result in seconds value of 60.
-	   */
-	  if(lat_s === "60.00") { lat_s = "0.00"; lat_m += 1; }
-	  if(lon_s === "60.00") { lon_s = "0.00"; lon_m += 1; }
-
-	  location.lat = lat_d + ds + lat_m + '\'' + lat_s + '"' + lat_hem;
-	  location.lon = lon_d + ds + lon_m + '\'' + lon_s + '"' + lon_hem;
-	  
-	  return location;
+	  this.eyeConTip = this.CONST.EYECON_REMOVE_TIP;
+	  this.watched = true;
+	  return this;
+	};
+	WatchListSvc.prototype.removeFromWatchList = function() {
+	  'use strict';
+	  this.eyeConTip = this.CONST.EYECON_ADD_TIP;
+	  this.watched = false;
+	  return this;
+	};
+	WatchListSvc.prototype.toggleWatched = function() {
+	  'use strict';
+	  this.eyeConTip = (this.eyeConTip === this.CONST.EYECON_ADD_TIP) ? this.CONST.EYECON_REMOVE_TIP : this.CONST.EYECON_ADD_TIP;
+	  this.watched = !this.watched;
+	  return this;
 	};
 
-	module.exports = GeoserverTrack;
+	module.exports = WatchListSvc;
 
 /***/ },
 /* 10 */
+/***/ function(module, exports) {
+
+	
+	function ConfiguratorSvc($injector) {
+	  'use strict';
+	  this.CONFIG = $injector.get('Config');
+	  this._timeout = $injector.get('$timeout');
+	  this._location = $injector.get('$location');
+	  this._http = $injector.get('$http');
+	  this._q = $injector.get('$q');
+
+	  this.CONST = this.CONFIG.CONFIGURATOR_SVC;
+	  this.isTest = this.CONST.TEST || this.CONFIG.TEST.VALUE;
+	  this.baseURL = this._location.protocol() + '://' + this._location.host();
+	  this.URL = this.baseURL + this.CONST.URL;
+	  this.cache = new Map();
+	}
+	ConfiguratorSvc.prototype.get = function(key) {
+	  'use strict';
+	  if(this.isTest) {
+	    return this._timeout(function() {
+	      return key;
+	    }, 5000);
+	  }
+	  var self = this, request = this._q.defer();
+	  this._http.get(this.getRequestUrl(key))
+	    .success(
+	      function(response) {
+	        self.set(key, response);
+	        request.resolve('success');
+	      }
+	    )
+	    .error(
+	      function(error) {
+	        request.resolve('error');
+	      }
+	    );
+	  return request.promise;;
+	};
+	ConfiguratorSvc.prototype.all = function(keys) {
+	  'use strict';
+	  var self = this, results = [];
+	  keys.forEach(function(key) {
+	    results.push(self.getConfig(key));
+	  });
+	  return this_q.all(results);
+	};
+	ConfiguratorSvc.prototype.getRequestUrl = function(key) {
+	  'use strict';
+	  return this.URL.replace('{{configKey}}', key);
+	};
+
+	module.exports = ConfiguratorSvc;
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	/**
+	 * Info State Controller
+	 * 
+	 * @returns {InfoCtrl}
+	 */
+
+	function InfoCtrl($injector, $scope) {
+	  'use strict';
+
+	  var CONFIG = $injector.get('Config');
+	  var $compile = $injector.get('$compile');
+	  var $sce = $injector.get('$sce');
+	  var ElementManager = $injector.get('ElementManager');
+	  var service = $injector.get('info-service');
+	  var isTest = CONFIG.TEST.VALUE;
+
+	  ElementManager.bind($scope, $compile);
+
+	  $scope.TRACK = service.getTrackData();
+
+	  if(isTest) {
+	    var TEST = CONFIG.TEST.DATA;
+	    $scope.TRACK.image = TEST.IMAGE;
+	    $scope.TRACK.flagPic = TEST.FLAG_PIC;
+	    $scope.COUNTRY = TEST.COUNTRY;
+	  }
+
+	  $scope.$watch('TRACK.classification', service.onClassificationChanged);
+
+	  $scope.onTabClick = service.onTabClick;
+	  $scope.onNavRefreshClick = service.onNavRefreshClick;
+	  $scope.onNavEyeconClick = service.onNavEyeconClick;
+	  $scope.eyeconTip = '';
+	  $scope.getEyeConTip = function() {
+	    $scope.eyeconTip = $sce.trustAsHtml(service.getEyeConTip());
+	  };
+	  
+	  var _setTimeDelay = function() {
+	    $scope.TRACK.setTimeDelay();
+	  };
+	  service.startTimeDelayCaluculator(_setTimeDelay, 1000);
+	  service.popDataOnDelay();
+
+	  $scope.$on('$destroy', function() {
+	    service.stopTimeDelayCaluculator();
+	  });
+
+	  ElementManager
+	    .setUI('Info')
+	    .build();
+
+	}
+
+	module.exports = InfoCtrl;
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * ConfigPkg module definition
+	 */
+
+	var Config = __webpack_require__(13);
+
+	angular.module('ConfigPkg', [])
+	  .constant('Config', Config);
+
+/***/ },
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Config Variables
 	 * 
-	 * @returns {Config}
+	 * @returns {CONFIG}
 	 */
 
-	var TestData = __webpack_require__(11);
+	var TestData = __webpack_require__(14);
 
-	var Config = {
-	  BASEBALLCARD: {
-	    TEST: {
-	      VALUE: true,
-	      DATA: TestData,
-	    },
-	    CONSTANTS: {
-	      EYECON_ADD_TIP: 'Add to Watch List.',
-	      EYECON_REMOVE_TIP: 'Remove from Watch List.',
-	      CLASSIFICATION_CLASSES: [
-	        'class-noclass',
-	        'class-unclass',
-	        'class-secret',
-	        'class-top-secret'
-	      ]
-	    }
+	var CONFIG = {
+	  TEST: {
+	    VALUE: true,
+	    DATA: TestData,
+	  },
+	  WATCHLIST_SVC: {
+	    KEY: 'dcgsn.watchlist-crud.uri',
+	    EYECON_ADD_TIP: 'Add to Watch List.',
+	    EYECON_REMOVE_TIP: 'Remove from Watch List.',
+	  },
+	  TRACK_SVC: {
+	    KEY: 'dcgsn.geoserver.track.uri'
+	  },
+	  CONFIGURATOR_SVC: {
+	    URL: '/ufs-configurator/rest/configuration/{{configKey}}/configuration'
+	  },
+	  BASEBALLCARD: {  
+	    CLASSIFICATION_CLASSES: [
+	      'class-noclass',
+	      'class-unclass',
+	      'class-secret',
+	      'class-top-secret'
+	    ]
 	  }
 	};
 
-	module.exports = Config;
+	module.exports = CONFIG;
 
 /***/ },
-/* 11 */
+/* 14 */
 /***/ function(module, exports) {
 
 	var TestData = {
@@ -874,118 +900,6 @@
 	module.exports = TestData;
 
 /***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	var Config = __webpack_require__(10);
-	var CONST = Config.BASEBALLCARD.CONSTANTS;
-
-	function WatchListSvc($http, $q) {
-	  'use strict';
-	  this.watched = false;
-	  this.eyeConTip = CONST.EYECON_ADD_TIP;
-	}
-	WatchListSvc.prototype.getEyeConTip = function() {
-	  'use strict';
-	  return this.eyeConTip;
-	};
-	WatchListSvc.prototype.isWatched = function() {
-	  'use strict';
-	  return this.watched;
-	};
-	WatchListSvc.prototype.addToWatchList = function() {
-	  'use strict';
-	  this.eyeConTip = CONST.EYECON_REMOVE_TIP;
-	  this.watched = true;
-	  return this;
-	};
-	WatchListSvc.prototype.removeFromWatchList = function() {
-	  'use strict';
-	  this.eyeConTip = CONST.EYECON_ADD_TIP;
-	  this.watched = false;
-	  return this;
-	};
-	WatchListSvc.prototype.toggleWatched = function() {
-	  'use strict';
-	  this.eyeConTip = (this.eyeConTip === CONST.EYECON_ADD_TIP) ? CONST.EYECON_REMOVE_TIP : CONST.EYECON_ADD_TIP;
-	  this.watched = !this.watched;
-	  return this;
-	};
-
-	module.exports = WatchListSvc;
-
-/***/ },
-/* 13 */
-/***/ function(module, exports) {
-
-	/**
-	 * Info State Controller
-	 * 
-	 * @returns {InfoCtrl}
-	 */
-
-	function InfoCtrl($injector, $compile, $sce, $scope) {
-	  'use strict';
-
-	  var ElementManager = $injector.get('ElementManager');
-	  ElementManager.bind($scope, $compile);
-
-	  var service = $injector.get('info-service');
-	  var Config = $injector.get('Config');
-	  var isTest = Config.BASEBALLCARD.TEST.VALUE;
-
-	  $scope.TRACK = service.getTrackData();
-
-	  if(isTest) {
-	    var TEST = Config.BASEBALLCARD.TEST.DATA;
-	    $scope.TRACK.image = TEST.IMAGE;
-	    $scope.TRACK.flagPic = TEST.FLAG_PIC;
-	    $scope.COUNTRY = TEST.COUNTRY;
-	  }
-
-	  $scope.$watch('TRACK.classification', service.onClassificationChanged);
-
-	  $scope.onTabClick = service.onTabClick;
-	  $scope.onNavRefreshClick = service.onNavRefreshClick;
-	  $scope.onNavEyeconClick = service.onNavEyeconClick;
-	  $scope.eyeconTip = '';
-	  $scope.getEyeConTip = function() {
-	    $scope.eyeconTip = $sce.trustAsHtml(service.getEyeConTip());
-	  };
-	  
-	  var _setTimeDelay = function() {
-	    $scope.TRACK.setTimeDelay();
-	  };
-	  service.startTimeDelayCaluculator(_setTimeDelay, 1000);
-	  service.popDataOnDelay();
-
-	  $scope.$on('$destroy', function() {
-	    service.stopTimeDelayCaluculator();
-	  });
-
-	  ElementManager
-	    .setUI('Info')
-	    .build();
-
-	}
-
-	module.exports = InfoCtrl;
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * ConfigPkg module definition
-	 */
-
-	var Config = __webpack_require__(10);
-
-	angular.module('ConfigPkg', [])
-	  .constant('Config', Config);
-
-/***/ },
 /* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1002,7 +916,9 @@
 	var ElementManager = __webpack_require__(20);
 
 	angular.module('ElementPkg', [])
-	  .factory('Element', Element)
+	  .factory('Element', function() {
+	    return Element; 
+	  })
 	  .service('ElementManager', ElementManager)
 	  .service('ElementFactory', ElementFactory);
 
@@ -1960,6 +1876,184 @@
 	};
 
 	module.exports = Template;
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * TrackPkg module definition
+	 * 
+	 * @requires {GeoserverTrack}
+	 */
+
+	var GeoserverTrack = __webpack_require__(26);
+
+	angular.module('TrackPkg', [])
+	  .factory('GeoserverTrack', function() {
+	    return GeoserverTrack;
+	  });
+
+/***/ },
+/* 26 */
+/***/ function(module, exports) {
+
+	/**
+	 * GeoserverTrack
+	 * 
+	 * @returns {GeoserverTrack}
+	 */
+
+	function GeoserverTrack(data) {
+	  'use strict';
+
+	   this.new(data);
+
+	}
+	GeoserverTrack.prototype.new = function(data) {
+	  'use strict';
+
+	  var idx = (data && data.totalFeatures) ? data.totalFeatures - 1 : undefined;
+	  var feature = (data && data.features) ? data.features[idx] : undefined;
+	  var properties = (feature && feature.properties) ? feature.properties : {};
+
+	  var flagPicUrl = 'https://dcgsn-a-portal1.sd.spawar.navy.mil/weaver/pm/apps/flags/render?_accept=image/png&dataSource=iso3&nationality=';
+	  var shipPicUrl = 'https://dcgsn-d-portal1.sd.spawar.navy.mil/images';
+
+	  this.geometry =  (feature && feature.geometry) ? feature.geometry : undefined;
+	  this.lat =  (this.geometry && this.geometry.coordinates) ? this.geometry.coordinates[1] : undefined;
+	  this.lon =  (this.geometry && this.geometry.coordinates) ? this.geometry.coordinates[0] : undefined;
+	  this.location =  (this.lat && this.lon) ? this.getLocation(this.lat, this.lon) : {
+	    lat: 'No Data',
+	    lon: 'No Data'
+	  };
+
+	  this.assetInfo =  properties.CURRENT_ASSESSMENT || 'No Data';
+	  this.averageSpeed =  properties.avg_speed || 'No Data';
+	  this.beNumber =  properties.beNumber || 'No Data';
+	  this.blueprints =  properties.blueprints || 'No Data';
+	  this.callSign =  properties.callsign || 'No Data';
+	  this.cargo =  properties.cargo || 'No Data';
+	  this.category =  properties.VESSEL_CATEGORY || 'No Data';
+	  this.charterOwner =  properties.charterOwner || 'No Data';
+	  this.classification =  properties.CLASSIFICATION || 'No Data';
+	  this.crewComp =  properties.crewComp || 'No Data';
+	  this.daysDeployed =  properties.days_deployed || 'No Data';
+	  this.displayName =  properties.DISPLAY_NAME || 'No Data';
+	  this.flag =  properties.FLAG || 'No Data';
+	  this.flagPic =  flagPicUrl + properties.flag;
+	  this.freeboard =  properties.freeboard || 'No Data';
+	  this.guid =  properties.TRACK_GUID || 'No Data';
+	  this.homePort =  properties.home_port || 'No Data';
+	  this.hullNumber =  properties.HULL_NUMBER || 'No Data';
+	  this.image =  shipPicUrl + properties.stockPhotoUrl;
+	  this.lastPort =  properties.last_port || 'No Data';
+	  this.lastRefuel =  properties.LAST_REFUEL || 'No Data';
+	  this.lastUpdate =  properties.TIME_STAMP || 'No Data';
+	  this.length =  properties.length || 'No Data';
+	  this.ltn =  properties.LTN || 'No Data';
+	  this.majorWeapons =  properties.MAJOR_WEAPONS || 'No Data';
+	  this.mmsi =  properties.MMSI || 'No Data';
+	  this.name =  properties.VESSEL_NAME || 'No Data';
+	  this.nextPort =  properties.next_port || 'No Data';
+	  this.owner =  properties.owner || 'No Data';
+	  this.readiness =  properties.READINESS_LEVEL || 'No Data';
+	  this.s2aType =  properties.S2A_TRACK_TYPE || 'No Data';
+	  this.sconum =  properties.SCONUM || 'No Data';
+	  this.shipClass =  properties.SHIP_CLASS || 'No Data';
+	  this.source =  properties.source || 'No Data';
+	  this.speedCap =  properties.speed_cap || 'No Data';
+	  this.subordination =  properties.SUBORDINATION || 'No Data';
+	  this.threat =  properties.THREAT || 'No Data';
+	  this.timeDelay =  'Calculating time delay...';
+	  this.trackNumber =  properties.TRACK_ID || 'No Data';
+	  this.trackType =  properties.TRACK_TYPE || 'No Data';
+	  this.upRightRigSeq =  properties.upRightRigSeq || 'No Data';
+	  this.vesselType =  properties.VESSEL_TYPE || 'No Data';
+	  this.width =  properties.width || 'No Data';
+
+	};
+	GeoserverTrack.prototype.setTimeDelay = function() {
+	  'use strict';
+	  var milliseconds = Date.now() - this.lastUpdate;
+	  var newDate = new Date(milliseconds);
+		var seconds = newDate.getUTCSeconds();
+		var minutes = newDate.getUTCMinutes();
+		var hours   = newDate.getUTCHours();
+		var days   = newDate.getUTCDate() - 1;
+		var months = newDate.getUTCMonth();
+		var years = newDate.getUTCFullYear() - 1970;
+		var result = '';
+
+		if(years > 0) {
+			result = years + ' Y ' + months + ' M ' + days + ' D ' + hours + ':' + minutes + ':' + seconds;
+		} else if(months > 0) {
+			result = months + ' M ' + days + ' D ' + hours + ':' + minutes + ':' + seconds;
+		}else if(days > 0) {
+			result = days + ' D ' + hours + ':' + minutes + ':' + seconds;
+		} else {
+			result = hours + ':' + minutes + ':' + seconds;
+		}
+
+		this.timeDelay = result;
+		
+	  return result;
+	};
+	GeoserverTrack.prototype.getLocation = function(lat, lon) {
+	  'use strict';
+
+	  // Creating a variable to store the degree symbol.
+	  var ds = String.fromCharCode(parseInt("00B0", 16));
+	  
+	  var location = {}, tmp = '',
+	    lat_hem = '', lat_d = '', lat_m = '', lat_s = '',
+	    lon_hem = '', lon_d = '', lon_m = '', lon_s = '';
+	  
+	  if(lat > 0){
+	    lat_hem = 'N';
+	  }
+	  else if(lat < 0) {
+	    lat_hem = 'S';
+	  }
+	  
+	  if(lon > 0){
+	    lon_hem = 'E';
+	  }
+	  else if(lon < 0) {
+	    lon_hem = 'W';
+	  }
+	  
+	  var _lat = Math.abs(lat);
+	  var _lon = Math.abs(lon);
+	  
+	  /* -- Latitude --*/
+	  lat_d = Math.floor(_lat);
+	  tmp = (_lat % 1) * 60;
+	  
+	  lat_m = Math.floor(tmp);
+	  lat_s = ((tmp % 1) * 60).toFixed();
+	  
+	  /* -- Longitude --*/
+	  lon_d = Math.floor(_lon);
+	  tmp = (_lon % 1) * 60;
+	  
+	  lon_m = Math.floor(tmp);
+	  lon_s = ((tmp % 1) * 60).toFixed();
+	  
+	  /*
+	   * We need to correct for the rounding that is done with tofixed(2)
+	   * Since this may result in seconds value of 60.
+	   */
+	  if(lat_s === "60.00") { lat_s = "0.00"; lat_m += 1; }
+	  if(lon_s === "60.00") { lon_s = "0.00"; lon_m += 1; }
+
+	  location.lat = lat_d + ds + lat_m + '\'' + lat_s + '"' + lat_hem;
+	  location.lon = lon_d + ds + lon_m + '\'' + lon_s + '"' + lon_hem;
+	  
+	  return location;
+	};
+
+	module.exports = GeoserverTrack;
 
 /***/ }
 /******/ ]);
