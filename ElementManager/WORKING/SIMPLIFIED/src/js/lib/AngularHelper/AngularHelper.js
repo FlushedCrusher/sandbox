@@ -1,16 +1,19 @@
-/**
+/** ----------------------------------------------------------------------------
  * AngularHelper wrapper
- * 
+ * @module AngularHelper
  * @returns {AngularHelper}
+ * -------------------------------------------------------------------------- */
+
+/**
+ * @constructor
+ * @alias module:AngularHelper
  */
 function AngularHelper() {
   'use strict';
   this.scope;
   this.compile;
 }
-/*
- * Binds a scope and compile to the helper
- * 
+/** Binds a scope and compile to the helper
  * @param {object} scope AngularJS $scope instance
  * @param {object} compile AngularJS $compile
  * @returns {AngularHelper}
@@ -21,9 +24,7 @@ AngularHelper.prototype.bind = function(scope, compile) {
   this.compile = compile;
   return this;
 };
-/*
- * Compile angular content to HTMLElement
- * 
+/** Compile angular content to HTMLElement
  * @param {String | object} content
  * @returns {HTMLElement} _content
  */

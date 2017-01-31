@@ -1274,41 +1274,38 @@
 /* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/**
-	 * Angular Package for AngularHelper modules
-	 * 
-	 * @requires {AngularHelper}
-	 */
+	
 	var AngularHelper = __webpack_require__(19);
 
 	/**
-	 * AngularHelperPkg module definition
-	 * @class {AngularHelperPkg}
+	 * Angular Package for AngularHelper modules
+	 * @module AngularHelperPkg
+	 * @requires {AngularHelper}
 	 */
 	angular.module('AngularHelperPkg', [])
-	/**
-	 * AngularHelperPkg module definition
-	 * @class {AngularHelper}
-	 */
+	/** Instance of AngularHelper */
 	.service('AngularHelper',  [AngularHelper]);
 
 /***/ },
 /* 19 */
 /***/ function(module, exports) {
 
-	/**
+	/** ----------------------------------------------------------------------------
 	 * AngularHelper wrapper
-	 * 
+	 * @module AngularHelper
 	 * @returns {AngularHelper}
+	 * -------------------------------------------------------------------------- */
+
+	/**
+	 * @constructor
+	 * @alias module:AngularHelper
 	 */
 	function AngularHelper() {
 	  'use strict';
 	  this.scope;
 	  this.compile;
 	}
-	/*
-	 * Binds a scope and compile to the helper
-	 * 
+	/** Binds a scope and compile to the helper
 	 * @param {object} scope AngularJS $scope instance
 	 * @param {object} compile AngularJS $compile
 	 * @returns {AngularHelper}
@@ -1319,9 +1316,7 @@
 	  this.compile = compile;
 	  return this;
 	};
-	/*
-	 * Compile angular content to HTMLElement
-	 * 
+	/** Compile angular content to HTMLElement
 	 * @param {String | object} content
 	 * @returns {HTMLElement} _content
 	 */
@@ -1428,22 +1423,16 @@
 /* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/**
-	 * Angular Package for Track modules
-	 * 
-	 * @requires {GeoserverTrack}
-	 */
+	
 	var GeoserverTrack = __webpack_require__(25);
 
 	/**
-	 * TrackPkg module definition
-	 * @class TrackPkg
+	 * Angular Package for Track modules
+	 * @module TrackPkg
+	 * @requires {GeoserverTrack}
 	 */
 	angular.module('TrackPkg', [])
-	/**
-	 * Geoserver Implementation of a Track
-	 * @class GeoserverTrack
-	 */
+	/** GeoserverTrack Constructor */
 	.factory('GeoserverTrack', [function() {
 	  'use strict';
 	  return GeoserverTrack;
@@ -1453,21 +1442,30 @@
 /* 25 */
 /***/ function(module, exports) {
 
-	/**
-	 * GeoserverTrack
-	 * 
+	/** ----------------------------------------------------------------------------
+	 * Geoserver Track Implementation
+	 * @module GeoserverTrack
 	 * @param {Object} data JSON Response from Geoserver
-	 * @returns {GeoserverTrack}
+	 * @exports {GeoserverTrack}
+	 * -------------------------------------------------------------------------- */
+
+	/**
+	 * @typedef {Object} location
+	 * @property {string} lat Latitude
+	 * @property {string} lon Longitude
+	 */
+
+	/**
+	 * @constructor
+	 * @alias module:GeoserverTrack
 	 */
 	function GeoserverTrack(data) {
 	  'use strict';
 	   this.new(data);
 	}
-	/**
-	 * Assign data to the Object
-	 * 
+	/** Assign data to the Object
 	 * @param {Object} data JSON Response from Geoserver
-	 * @returns {GeoserverTrack}
+	 * @returns {GeoserverTrack} this
 	 */
 	GeoserverTrack.prototype.new = function(data) {
 	  'use strict';
@@ -1533,10 +1531,8 @@
 
 	  return this;
 	};
-	/**
-	 * Set the time delay field
-	 * 
-	 * @returns {string} result Human readable time delay
+	/** Set the time delay field
+	 * @returns {string} result - Time delay in Human Readable Format.
 	 */
 	GeoserverTrack.prototype.setTimeDelay = function() {
 	  'use strict';
@@ -1564,18 +1560,10 @@
 		
 	  return result;
 	};
-	/**
-	 * @typedef {Object} location
-	 * @property {string} lat Latitude
-	 * @property {string} lon Longitude
-	 */
-
-	/**
-	 * Get location in DMS format
-	 * 
+	/** Get location in DMS format
 	 * @param {number} lat
 	 * @param {number} lon
-	 * @returns {location} Location in Human Readable Format
+	 * @returns {location} location - Location in Human Readable Format
 	 */
 	GeoserverTrack.prototype.getLocation = function(lat, lon) {
 	  'use strict';

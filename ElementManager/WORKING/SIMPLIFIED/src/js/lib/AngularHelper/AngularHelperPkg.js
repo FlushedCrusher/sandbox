@@ -1,17 +1,11 @@
-/**
- * Angular Package for AngularHelper modules
- * 
- * @requires {AngularHelper}
- */
+
 var AngularHelper = require('./AngularHelper.js');
 
 /**
- * AngularHelperPkg module definition
- * @class {AngularHelperPkg}
+ * Angular Package for AngularHelper modules
+ * @module AngularHelperPkg
+ * @requires {AngularHelper}
  */
 angular.module('AngularHelperPkg', [])
-/**
- * AngularHelperPkg module definition
- * @class {AngularHelper}
- */
+/** Instance of AngularHelper */
 .service('AngularHelper',  [AngularHelper]);

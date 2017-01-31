@@ -33,7 +33,8 @@ module.exports = function(grunt) {
         './WORKING/SIMPLIFIED/src/js/**/*.js'
       ],
       tasks: [
-        'webpack'
+        'webpack',
+        'jsdoc'
       ]
     }
   });
@@ -44,7 +45,8 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', [ 
     'webpack',
-    'watch'
+    'jsdoc',
+    'watch',
   ]);
 
 };

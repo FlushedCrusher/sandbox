@@ -1,18 +1,27 @@
-/**
- * GeoserverTrack
- * 
+/** ----------------------------------------------------------------------------
+ * Geoserver Track Implementation
+ * @module GeoserverTrack
  * @param {Object} data JSON Response from Geoserver
- * @returns {GeoserverTrack}
+ * @exports {GeoserverTrack}
+ * -------------------------------------------------------------------------- */
+
+/**
+ * @typedef {Object} location
+ * @property {string} lat Latitude
+ * @property {string} lon Longitude
+ */
+
+/**
+ * @constructor
+ * @alias module:GeoserverTrack
  */
 function GeoserverTrack(data) {
   'use strict';
    this.new(data);
 }
-/**
- * Assign data to the Object
- * 
+/** Assign data to the Object
  * @param {Object} data JSON Response from Geoserver
- * @returns {GeoserverTrack}
+ * @returns {GeoserverTrack} this
  */
 GeoserverTrack.prototype.new = function(data) {
   'use strict';
@@ -78,10 +87,8 @@ GeoserverTrack.prototype.new = function(data) {
 
   return this;
 };
-/**
- * Set the time delay field
- * 
- * @returns {string} result Human readable time delay
+/** Set the time delay field
+ * @returns {string} result - Time delay in Human Readable Format.
  */
 GeoserverTrack.prototype.setTimeDelay = function() {
   'use strict';
@@ -109,18 +116,10 @@ GeoserverTrack.prototype.setTimeDelay = function() {
 	
   return result;
 };
-/**
- * @typedef {Object} location
- * @property {string} lat Latitude
- * @property {string} lon Longitude
- */
-
-/**
- * Get location in DMS format
- * 
+/** Get location in DMS format
  * @param {number} lat
  * @param {number} lon
- * @returns {location} Location in Human Readable Format
+ * @returns {location} location - Location in Human Readable Format
  */
 GeoserverTrack.prototype.getLocation = function(lat, lon) {
   'use strict';
