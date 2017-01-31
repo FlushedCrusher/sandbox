@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: lib/Element/ElementManager.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: lib/Element/ElementManager.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Element Manager 2
+ * 
+ * @requires {AngularHelper}
+ * @requires {ElementFactory}
+ * @requires {Guid}
+ * @returns {ElementManager}
+ */
+
+function ElementManager($injector) {
+  'use strict';
+
+  this.helper = $injector.get('AngularHelper');
+  this.guid = $injector.get('Guid');
+  this.element = $injector.get('Element');
+
+  this.elements = new Map();
+  this.elementsById = new Map();
+  this.UICache = {};
+
+  this.dom = document.body;
+  this.component = null;
+}
+ElementManager.prototype.bind = function(scope, compile) {
+  'use strict';
+  this.helper.bind(scope, compile);
+  return this;
+};
+ElementManager.prototype.get = function(key) {
+  'use strict';
+  return this.elements.get(key) || this.elementsById.get(key);
+};
+
+ElementManager.prototype.addToDom = function(component) {
+  'use strict';
+  this.dom.appendChild(component);
+  return this;
+};
+ElementManager.prototype.removeFromDom = function(component) {
+  'use strict';
+  if(this.dom.contains(component)) {
+    this.dom.removeChild(component);
+  }
+  return this;
+};
+ElementManager.prototype.clearDom = function() {
+  'use strict';
+  var self = this;
+  this.elements.forEach(function(n) {
+    self.removeFromDom(n.element);
+  });
+  return this;
+};
+ElementManager.prototype._build = function(context, elementMap, add) {
+  'use strict';
+  elementMap.forEach(function(e) {
+    add.call(context, e.element);
+  });
+};
+ElementManager.prototype.build = function() {
+  'use strict';
+  this.clearDom();
+  this._build(this, this.elements, this.addToDom);
+  this.compile();
+  return this;
+};
+ElementManager.prototype.compile = function() {
+  'use strict';
+  this.helper.compileContent(this.dom);
+  return this;
+};
+
+ElementManager.prototype.saveUI = function(name) {
+  'use strict';
+  var _name = name || this.guid.create();
+  this.UICache[_name] = this.getUI();
+  return this;
+};
+ElementManager.prototype.getUI = function() {
+  'use strict';
+  return new Map(this.elements);
+};
+ElementManager.prototype.setUI = function(name) {
+  'use strict';
+  this.clearUI();
+  this.elements = new Map(this.UICache[name]);
+  return this;
+};
+ElementManager.prototype.clearUI = function() {
+  'use strict';
+  delete this.elements;
+  this.elements = new Map();
+  return this;
+};
+
+ElementManager.prototype.addOrReplace = function(key, value) {
+  'use strict';
+  this.elements.set(key, value);
+  return this;
+};
+ElementManager.prototype.addIdReference = function(id, value) {
+  'use strict';
+  this.elementsById.set(id, value);
+  return this;
+};
+ElementManager.prototype.createFromTemplate = function(template) {
+  'use strict';
+  var self = this;
+  var element = new this.element(template);
+  var children = element.getChildren();
+  if(element.getAttribute('id')) {
+    this.addIdReference(element.getAttribute('id'), element);
+  }
+  children.each(function(idx) {
+    element.addChild(self.createFromTemplate(children[idx]));
+  });
+  return element;
+};
+
+module.exports = ElementManager;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="global.html#GeoserverTrack">GeoserverTrack</a></li><li><a href="TrackPkg.html">TrackPkg</a></li><li>{AngularHelperPkg}</li><li>{<a href="global.html#AngularHelper">AngularHelper</a>}</li></ul><h3>Global</h3><ul><li><a href="global.html#AngularHelper">AngularHelper</a></li><li><a href="global.html#Config">Config</a></li><li><a href="global.html#createBaseballCardTemplates">createBaseballCardTemplates</a></li><li><a href="global.html#Element">Element</a></li><li><a href="global.html#ElementManager">ElementManager</a></li><li><a href="global.html#EventList">EventList</a></li><li><a href="global.html#EventOptions">EventOptions</a></li><li><a href="global.html#Guid">Guid</a></li><li><a href="global.html#InfoCtrl">InfoCtrl</a></li><li><a href="global.html#InfoStyles">InfoStyles</a></li><li><a href="global.html#InfoSvc">InfoSvc</a></li><li><a href="global.html#InfoTemplate">InfoTemplate</a></li><li><a href="global.html#Template">Template</a></li><li><a href="global.html#TestData">TestData</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Jan 30 2017 17:23:38 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

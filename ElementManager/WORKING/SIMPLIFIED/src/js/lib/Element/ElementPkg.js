@@ -1,22 +1,28 @@
 /**
  * ElementPkg module definition
  * 
+ * @requires {AngularHelper}
  * @requires {Element}
- * @requires {ElementFactory}
  * @requires {ElementManager}
+ * @requires {Guid}
  */
 
+var Element = require('./Element.js');
+var ElementManager = require('./ElementManager.js');
 
-var ElementFactory = require('./ElementFactory.js');
-// var Element = require('./html/Element.js');
-// var ElementManager = require('./ElementManager.js');
-var Element = require('./angular/Element.js');
-var ElementManager = require('./angular/ElementManager.js');
+require('../AngularHelper/AngularHelperPkg.js');
+require('../Guid/GuidPkg.js');
 
-angular.module('ElementPkg', [])
+angular.module('ElementPkg',
+  [
+    'AngularHelperPkg',
+    'GuidPkg'
+  ])
   .factory('Element', function() {
     'use strict';
     return Element; 
   })
-  .service('ElementManager', ElementManager)
-  .service('ElementFactory', ElementFactory);
+  .service('ElementManager', [
+    '$injector',  
+    ElementManager
+  ]);

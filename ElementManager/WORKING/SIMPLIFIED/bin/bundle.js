@@ -55,8 +55,8 @@
 
 	__webpack_require__(12);
 	__webpack_require__(15);
-	__webpack_require__(21);
-	__webpack_require__(23);
+	__webpack_require__(22);
+	__webpack_require__(24);
 
 	angular.module('app',
 	  [
@@ -904,82 +904,53 @@
 	/**
 	 * ElementPkg module definition
 	 * 
+	 * @requires {AngularHelper}
 	 * @requires {Element}
-	 * @requires {ElementFactory}
 	 * @requires {ElementManager}
+	 * @requires {Guid}
 	 */
 
+	var Element = __webpack_require__(16);
+	var ElementManager = __webpack_require__(17);
 
-	var ElementFactory = __webpack_require__(16);
-	// var Element = require('./html/Element.js');
-	// var ElementManager = require('./ElementManager.js');
-	var Element = __webpack_require__(17);
-	var ElementManager = __webpack_require__(18);
+	__webpack_require__(18);
+	__webpack_require__(20);
 
-	angular.module('ElementPkg', [])
+	angular.module('ElementPkg',
+	  [
+	    'AngularHelperPkg',
+	    'GuidPkg'
+	  ])
 	  .factory('Element', function() {
 	    'use strict';
 	    return Element; 
 	  })
-	  .service('ElementManager', ElementManager)
-	  .service('ElementFactory', ElementFactory);
+	  .service('ElementManager', [
+	    '$injector',  
+	    ElementManager
+	  ]);
 
 /***/ },
 /* 16 */
 /***/ function(module, exports) {
 
 	/**
-	 * Element factory 
-	 * 
-	 * @returns {ElementFactory}
-	 */
-
-	function ElementFactory() {
-	  'use strict';
-	  this.registeredElements = new Map();
-	}
-	/*
-	 * Add an element to the registered element Map
-	 * 
-	 * @param {string} key
-	 * @param {object} value
-	 * @returns {ElementFactory}
-	 */
-	ElementFactory.prototype.registerElement = function(key, value) {
-	  'use strict';
-	  this.registeredElements.set(key, value);
-	  return this;
-	};
-	/*
-	 * Create a DOM Element of type mapped to key with given options
-	 * 
-	 * @param {string} key Key of Element type to create
-	 * @param {object} options Options to use when creating element
-	 * @returns {object} of type mapped to given key
-	 */
-	ElementFactory.prototype.create = function(key, options) {
-	  'use strict';
-	  var Elem = this.registeredElements.get(key);
-	  return new Elem(options);
-	};
-
-	module.exports = ElementFactory;
-
-/***/ },
-/* 17 */
-/***/ function(module, exports) {
-
-	/**
 	 * Dom Element wrapper
 	 * 
+	 * @param {string | Object | HTMLElement} template
 	 * @returns {Element}
 	 */
-
 	function Element(template) {
 	  'use strict';
 	  this.template = template;
 	  this.assign(this.template);
 	}
+	/**
+	 * Assign object attributes
+	 * 
+	 * @param {string | Object | HTMLElement} template
+	 * @returns {Element}
+	 */
 	Element.prototype.assign = function(template) {
 	  'use strict';
 	  this.children = [];
@@ -987,31 +958,64 @@
 	  this.element = this.operator[0];
 	  return this;
 	};
-	// Children Modifiers //
+	/**
+	 * Return single angular element of object element children
+	 * 
+	 * @returns {angular.element}
+	 */
 	Element.prototype.getChildren = function() {
 	  'use strict';
 	  return this.operator.children();
 	};
+	/**
+	 * Add an angular element to object children array
+	 * 
+	 * @param {Element} component
+	 * @returns {Element}
+	 */
 	Element.prototype.addChild = function(component) {
 	  'use strict';
 	  this.children.push(component);
 	  return this;
 	};
-	// Class Modifiers //
+	/**
+	 * Check if object element has a class
+	 * 
+	 * @param {string} _class
+	 * @returns {boolean}
+	 */
 	Element.prototype.hasClass = function(_class) {
 	  'use strict';
 	  return this.operator.hasClass(_class);
 	};
+	/**
+	 * Add a class to object element
+	 * 
+	 * @param {string} _class
+	 * @returns {Element}
+	 */
 	Element.prototype.addClass = function(_class) {
 	  'use strict';
 	  this.operator.addClass(_class);
 	  return this;
 	};
+	/**
+	 * Remove a class from object element
+	 * 
+	 * @param {string} _class
+	 * @returns {Element}
+	 */
 	Element.prototype.removeClass = function(_class) {
 	  'use strict';
 	  this.operator.removeClass(_class);
 	  return this;
 	};
+	/**
+	 * Add many calsses to object element
+	 * 
+	 * @param {string[]} _classList
+	 * @returns {Element}
+	 */
 	Element.prototype.addClasses = function(_classList) {
 	  'use strict';
 	  var self = this;
@@ -1020,6 +1024,13 @@
 	  });
 	  return this;
 	};
+
+	/**
+	 * Remove many calsses from object element
+	 * 
+	 * @param {string[]} _classList
+	 * @returns {Element}
+	 */
 	Element.prototype.removeClasses = function(_classList) {
 	  'use strict';
 	  var self = this;
@@ -1028,30 +1039,71 @@
 	  });
 	  return this;
 	};
+	/**
+	 * Remove all classes from object element
+	 * 
+	 * @returns {Element}
+	 */
 	Element.prototype.clearClasses = function() {
 	  'use strict';
 	  this.element.classList = "";
 	  return this;
 	};
-	// Attribute Modifiers //
+	/**
+	 * Get an attribute from object element
+	 * 
+	 * @param {string} attribute
+	 * @returns {string}
+	 */
 	Element.prototype.getAttribute = function(attribute) {
 	  'use strict';
 	  return this.operator.attr(attribute);
 	};
+	/**
+	 * Check if attribute exists for object element
+	 * 
+	 * @param {string} attribute
+	 * @returns {boolean}
+	 */
 	Element.prototype.hasAttribute = function(attribute) {
 	  'use strict';
 	  return this.getAttribute(attribute) ? true : false; // eslint-disable-line no-unneeded-ternary
 	};
+	/**
+	 * Set object element attribute
+	 * 
+	 * @param {string} name
+	 * @param {string} value
+	 * @returns {Element}
+	 */
 	Element.prototype.setAttribute = function(name, value) {
 	  'use strict';
 	  this.operator.attr(name, value);
 	  return this;
 	};
-	Element.prototype.removeAttribute = function(key) {
+	/**
+	 * Remove object element attribute
+	 * 
+	 * @param {string} name
+	 * @returns {Element}
+	 */
+	Element.prototype.removeAttribute = function(name) {
 	  'use strict';
-	  this.operator.removeAttr(key);
+	  this.operator.removeAttr(name);
 	  return this;
 	};
+	/**
+	 * @typedef {Object} attribute
+	 * @property {string} name Attribute name
+	 * @property {string} value Sttribute value
+	 */
+
+	/**
+	 * Set many object element attributes
+	 * 
+	 * @param {attribute[]} _attributes
+	 * @returns {Element}
+	 */
 	Element.prototype.setAttributes = function(_attributes) {
 	  'use strict';
 	  var self = this;
@@ -1060,6 +1112,11 @@
 	  });
 	  return this;
 	};
+	/**
+	 * Remove all object element attributes
+	 * 
+	 * @returns {Element}
+	 */
 	Element.prototype.clearAttributes = function() {
 	  'use strict';
 	  var i = 0,
@@ -1072,8 +1129,14 @@
 	    }
 	    this.removeAttribute(key);
 	  }
+	  return this;
 	};
-	// Text Content Modifiers //
+	/**
+	 * Set object element text content
+	 * 
+	 * @param {string} content
+	 * @returns {Element}
+	 */
 	Element.prototype.setTextContent = function(content) {
 	  'use strict';
 	  this.operator.text(content);
@@ -1083,8 +1146,8 @@
 	module.exports = Element;
 
 /***/ },
-/* 18 */
-/***/ function(module, exports, __webpack_require__) {
+/* 17 */
+/***/ function(module, exports) {
 
 	/**
 	 * Element Manager 2
@@ -1095,15 +1158,12 @@
 	 * @returns {ElementManager}
 	 */
 
-	var AngularHelper = __webpack_require__(19);
-	var Element = __webpack_require__(17);
-	var Guid = __webpack_require__(20);
-
-	function ElementManager2() {
+	function ElementManager($injector) {
 	  'use strict';
 
-	  this.helper = new AngularHelper();
-	  this.guid = new Guid();
+	  this.helper = $injector.get('AngularHelper');
+	  this.guid = $injector.get('Guid');
+	  this.element = $injector.get('Element');
 
 	  this.elements = new Map();
 	  this.elementsById = new Map();
@@ -1112,29 +1172,29 @@
 	  this.dom = document.body;
 	  this.component = null;
 	}
-	ElementManager2.prototype.bind = function(scope, compile) {
+	ElementManager.prototype.bind = function(scope, compile) {
 	  'use strict';
 	  this.helper.bind(scope, compile);
 	  return this;
 	};
-	ElementManager2.prototype.get = function(key) {
+	ElementManager.prototype.get = function(key) {
 	  'use strict';
 	  return this.elements.get(key) || this.elementsById.get(key);
 	};
 
-	ElementManager2.prototype.addToDom = function(component) {
+	ElementManager.prototype.addToDom = function(component) {
 	  'use strict';
 	  this.dom.appendChild(component);
 	  return this;
 	};
-	ElementManager2.prototype.removeFromDom = function(component) {
+	ElementManager.prototype.removeFromDom = function(component) {
 	  'use strict';
 	  if(this.dom.contains(component)) {
 	    this.dom.removeChild(component);
 	  }
 	  return this;
 	};
-	ElementManager2.prototype.clearDom = function() {
+	ElementManager.prototype.clearDom = function() {
 	  'use strict';
 	  var self = this;
 	  this.elements.forEach(function(n) {
@@ -1142,62 +1202,62 @@
 	  });
 	  return this;
 	};
-	ElementManager2.prototype._build = function(context, elementMap, add) {
+	ElementManager.prototype._build = function(context, elementMap, add) {
 	  'use strict';
 	  elementMap.forEach(function(e) {
 	    add.call(context, e.element);
 	  });
 	};
-	ElementManager2.prototype.build = function() {
+	ElementManager.prototype.build = function() {
 	  'use strict';
 	  this.clearDom();
 	  this._build(this, this.elements, this.addToDom);
 	  this.compile();
 	  return this;
 	};
-	ElementManager2.prototype.compile = function() {
+	ElementManager.prototype.compile = function() {
 	  'use strict';
 	  this.helper.compileContent(this.dom);
 	  return this;
 	};
 
-	ElementManager2.prototype.saveUI = function(name) {
+	ElementManager.prototype.saveUI = function(name) {
 	  'use strict';
 	  var _name = name || this.guid.create();
 	  this.UICache[_name] = this.getUI();
 	  return this;
 	};
-	ElementManager2.prototype.getUI = function() {
+	ElementManager.prototype.getUI = function() {
 	  'use strict';
 	  return new Map(this.elements);
 	};
-	ElementManager2.prototype.setUI = function(name) {
+	ElementManager.prototype.setUI = function(name) {
 	  'use strict';
 	  this.clearUI();
 	  this.elements = new Map(this.UICache[name]);
 	  return this;
 	};
-	ElementManager2.prototype.clearUI = function() {
+	ElementManager.prototype.clearUI = function() {
 	  'use strict';
 	  delete this.elements;
 	  this.elements = new Map();
 	  return this;
 	};
 
-	ElementManager2.prototype.addOrReplace = function(key, value) {
+	ElementManager.prototype.addOrReplace = function(key, value) {
 	  'use strict';
 	  this.elements.set(key, value);
 	  return this;
 	};
-	ElementManager2.prototype.addIdReference = function(id, value) {
+	ElementManager.prototype.addIdReference = function(id, value) {
 	  'use strict';
 	  this.elementsById.set(id, value);
 	  return this;
 	};
-	ElementManager2.prototype.createFromTemplate = function(template) {
+	ElementManager.prototype.createFromTemplate = function(template) {
 	  'use strict';
 	  var self = this;
-	  var element = new Element(template);
+	  var element = new this.element(template);
 	  var children = element.getChildren();
 	  if(element.getAttribute('id')) {
 	    this.addIdReference(element.getAttribute('id'), element);
@@ -1208,7 +1268,29 @@
 	  return element;
 	};
 
-	module.exports = ElementManager2;
+	module.exports = ElementManager;
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Angular Package for AngularHelper modules
+	 * 
+	 * @requires {AngularHelper}
+	 */
+	var AngularHelper = __webpack_require__(19);
+
+	/**
+	 * AngularHelperPkg module definition
+	 * @class {AngularHelperPkg}
+	 */
+	angular.module('AngularHelperPkg', [])
+	/**
+	 * AngularHelperPkg module definition
+	 * @class {AngularHelper}
+	 */
+	.service('AngularHelper',  [AngularHelper]);
 
 /***/ },
 /* 19 */
@@ -1227,8 +1309,8 @@
 	/*
 	 * Binds a scope and compile to the helper
 	 * 
-	 * @param {object} scope
-	 * @param {object} compile
+	 * @param {object} scope AngularJS $scope instance
+	 * @param {object} compile AngularJS $compile
 	 * @returns {AngularHelper}
 	 */
 	AngularHelper.prototype.bind = function(scope, compile) {
@@ -1253,6 +1335,21 @@
 
 /***/ },
 /* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * GuidPkg module definition
+	 * 
+	 * @requires {Guid}
+	 */
+
+	var Guid = __webpack_require__(21);
+
+	angular.module('GuidPkg', [])
+	  .service('Guid', Guid);
+
+/***/ },
+/* 21 */
 /***/ function(module, exports) {
 
 	/**
@@ -1287,7 +1384,7 @@
 	module.exports = Guid;
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1296,13 +1393,13 @@
 	 * @requires {EventOptions}
 	 */
 
-	var Template = __webpack_require__(22);
+	var Template = __webpack_require__(23);
 
 	angular.module('TemplatePkg', [])
 	  .service('Template', Template);
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports) {
 
 	/**
@@ -1328,37 +1425,50 @@
 	module.exports = Template;
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * TrackPkg module definition
+	 * Angular Package for Track modules
 	 * 
 	 * @requires {GeoserverTrack}
 	 */
+	var GeoserverTrack = __webpack_require__(25);
 
-	var GeoserverTrack = __webpack_require__(24);
-
+	/**
+	 * TrackPkg module definition
+	 * @class TrackPkg
+	 */
 	angular.module('TrackPkg', [])
-	  .factory('GeoserverTrack', function() {
-	    'use strict';
-	    return GeoserverTrack;
-	  });
+	/**
+	 * Geoserver Implementation of a Track
+	 * @class GeoserverTrack
+	 */
+	.factory('GeoserverTrack', [function() {
+	  'use strict';
+	  return GeoserverTrack;
+	}]);
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports) {
 
 	/**
 	 * GeoserverTrack
 	 * 
+	 * @param {Object} data JSON Response from Geoserver
 	 * @returns {GeoserverTrack}
 	 */
-
 	function GeoserverTrack(data) {
 	  'use strict';
 	   this.new(data);
 	}
+	/**
+	 * Assign data to the Object
+	 * 
+	 * @param {Object} data JSON Response from Geoserver
+	 * @returns {GeoserverTrack}
+	 */
 	GeoserverTrack.prototype.new = function(data) {
 	  'use strict';
 
@@ -1366,8 +1476,8 @@
 	  var feature = (data && data.features) ? data.features[idx] : undefined;
 	  var properties = (feature && feature.properties) ? feature.properties : {};
 
-	  var flagPicUrl = '';
-	  var shipPicUrl = '';
+	  var flagPicUrl = 'https://dcgsn-a-portal1.sd.spawar.navy.mil/weaver/pm/apps/flags/render?_accept=image/png&dataSource=iso3&nationality=';
+	  var shipPicUrl = 'https://dcgsn-d-portal1.sd.spawar.navy.mil/images';
 
 	  this.geometry =  (feature && feature.geometry) ? feature.geometry : undefined;
 	  this.lat =  (this.geometry && this.geometry.coordinates) ? this.geometry.coordinates[1] : undefined;
@@ -1421,7 +1531,13 @@
 	  this.vesselType =  properties.VESSEL_TYPE || 'No Data';
 	  this.width =  properties.width || 'No Data';
 
+	  return this;
 	};
+	/**
+	 * Set the time delay field
+	 * 
+	 * @returns {string} result Human readable time delay
+	 */
 	GeoserverTrack.prototype.setTimeDelay = function() {
 	  'use strict';
 	  var milliseconds = Date.now() - this.lastUpdate;
@@ -1448,6 +1564,19 @@
 		
 	  return result;
 	};
+	/**
+	 * @typedef {Object} location
+	 * @property {string} lat Latitude
+	 * @property {string} lon Longitude
+	 */
+
+	/**
+	 * Get location in DMS format
+	 * 
+	 * @param {number} lat
+	 * @param {number} lon
+	 * @returns {location} Location in Human Readable Format
+	 */
 	GeoserverTrack.prototype.getLocation = function(lat, lon) {
 	  'use strict';
 

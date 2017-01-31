@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: main/templates/Info/InfoTemplate.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: main/templates/Info/InfoTemplate.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Info State Templates
+ * 
+ * @param {Template} Template
+ * @returns {BaseballCardTemplates}
+ */
+
+var InfoStyles = require('./InfoStyles.js');
+
+function InfoTemplate() {
+  'use strict';
+
+  var Styles = new InfoStyles();
+
+  var createTabRow = function (data) {
+    var TabRow =
+      '&lt;div style="' + Styles.TabRowContainerStyle +'">' +
+      '&lt;div class="panel panel-default" style="' + Styles.ZeroMarginZeroPadding + '">' +
+      '&lt;div class="panel-body" style="' + Styles.ZeroMarginZeroPadding + '">' +
+      '&lt;table class="table table-no-border" style="' + Styles.TabTableStyle + '">' +
+      '&lt;tbody>';
+    if (data.header) {
+      TabRow += createTableHeader(data.header);
+    }
+    TabRow += createTableRows(data);
+    TabRow +=
+      '&lt;/tbody>' +
+      '&lt;/table>' +
+      '&lt;/div>' +
+      '&lt;/div>' +
+      '&lt;/div>';
+    return TabRow;
+  };
+  var createTableRows = function (data) {
+    var TableRowCount = Math.ceil(data.cells.length / data.maxCols);
+    var TableRows = '';
+    for (var i = 0; i &lt; TableRowCount; i++) {
+      TableRows += createTableRow(data.cells.slice(i * data.maxCols, (i + 1) * data.maxCols));
+    }
+    return TableRows;
+  };
+  var createTableRow = function (data) {
+    var TableRow =
+      '&lt;tr>';
+    data.forEach(function (cellData) {
+      TableRow += createTableCell(cellData);
+    });
+    TableRow +=
+      '&lt;/tr>';
+    return TableRow;
+  };
+  var createTableHeader = function (data) {
+    var TableHeader =
+      '&lt;tr>' +
+      '&lt;td colspan="' + data.width + '">' +
+      '&lt;i>' + data.text + '&lt;/i>' +
+      '&lt;/td>' +
+      '&lt;/tr>';
+    return TableHeader;
+  };
+  var createTableCell = function (data) {
+    var TableCell =
+      '&lt;td>' +
+      '&lt;label for="' + data.name + '" style="' + Styles.TableCellLabelStyle + '">' + data.label + '&lt;/label>' +
+      '&lt;div class="dynamic-color">' +
+      '&lt;p id="' + data.name + '" style="' + Styles.TableCellTextStyle + '" name="' + data.name + '">' + data.value + '&lt;/p>' +
+      '&lt;/div>' +
+      '&lt;/td>';
+    return TableCell;
+  };
+
+  this.tabContent =
+    '&lt;div style="' + Styles.TabContentContainerStyle + '">' +
+      createTabRow({
+        header: {
+          text: 'Identification Information',
+          width: 4
+        },
+        cells: [
+          { name: 'ltn', label: 'LTN', value: '{{TRACK.ltn}}'},
+          { name: 'category', label: 'Category', value: '{{TRACK.category}}'},
+          { name: 'display-name', label: 'Display Name', value: '{{TRACK.displayName}}'},
+          { name: 'hull-num', label: 'Hull #', value: '{{TRACK.hullNumber}}' },
+          { name: 'mmsi', label: 'MMSI', value: '{{TRACK.mmsi}}'},
+          { name: 'sconum', label: 'SCONUM', value: '{{TRACK.sconum}}'},
+          { name: 'call-sign', label: 'Call Sign', value: '{{TRACK.callSign}}'},
+          { name: 'ship-class', label: 'Ship Class', value: '{{TRACK.shipClass}}'},
+          { name: 'type-msn', label: 'Type/MSN', value: '{{TRACK.trackType}}'},
+          { name: 'subordination', label: 'Subordination', value: '{{TRACK.subordination}}'},
+          { name: 'be-num', label: 'BE #', value: '{{TRACK.beNumber}}'},
+          { name: 'threat', label: 'Threat', value: '{{TRACK.threat}}'}
+        ],
+        maxCols: 4
+      }) +
+      createTabRow({
+        header: {
+          text: 'Last Contact',
+          width: 4
+        },
+        cells: [
+          { name: 'location', label: 'Location', value: '{{TRACK.location.lat}}&lt;br>{{TRACK.location.lon}}'},
+          { name: 'time-delay', label: 'Time Delay', value: '{{TRACK.timeDelay}}'},
+          { name: 'source', label: 'Source', value: '{{TRACK.source}}'},
+          { name: 'track-type', label: 'Track Type', value: '{{TRACK.trackType}}' },
+          { name: 's2a-type', label: 'S2A Type', value: '{{TRACK.s2aType}}'},
+          { name: 'vessel-type', label: 'Vessel Type', value: '{{TRACK.vesselType}}'},
+          { name: 'days-deployed', label: 'Days Underway', value: '{{TRACK.daysDeployed}}'},
+          { name: 'last-port', label: 'Last Port', value: '{{TRACK.lastPort}}'},
+          { name: 'next-port', label: 'Next Port', value: '{{TRACK.nextPort}}'},
+          { name: 'home-port', label: 'Home Port', value: '{{TRACK.homePort}}'},
+        ],
+        maxCols: 4
+      }) +
+      createTabRow({
+        header: {
+          text: 'Vessel Information',
+          width: 4
+        },
+        cells: [
+          { name: 'speed-capability', label: 'Speed Capability', value: '{{TRACK.speedCap}}'},
+          { name: 'avg-reported-speed', label: 'Avg Reported Speed', value: '{{TRACK.averageSpeed}}'},
+          { name: 'last-refuel', label: 'last Refuel', value: '{{TRACK.lastRefuel}}'},
+          { name: 'readiness', label: 'Readiness', value: '{{TRACK.readiness}}' },
+          { name: 'major-weapons', label: 'Major Weapons', value: '{{TRACK.majorWeapons}}'}
+        ],
+        maxCols: 4
+      });
+    '&lt;/div>';
+}
+
+module.exports = InfoTemplate;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="global.html#GeoserverTrack">GeoserverTrack</a></li><li><a href="TrackPkg.html">TrackPkg</a></li><li>{AngularHelperPkg}</li><li>{<a href="global.html#AngularHelper">AngularHelper</a>}</li></ul><h3>Global</h3><ul><li><a href="global.html#AngularHelper">AngularHelper</a></li><li><a href="global.html#Config">Config</a></li><li><a href="global.html#createBaseballCardTemplates">createBaseballCardTemplates</a></li><li><a href="global.html#Element">Element</a></li><li><a href="global.html#ElementManager">ElementManager</a></li><li><a href="global.html#EventList">EventList</a></li><li><a href="global.html#EventOptions">EventOptions</a></li><li><a href="global.html#Guid">Guid</a></li><li><a href="global.html#InfoCtrl">InfoCtrl</a></li><li><a href="global.html#InfoStyles">InfoStyles</a></li><li><a href="global.html#InfoSvc">InfoSvc</a></li><li><a href="global.html#InfoTemplate">InfoTemplate</a></li><li><a href="global.html#Template">Template</a></li><li><a href="global.html#TestData">TestData</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Jan 30 2017 17:23:38 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

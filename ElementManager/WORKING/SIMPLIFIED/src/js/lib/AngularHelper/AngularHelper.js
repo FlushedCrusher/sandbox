@@ -11,8 +11,8 @@ function AngularHelper() {
 /*
  * Binds a scope and compile to the helper
  * 
- * @param {object} scope
- * @param {object} compile
+ * @param {object} scope AngularJS $scope instance
+ * @param {object} compile AngularJS $compile
  * @returns {AngularHelper}
  */
 AngularHelper.prototype.bind = function(scope, compile) {

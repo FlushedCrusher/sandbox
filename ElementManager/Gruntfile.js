@@ -2,11 +2,21 @@ var commonjs_webpack_config = require('./commonjs/webpack.config.js');
 var angularjs_webpack_config = require('./angularjs/webpack.config.js');
 var working_webpack_config = require('./WORKING/BaseballCard/webpack.config.js');
 var simplified_webpack_config = require('./WORKING/SIMPLIFIED/webpack.config.js');
+var simplified_doc_src = './WORKING/SIMPLIFIED/src/**/*.js';
+var simplified_doc_dest = './WORKING/SIMPLIFIED/doc';
 
 module.exports = function(grunt) {
   'use strict';
 
   grunt.initConfig({
+    jsdoc : {
+        dist : {
+            src: [simplified_doc_src],
+            options: {
+                destination: simplified_doc_dest
+            }
+        }
+    },
     pkg: grunt.file.readJSON('package.json'),
     webpack: {
       build_commonjs: commonjs_webpack_config,
@@ -30,6 +40,7 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks("grunt-webpack");
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-jsdoc');
 
   grunt.registerTask('default', [ 
     'webpack',

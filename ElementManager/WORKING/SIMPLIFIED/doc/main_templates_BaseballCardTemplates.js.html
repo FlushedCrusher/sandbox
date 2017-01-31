@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: main/templates/BaseballCardTemplates.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: main/templates/BaseballCardTemplates.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * BaseballCardTemplates Implementation
+ * 
+ * @param {Template} Template
+ * @returns {BaseballCardTemplates}
+ */
+
+var InfoTemplate = require('./Info/InfoTemplate.js');
+var BaseballCardStyles = require('./BaseballCardStyles.js');
+
+function BaseballCardTemplates(Template) {
+    'use strict';
+
+    var Styles = new BaseballCardStyles();
+
+    var createPanelBody = function(data) {
+      var PanelBody =
+        '&lt;div class="panel-body" style="' + Styles.ZeroMarginZeroPadding + '">' +
+        '&lt;img class="ship-pic" ng-src="{{TRACK.image}}" onerror="this.style.display=\'none\'">' +
+        PanelNavigation +
+        data +
+        '&lt;/div>';
+      return PanelBody;
+    };
+
+    var HeaderTemplate =
+      '&lt;header class="header class-noclass">' +
+      '&lt;p style="' + Styles.ZeroMarginZeroPadding + '">{{TRACK.classification}}&lt;/p>' +
+      '&lt;/header>';
+    Template.set('Header', HeaderTemplate);
+
+    var InfoTabContent = new InfoTemplate().tabContent;
+
+    var PanelHeading =
+      '&lt;div class="panel-heading" style="' + Styles.PanelHeadingStyle + '">' +
+      '&lt;img class="flag-pic" ng-src="{{TRACK.flagPic}}" onerror="this.style.display=\'none\'">' +
+      '&lt;span class="ng-binding">' +
+      '&lt;!-- Track Name -->' +
+      '{{" " + (TRACK.name | uppercase) + ", "}}' +
+      '&lt;/span>' +
+      '&lt;span class="ng-binding">' +
+      '&lt;!-- Country Code -->' +
+      '{{COUNTRY | uppercase}}' +
+      '&lt;/span>' +
+      '&lt;span class="float-right ng-binding" style="' + Styles.FloatRight + '">' +
+      '&lt;!-- Last Updated -->' +
+      'Last Updated - {{TRACK.lastUpdate | date:\'dd MMM yyyy HH:mm:ss\' : \'UTC\' | uppercase}}Z' +
+      '&lt;/span>' +
+      '&lt;/div>';
+
+    var PanelNavigationButtons =
+      '&lt;div class="btn-group" role="group" aria-label="..." style="' + Styles.PanelNavigationButtonGroupStyle + '">' +
+      '&lt;a href="" ng-click="onNavRefreshClick($event)">' +
+      '&lt;span ' +
+      'id="nav-refresh"' +
+      'class="glyphicon glyphicon-refresh btn-hover" ' +
+      'uib-tooltip="Refresh" ' +
+      'style="' + Styles.PanelNavigationButtonStyle + '">&lt;/span>' +
+      '&lt;/a>' +
+      '&lt;a href="" ng-click="onNavEyeconClick($event)">' +
+      '&lt;span ' +
+      'id="nav-eyecon"' +
+      'class="glyphicon glyphicon-eye-close btn-hover" ' +
+      'ng-mouseover="getEyeConTip()" ' +
+      'data-uib-tooltip-html="eyeconTip" ' +
+      'style="' + Styles.PanelNavigationButtonStyle + '">&lt;/span>' +
+      '&lt;/a>' +
+      '&lt;/div>';
+
+    var PanelNavigation =
+      '&lt;div style="' + Styles.PanelNavigationStyle + '">' +
+      '&lt;ul id="navigation-tabs" class="nav nav-tabs" style="' + Styles.PanelNavigationTabStyle + '">' +
+      '&lt;li role="navigation" class="active">' +
+      '&lt;a href="" ng-click="onTabClick($event)" data-index="0">' +
+      'Track Info' +
+      '&lt;/a>' +
+      '&lt;/li>' +
+      '&lt;li role="navigation">' +
+      '&lt;a href="" ng-click="onTabClick($event)" data-index="1">' +
+      'Active Alerts' +
+      '&lt;/a>' +
+      '&lt;/li>' +
+      '&lt;li role="navigation">' +
+      '&lt;a href="" ng-click="onTabClick($event)" data-index="2">' +
+      'Notes' +
+      '&lt;/a>' +
+      '&lt;/li>' +
+      PanelNavigationButtons +
+      '&lt;/ul>' +
+      '&lt;/div>';
+
+    var PanelBody = createPanelBody(InfoTabContent);
+    var PanelTemplate =
+      '&lt;div class="scroll-content">' +
+      '&lt;div class="panel panel-default" style="' + Styles.PanelTemplateStyle + '">' +
+      PanelHeading +
+      PanelBody +
+      '&lt;/div>' +
+      '&lt;/div>';
+    Template.set('Panel', PanelTemplate);
+
+    var FooterTemplate =
+      '&lt;footer class="footer class-noclass">' +
+      '&lt;p style="' + Styles.ZeroMarginZeroPadding + '">{{TRACK.classification}}&lt;/p>' +
+      '&lt;/footer>';
+    Template.set('Footer', FooterTemplate);
+
+}
+
+module.exports = BaseballCardTemplates;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="global.html#GeoserverTrack">GeoserverTrack</a></li><li><a href="TrackPkg.html">TrackPkg</a></li><li>{AngularHelperPkg}</li><li>{<a href="global.html#AngularHelper">AngularHelper</a>}</li></ul><h3>Global</h3><ul><li><a href="global.html#AngularHelper">AngularHelper</a></li><li><a href="global.html#Config">Config</a></li><li><a href="global.html#createBaseballCardTemplates">createBaseballCardTemplates</a></li><li><a href="global.html#Element">Element</a></li><li><a href="global.html#ElementManager">ElementManager</a></li><li><a href="global.html#EventList">EventList</a></li><li><a href="global.html#EventOptions">EventOptions</a></li><li><a href="global.html#Guid">Guid</a></li><li><a href="global.html#InfoCtrl">InfoCtrl</a></li><li><a href="global.html#InfoStyles">InfoStyles</a></li><li><a href="global.html#InfoSvc">InfoSvc</a></li><li><a href="global.html#InfoTemplate">InfoTemplate</a></li><li><a href="global.html#Template">Template</a></li><li><a href="global.html#TestData">TestData</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Jan 30 2017 17:23:38 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

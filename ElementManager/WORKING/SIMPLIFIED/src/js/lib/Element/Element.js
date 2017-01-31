@@ -1,14 +1,20 @@
 /**
  * Dom Element wrapper
  * 
+ * @param {string | Object | HTMLElement} template
  * @returns {Element}
  */
-
 function Element(template) {
   'use strict';
   this.template = template;
   this.assign(this.template);
 }
+/**
+ * Assign object attributes
+ * 
+ * @param {string | Object | HTMLElement} template
+ * @returns {Element}
+ */
 Element.prototype.assign = function(template) {
   'use strict';
   this.children = [];
@@ -16,31 +22,64 @@ Element.prototype.assign = function(template) {
   this.element = this.operator[0];
   return this;
 };
-// Children Modifiers //
+/**
+ * Return single angular element of object element children
+ * 
+ * @returns {angular.element}
+ */
 Element.prototype.getChildren = function() {
   'use strict';
   return this.operator.children();
 };
+/**
+ * Add an angular element to object children array
+ * 
+ * @param {Element} component
+ * @returns {Element}
+ */
 Element.prototype.addChild = function(component) {
   'use strict';
   this.children.push(component);
   return this;
 };
-// Class Modifiers //
+/**
+ * Check if object element has a class
+ * 
+ * @param {string} _class
+ * @returns {boolean}
+ */
 Element.prototype.hasClass = function(_class) {
   'use strict';
   return this.operator.hasClass(_class);
 };
+/**
+ * Add a class to object element
+ * 
+ * @param {string} _class
+ * @returns {Element}
+ */
 Element.prototype.addClass = function(_class) {
   'use strict';
   this.operator.addClass(_class);
   return this;
 };
+/**
+ * Remove a class from object element
+ * 
+ * @param {string} _class
+ * @returns {Element}
+ */
 Element.prototype.removeClass = function(_class) {
   'use strict';
   this.operator.removeClass(_class);
   return this;
 };
+/**
+ * Add many calsses to object element
+ * 
+ * @param {string[]} _classList
+ * @returns {Element}
+ */
 Element.prototype.addClasses = function(_classList) {
   'use strict';
   var self = this;
@@ -49,6 +88,13 @@ Element.prototype.addClasses = function(_classList) {
   });
   return this;
 };
+
+/**
+ * Remove many calsses from object element
+ * 
+ * @param {string[]} _classList
+ * @returns {Element}
+ */
 Element.prototype.removeClasses = function(_classList) {
   'use strict';
   var self = this;
@@ -57,30 +103,71 @@ Element.prototype.removeClasses = function(_classList) {
   });
   return this;
 };
+/**
+ * Remove all classes from object element
+ * 
+ * @returns {Element}
+ */
 Element.prototype.clearClasses = function() {
   'use strict';
   this.element.classList = "";
   return this;
 };
-// Attribute Modifiers //
+/**
+ * Get an attribute from object element
+ * 
+ * @param {string} attribute
+ * @returns {string}
+ */
 Element.prototype.getAttribute = function(attribute) {
   'use strict';
   return this.operator.attr(attribute);
 };
+/**
+ * Check if attribute exists for object element
+ * 
+ * @param {string} attribute
+ * @returns {boolean}
+ */
 Element.prototype.hasAttribute = function(attribute) {
   'use strict';
   return this.getAttribute(attribute) ? true : false; // eslint-disable-line no-unneeded-ternary
 };
+/**
+ * Set object element attribute
+ * 
+ * @param {string} name
+ * @param {string} value
+ * @returns {Element}
+ */
 Element.prototype.setAttribute = function(name, value) {
   'use strict';
   this.operator.attr(name, value);
   return this;
 };
-Element.prototype.removeAttribute = function(key) {
+/**
+ * Remove object element attribute
+ * 
+ * @param {string} name
+ * @returns {Element}
+ */
+Element.prototype.removeAttribute = function(name) {
   'use strict';
-  this.operator.removeAttr(key);
+  this.operator.removeAttr(name);
   return this;
 };
+/**
+ * @typedef {Object} attribute
+ * @property {string} name Attribute name
+ * @property {string} value Sttribute value
+ */
+
+/**
+ * Set many object element attributes
+ * 
+ * @param {attribute[]} _attributes
+ * @returns {Element}
+ */
 Element.prototype.setAttributes = function(_attributes) {
   'use strict';
   var self = this;
@@ -89,6 +176,11 @@ Element.prototype.setAttributes = function(_attributes) {
   });
   return this;
 };
+/**
+ * Remove all object element attributes
+ * 
+ * @returns {Element}
+ */
 Element.prototype.clearAttributes = function() {
   'use strict';
   var i = 0,
@@ -101,8 +193,14 @@ Element.prototype.clearAttributes = function() {
     }
     this.removeAttribute(key);
   }
+  return this;
 };
-// Text Content Modifiers //
+/**
+ * Set object element text content
+ * 
+ * @param {string} content
+ * @returns {Element}
+ */
 Element.prototype.setTextContent = function(content) {
   'use strict';
   this.operator.text(content);

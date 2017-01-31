@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: main/services/InfoSvc.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: main/services/InfoSvc.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Info State Service
+ * 
+ * @returns {InfoSvc}
+ */
+
+/* global $ */
+
+function InfoSvc($injector) { // eslint-disable-line no-unused-vars
+  'use strict';
+  var CONFIG = $injector.get('Config');
+  var $timeout = $injector.get('$timeout');
+  var $interval = $injector.get('$interval');
+  var ElementManager = $injector.get('ElementManager');
+  var exTrackService = $injector.get('ex-track-service');
+  var exWatchListSvc = $injector.get('ex-watch-list-service');
+
+  var CONST = CONFIG.BASEBALLCARD;
+  var _timeDelayCalculator = undefined;
+
+  var _popData = function() {
+    // TODO: Refactor to use the new Element wrapper.
+    $(document).ready(function(){
+      $('.dynamic-color > p').each(function(){
+        if ($(this).text().trim() !== 'No Data') {
+          $(this).css('color', 'black');
+        }
+      });
+    });
+  };
+  var isWatched = function() {
+    return exWatchListSvc.isWatched();
+  };
+  var _toggleWatched = function() {
+    exWatchListSvc.toggleWatched();
+  };
+  var getTrackData = function() {
+    return exTrackService.getTrackData();
+  };
+  var onClassificationChanged = function(newValue, oldValue) { // eslint-disable-line no-unused-vars
+    //'use strict';
+    var thisClass = 'class-noclass';
+    if(newValue.length > 0) {
+      if(newValue.charAt(0).toUpperCase() === 'U') {
+        thisClass = 'class-unclass';
+      } else if (newValue.charAt(0).toUpperCase() === 'S'){
+        thisClass = 'class-secret';
+      } else if (newValue.charAt(0).toUpperCase() === 'T'){
+        thisClass = 'class-top-secret';
+      }
+    }
+    ElementManager.get('Header').removeClasses(CONST.CLASSIFICATION_CLASSES);
+    ElementManager.get('Header').addClass(thisClass);
+    ElementManager.get('Header').setTextContent(newValue);
+    ElementManager.get('Footer').removeClasses(CONST.CLASSIFICATION_CLASSES);
+    ElementManager.get('Footer').addClass(thisClass);
+    ElementManager.get('Footer').setTextContent(newValue);
+  };
+  var startTimeDelayCaluculator = function(toDo, every) {
+    if(_timeDelayCalculator) {
+      return;
+    }
+    _timeDelayCalculator = $interval(toDo, every);
+  };
+  var stopTimeDelayCaluculator = function() {
+    if(_timeDelayCalculator) {
+      $interval.cancel(_timeDelayCalculator);
+      _timeDelayCalculator = undefined;
+    }
+  };
+  var popDataOnDelay = function() {
+    $timeout(_popData, 500);
+  };
+  var onTabClick = function(e) {
+    var nav = ElementManager.get('navigation-tabs');
+    var _item = e.toElement;
+    // nav.removeClassFromChildren('active')
+    nav.getChildren().removeClass('active');
+    // nav.addClassToChildAtIndex(_item.dataset.index);
+    nav.children[_item.dataset.index].addClass('active');
+    console.debug('Clicked: ' + _item.textContent.trim());
+  };
+  var onNavRefreshClick = function(e) { // eslint-disable-line no-unused-vars
+    console.debug('Refreshing data...');
+  };
+  var onNavEyeconClick = function(e) { // eslint-disable-line no-unused-vars
+    console.debug('Toggling eyecon / watch list...');
+    _toggleWatched();
+    setEyeCon();
+  };
+  var setEyeCon = function() {
+    if(isWatched()) {
+      ElementManager.get('nav-eyecon').removeClass('glyphicon-eye-close');
+      ElementManager.get('nav-eyecon').addClass('glyphicon-eye-open');
+    } else {
+      ElementManager.get('nav-eyecon').removeClass('glyphicon-eye-open');
+      ElementManager.get('nav-eyecon').addClass('glyphicon-eye-close');
+    }
+
+  };
+  var getEyeConTip = function() {
+    return exWatchListSvc.getEyeConTip();
+  };
+
+  return {
+    onClassificationChanged: onClassificationChanged,
+    onTabClick: onTabClick,
+    onNavRefreshClick: onNavRefreshClick,
+    onNavEyeconClick: onNavEyeconClick,
+    popDataOnDelay: popDataOnDelay,
+    getTrackData: getTrackData,
+    startTimeDelayCaluculator: startTimeDelayCaluculator,
+    stopTimeDelayCaluculator: stopTimeDelayCaluculator,
+    isWatched: isWatched,
+    setEyeCon: setEyeCon,
+    getEyeConTip: getEyeConTip
+  };
+
+}
+
+module.exports = InfoSvc;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="global.html#GeoserverTrack">GeoserverTrack</a></li><li><a href="TrackPkg.html">TrackPkg</a></li><li>{AngularHelperPkg}</li><li>{<a href="global.html#AngularHelper">AngularHelper</a>}</li></ul><h3>Global</h3><ul><li><a href="global.html#AngularHelper">AngularHelper</a></li><li><a href="global.html#Config">Config</a></li><li><a href="global.html#createBaseballCardTemplates">createBaseballCardTemplates</a></li><li><a href="global.html#Element">Element</a></li><li><a href="global.html#ElementManager">ElementManager</a></li><li><a href="global.html#EventList">EventList</a></li><li><a href="global.html#EventOptions">EventOptions</a></li><li><a href="global.html#Guid">Guid</a></li><li><a href="global.html#InfoCtrl">InfoCtrl</a></li><li><a href="global.html#InfoStyles">InfoStyles</a></li><li><a href="global.html#InfoSvc">InfoSvc</a></li><li><a href="global.html#InfoTemplate">InfoTemplate</a></li><li><a href="global.html#Template">Template</a></li><li><a href="global.html#TestData">TestData</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Jan 30 2017 17:23:38 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
