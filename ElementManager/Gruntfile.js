@@ -13,7 +13,9 @@ module.exports = function(grunt) {
         dist : {
             src: [simplified_doc_src],
             options: {
-                destination: simplified_doc_dest
+                destination: simplified_doc_dest,
+                template : "node_modules/ink-docstrap/template",
+                configure : "node_modules/ink-docstrap/template/jsdoc.conf.json"
             }
         }
     },

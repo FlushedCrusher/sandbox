@@ -1,11 +1,11 @@
-
-var GeoserverTrack = require('./GeoserverTrack.js');
-
 /**
  * Angular Package for Track modules
- * @module TrackPkg
- * @requires {GeoserverTrack}
+ * @module components/Track/TrackPkg
+ * @requires {components/Track/GeoserverTrack}
  */
+
+var GeoserverTrack = require('components/Track/GeoserverTrack');
+
 angular.module('TrackPkg', [])
 /** GeoserverTrack Constructor */
 .factory('GeoserverTrack', [function() {

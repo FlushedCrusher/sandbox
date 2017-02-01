@@ -1,8 +1,8 @@
 /** ----------------------------------------------------------------------------
  * Geoserver Track Implementation
- * @module GeoserverTrack
+ * @module components/Track/GeoserverTrack
  * @param {Object} data JSON Response from Geoserver
- * @exports {GeoserverTrack}
+ * @exports {components/Track/GeoserverTrack}
  * -------------------------------------------------------------------------- */
 
 /**
@@ -13,7 +13,7 @@
 
 /**
  * @constructor
- * @alias module:GeoserverTrack
+ * @alias module:components/Track/GeoserverTrack
  */
 function GeoserverTrack(data) {
   'use strict';

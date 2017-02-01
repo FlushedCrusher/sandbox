@@ -902,52 +902,62 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * ElementPkg module definition
-	 * 
-	 * @requires {AngularHelper}
-	 * @requires {Element}
-	 * @requires {ElementManager}
-	 * @requires {Guid}
+	 * Angular Package for Element modules
+	 * @module lib/Element/ElementPkg
+	 * @requires {lib/AngularHelper/AngularHelper}
+	 * @requires {lib/Element/Element}
+	 * @requires {lib/Element/ElementManager}
+	 * @requires {lib/Guid/GuidPkg}
 	 */
 
 	var Element = __webpack_require__(16);
 	var ElementManager = __webpack_require__(17);
-
 	__webpack_require__(18);
 	__webpack_require__(20);
 
 	angular.module('ElementPkg',
-	  [
-	    'AngularHelperPkg',
-	    'GuidPkg'
-	  ])
-	  .factory('Element', function() {
-	    'use strict';
-	    return Element; 
-	  })
-	  .service('ElementManager', [
-	    '$injector',  
-	    ElementManager
-	  ]);
+	[
+	  'AngularHelperPkg',
+	  'GuidPkg'
+	])
+	/** Element COnstructor */
+	.factory('Element', function() {
+	  'use strict';
+	  return Element; 
+	})
+	/** ElementManager Instance */
+	.service('ElementManager', [
+	  '$injector',  
+	  ElementManager
+	]);
 
 /***/ },
 /* 16 */
 /***/ function(module, exports) {
 
-	/**
+	/** ----------------------------------------------------------------------------
 	 * Dom Element wrapper
-	 * 
+	 * @module lib/Element/Element
 	 * @param {string | Object | HTMLElement} template
-	 * @returns {Element}
+	 * @exports {lib/Element/Element}
+	 * -------------------------------------------------------------------------- */
+
+	/**
+	 * @typedef {Object} attribute
+	 * @property {string} name Attribute name
+	 * @property {string} value Sttribute value
+	 */
+
+	/**
+	 * @constructor
+	 * @alias module:lib/Element/Element
 	 */
 	function Element(template) {
 	  'use strict';
 	  this.template = template;
 	  this.assign(this.template);
 	}
-	/**
-	 * Assign object attributes
-	 * 
+	/** Assign object attributes
 	 * @param {string | Object | HTMLElement} template
 	 * @returns {Element}
 	 */
@@ -958,18 +968,14 @@
 	  this.element = this.operator[0];
 	  return this;
 	};
-	/**
-	 * Return single angular element of object element children
-	 * 
+	/** Return single angular element of object element children
 	 * @returns {angular.element}
 	 */
 	Element.prototype.getChildren = function() {
 	  'use strict';
 	  return this.operator.children();
 	};
-	/**
-	 * Add an angular element to object children array
-	 * 
+	/** Add an angular element to object children array
 	 * @param {Element} component
 	 * @returns {Element}
 	 */
@@ -978,9 +984,7 @@
 	  this.children.push(component);
 	  return this;
 	};
-	/**
-	 * Check if object element has a class
-	 * 
+	/** Check if object element has a class
 	 * @param {string} _class
 	 * @returns {boolean}
 	 */
@@ -988,9 +992,7 @@
 	  'use strict';
 	  return this.operator.hasClass(_class);
 	};
-	/**
-	 * Add a class to object element
-	 * 
+	/** Add a class to object element
 	 * @param {string} _class
 	 * @returns {Element}
 	 */
@@ -999,9 +1001,7 @@
 	  this.operator.addClass(_class);
 	  return this;
 	};
-	/**
-	 * Remove a class from object element
-	 * 
+	/** Remove a class from object element
 	 * @param {string} _class
 	 * @returns {Element}
 	 */
@@ -1010,9 +1010,7 @@
 	  this.operator.removeClass(_class);
 	  return this;
 	};
-	/**
-	 * Add many calsses to object element
-	 * 
+	/** Add many calsses to object element
 	 * @param {string[]} _classList
 	 * @returns {Element}
 	 */
@@ -1024,10 +1022,7 @@
 	  });
 	  return this;
 	};
-
-	/**
-	 * Remove many calsses from object element
-	 * 
+	/** Remove many calsses from object element
 	 * @param {string[]} _classList
 	 * @returns {Element}
 	 */
@@ -1039,9 +1034,7 @@
 	  });
 	  return this;
 	};
-	/**
-	 * Remove all classes from object element
-	 * 
+	/** Remove all classes from object element
 	 * @returns {Element}
 	 */
 	Element.prototype.clearClasses = function() {
@@ -1049,9 +1042,7 @@
 	  this.element.classList = "";
 	  return this;
 	};
-	/**
-	 * Get an attribute from object element
-	 * 
+	/** Get an attribute from object element
 	 * @param {string} attribute
 	 * @returns {string}
 	 */
@@ -1059,9 +1050,7 @@
 	  'use strict';
 	  return this.operator.attr(attribute);
 	};
-	/**
-	 * Check if attribute exists for object element
-	 * 
+	/** heck if attribute exists for object element
 	 * @param {string} attribute
 	 * @returns {boolean}
 	 */
@@ -1069,9 +1058,7 @@
 	  'use strict';
 	  return this.getAttribute(attribute) ? true : false; // eslint-disable-line no-unneeded-ternary
 	};
-	/**
-	 * Set object element attribute
-	 * 
+	/** Set object element attribute
 	 * @param {string} name
 	 * @param {string} value
 	 * @returns {Element}
@@ -1081,9 +1068,7 @@
 	  this.operator.attr(name, value);
 	  return this;
 	};
-	/**
-	 * Remove object element attribute
-	 * 
+	/** Remove object element attribute
 	 * @param {string} name
 	 * @returns {Element}
 	 */
@@ -1092,15 +1077,7 @@
 	  this.operator.removeAttr(name);
 	  return this;
 	};
-	/**
-	 * @typedef {Object} attribute
-	 * @property {string} name Attribute name
-	 * @property {string} value Sttribute value
-	 */
-
-	/**
-	 * Set many object element attributes
-	 * 
+	/** Set many object element attributes
 	 * @param {attribute[]} _attributes
 	 * @returns {Element}
 	 */
@@ -1112,9 +1089,7 @@
 	  });
 	  return this;
 	};
-	/**
-	 * Remove all object element attributes
-	 * 
+	/** Remove all object element attributes
 	 * @returns {Element}
 	 */
 	Element.prototype.clearAttributes = function() {
@@ -1131,9 +1106,7 @@
 	  }
 	  return this;
 	};
-	/**
-	 * Set object element text content
-	 * 
+	/** Set object element text content
 	 * @param {string} content
 	 * @returns {Element}
 	 */
@@ -1149,15 +1122,16 @@
 /* 17 */
 /***/ function(module, exports) {
 
-	/**
-	 * Element Manager 2
-	 * 
-	 * @requires {AngularHelper}
-	 * @requires {ElementFactory}
-	 * @requires {Guid}
-	 * @returns {ElementManager}
-	 */
+	/** ----------------------------------------------------------------------------
+	 * Element Manager
+	 * @module lib/Element/ElementManager
+	 * @exports {lib/Element/ElementManager}
+	 * -------------------------------------------------------------------------- */
 
+	/**
+	 * @constructor
+	 * @alias module:lib/Element/ElementManager
+	 */
 	function ElementManager($injector) {
 	  'use strict';
 
@@ -1172,6 +1146,11 @@
 	  this.dom = document.body;
 	  this.component = null;
 	}
+	/** Bind a scope and compile object to the object helper
+	 * @param {Object} scope - AngularJS $scope instance
+	 * @param {Object} compile - AngularJS $compile object
+	 * @return {ElementManager} this
+	 */
 	ElementManager.prototype.bind = function(scope, compile) {
 	  'use strict';
 	  this.helper.bind(scope, compile);
@@ -1181,7 +1160,6 @@
 	  'use strict';
 	  return this.elements.get(key) || this.elementsById.get(key);
 	};
-
 	ElementManager.prototype.addToDom = function(component) {
 	  'use strict';
 	  this.dom.appendChild(component);
@@ -1220,7 +1198,6 @@
 	  this.helper.compileContent(this.dom);
 	  return this;
 	};
-
 	ElementManager.prototype.saveUI = function(name) {
 	  'use strict';
 	  var _name = name || this.guid.create();
@@ -1243,7 +1220,6 @@
 	  this.elements = new Map();
 	  return this;
 	};
-
 	ElementManager.prototype.addOrReplace = function(key, value) {
 	  'use strict';
 	  this.elements.set(key, value);
@@ -1274,14 +1250,14 @@
 /* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
-	
-	var AngularHelper = __webpack_require__(19);
-
 	/**
 	 * Angular Package for AngularHelper modules
-	 * @module AngularHelperPkg
-	 * @requires {AngularHelper}
+	 * @module lib/AngularHelper/AngularHelperPkg
+	 * @requires {lib/AngularHelper/AngularHelper}
 	 */
+
+	var AngularHelper = __webpack_require__(19);
+
 	angular.module('AngularHelperPkg', [])
 	/** Instance of AngularHelper */
 	.service('AngularHelper',  [AngularHelper]);
@@ -1292,13 +1268,13 @@
 
 	/** ----------------------------------------------------------------------------
 	 * AngularHelper wrapper
-	 * @module AngularHelper
-	 * @returns {AngularHelper}
+	 * @module lib/AngularHelper/AngularHelper
+	 * @returns {lib/AngularHelper/AngularHelper}
 	 * -------------------------------------------------------------------------- */
 
 	/**
 	 * @constructor
-	 * @alias module:AngularHelper
+	 * @alias module:lib/AngularHelper/AngularHelper
 	 */
 	function AngularHelper() {
 	  'use strict';
@@ -1423,14 +1399,14 @@
 /* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
-	
-	var GeoserverTrack = __webpack_require__(25);
-
 	/**
 	 * Angular Package for Track modules
-	 * @module TrackPkg
-	 * @requires {GeoserverTrack}
+	 * @module components/Track/TrackPkg
+	 * @requires {components/Track/GeoserverTrack}
 	 */
+
+	var GeoserverTrack = __webpack_require__(25);
+
 	angular.module('TrackPkg', [])
 	/** GeoserverTrack Constructor */
 	.factory('GeoserverTrack', [function() {
@@ -1444,9 +1420,9 @@
 
 	/** ----------------------------------------------------------------------------
 	 * Geoserver Track Implementation
-	 * @module src/js/Components/Track/GeoserverTrack
+	 * @module components/Track/GeoserverTrack
 	 * @param {Object} data JSON Response from Geoserver
-	 * @exports {GeoserverTrack}
+	 * @exports {components/Track/GeoserverTrack}
 	 * -------------------------------------------------------------------------- */
 
 	/**
@@ -1457,7 +1433,7 @@
 
 	/**
 	 * @constructor
-	 * @alias module:GeoserverTrack
+	 * @alias module:components/Track/GeoserverTrack
 	 */
 	function GeoserverTrack(data) {
 	  'use strict';

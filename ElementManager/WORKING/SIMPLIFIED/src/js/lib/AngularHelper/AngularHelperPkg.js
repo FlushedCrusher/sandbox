@@ -1,11 +1,11 @@
-
-var AngularHelper = require('./AngularHelper.js');
-
 /**
  * Angular Package for AngularHelper modules
- * @module AngularHelperPkg
- * @requires {AngularHelper}
+ * @module lib/AngularHelper/AngularHelperPkg
+ * @requires {lib/AngularHelper/AngularHelper}
  */
+
+var AngularHelper = require('lib/AngularHelper/AngularHelper');
+
 angular.module('AngularHelperPkg', [])
 /** Instance of AngularHelper */
 .service('AngularHelper',  [AngularHelper]);

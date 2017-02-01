@@ -1,12 +1,12 @@
 /** ----------------------------------------------------------------------------
  * AngularHelper wrapper
- * @module AngularHelper
- * @returns {AngularHelper}
+ * @module lib/AngularHelper/AngularHelper
+ * @returns {lib/AngularHelper/AngularHelper}
  * -------------------------------------------------------------------------- */
 
 /**
  * @constructor
- * @alias module:AngularHelper
+ * @alias module:lib/AngularHelper/AngularHelper
  */
 function AngularHelper() {
   'use strict';

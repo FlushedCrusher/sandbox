@@ -1,12 +1,13 @@
-/**
- * Element Manager 2
- * 
- * @requires {AngularHelper}
- * @requires {ElementFactory}
- * @requires {Guid}
- * @returns {ElementManager}
- */
+/** ----------------------------------------------------------------------------
+ * Element Manager
+ * @module lib/Element/ElementManager
+ * @exports {lib/Element/ElementManager}
+ * -------------------------------------------------------------------------- */
 
+/**
+ * @constructor
+ * @alias module:lib/Element/ElementManager
+ */
 function ElementManager($injector) {
   'use strict';
 
@@ -21,6 +22,11 @@ function ElementManager($injector) {
   this.dom = document.body;
   this.component = null;
 }
+/** Bind a scope and compile object to the object helper
+ * @param {Object} scope - AngularJS $scope instance
+ * @param {Object} compile - AngularJS $compile object
+ * @return {ElementManager} this
+ */
 ElementManager.prototype.bind = function(scope, compile) {
   'use strict';
   this.helper.bind(scope, compile);
@@ -30,7 +36,6 @@ ElementManager.prototype.get = function(key) {
   'use strict';
   return this.elements.get(key) || this.elementsById.get(key);
 };
-
 ElementManager.prototype.addToDom = function(component) {
   'use strict';
   this.dom.appendChild(component);
@@ -69,7 +74,6 @@ ElementManager.prototype.compile = function() {
   this.helper.compileContent(this.dom);
   return this;
 };
-
 ElementManager.prototype.saveUI = function(name) {
   'use strict';
   var _name = name || this.guid.create();
@@ -92,7 +96,6 @@ ElementManager.prototype.clearUI = function() {
   this.elements = new Map();
   return this;
 };
-
 ElementManager.prototype.addOrReplace = function(key, value) {
   'use strict';
   this.elements.set(key, value);
