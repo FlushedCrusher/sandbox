@@ -23,24 +23,11 @@
   <script>
     var flyout = new Flyout({
       state: 'close',
-      position: 'left',
-      size: '200px',
+      position: 'right',
+      size: '98%',
       icon: 'glyphicon glyphicon-align-justify',
-      title: 'Create',
-      buttons: [
-        {
-          text: 'Option One',
-          callback: function() {
-            content.textContent = "Option One Selected"
-          }
-        },
-        {
-          text: 'Option Two',
-          callback: function() {
-            content.textContent = "Option One Selected"
-          }
-        }
-      ]
+      title: 'Flyout Overlay',
+      buttons: []
     });
     app.appendChild(flyout.element);
   </script>
