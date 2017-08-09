@@ -1,0 +1,58 @@
+a:hover,a:focus{
+    text-decoration: none;
+    outline: none;
+}
+#accordion .panel{
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    margin-bottom: -5px;
+}
+#accordion .panel-heading{
+    padding: 0;
+    border: none;
+}
+#accordion .panel-title a{
+    display: block;
+    padding: 15px 20px 15px 50px;
+    background: rgba(245, 245, 245, 1);
+    font-weight: 400;
+    font-style: normal;
+    font-size: 14px;
+    text-align: left;
+    color: #333;
+    border-top: 0px solid #000;
+    position: relative;
+    transition: all 0.3s ease 0s;
+}
+#accordion .panel:last-child .panel-title a{
+    border-bottom: 1px solid #fff;
+}
+#accordion .panel-title a.collapsed{
+    background: #f3f2eb;
+    color: #333;
+}
+#accordion .panel-title a:before,
+#accordion .panel-title a.collapsed:before,
+#accordion .panel-title a:after,
+#accordion .panel-title a.collapsed:after{
+    content: "";
+    width: 16px;
+    height: 4px;
+    background: #333;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    transition: all 0.3s ease 0s;
+}
+#accordion .panel-title a.collapsed:after{
+    transform: rotate(90deg);
+}
+#accordion .panel-body{
+    padding: 10px 20px 10px 50px;
+    background: #fff;
+    font-size: 11px;
+    color: #333;
+    line-height: 25px;
+    border-top: none;
+}
