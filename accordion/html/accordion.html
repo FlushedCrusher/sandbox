@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="author" content="Daniel J. Montanez">
+            
+        <title>Accordion</title>
+            
+        <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="../css/accordion.css">
+
+    </head>
+
+    <body>
+        <div id="app"></div>
+    </body>
+
+    <script type="text/javascript" src="../js/Accordion.js"></script>
+    
+    <script>
+        var accordion = new Accordion({
+            panels: [
+                {
+                    headingElement: 'h5',
+                    headingText: 'Panel One',
+                    contentText: 'This is some text',
+                    expanded: true
+                },
+                {
+                    headingElement: 'h5',
+                    headingText: 'Panel Two',
+                    contentText: 'This is some text',
+                    expanded: false
+                },
+                {
+                    headingElement: 'h5',
+                    headingText: 'Panel Three',
+                    contentText: 'This is some text',
+                    expanded: false
+                }
+            ]
+        });
+        app.appendChild(accordion.element);
+    </script>
+    
+</html>
