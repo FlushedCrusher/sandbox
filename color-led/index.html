@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>LED LIGHTS</title>
+</head>
+<body>
+  <div class="dcgsn-stoplight dcgsn-system-tooltip">
+    <div class="dcgsn-full-circle dcgsn-transparent-circle"></div>
+    <!-- 
+    <div class="dcgsn-yellow-light dcgsn-full-circle dcgsn-transparent-circle"></div>
+    <div class="dcgsn-green-light dcgsn-full-circle"></div>
+    -->
+    <span class="dcgsn-system-tooltiptext">
+    <b class="notch"></b>
+      <table class="dcgsn-system-table" style="width:100%">
+        <tbody id="dcgsn-system-table-body">
+        <tr>
+          <th>System</th>
+          <th>Status</th> 
+        </tr>
+        <tr>
+          <td>Alert Monitor</td>
+          <td>UNDEPLOYED</td>
+        </tr>
+        <tbody>
+      </table>
+    </span>
+  </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+<script type="text/javascript">
+
+  (function() {
+
+    var systemStateGreen = [
+      "Disk Health,OK",
+      "Thresher Connection,OK",
+      "Network Proxy Health,OK",
+      "Memory Health,OK",
+      "S2A Connection,OK",
+      "CPU Consumption,OK",
+      "Local Browser,OK"
+    ];
+    var systemStateYellow = [
+      "Disk Health,OK",
+      "Thresher Connection,DEGRADED",
+      "Network Proxy Health,OK",
+      "Memory Health,OK",
+      "S2A Connection,OK",
+      "CPU Consumption,DEGRADED",
+      "Local Browser,OK"
+    ];
+    var systemStateRed = [
+      "Disk Health,OK",
+      "Thresher Connection,DEGRADED",
+      "Network Proxy Health,OK",
+      "Memory Health,OK",
+      "S2A Connection,OK",
+      "CPU Consumption,SEVERE",
+      "Local Browser,OK"
+    ];
+    var systemStateWhite = [
+      "Alerting System,UNKNOWN",
+    ];
+
+    var SYS_ALERT_SL= '.dcgsn-full-circle';
+    var SYS_ALERT_SL_OFF= 'dcgsn-transparent-circle';
+    var SYS_ALERT_SL_RED= 'dcgsn-red-light';
+    var SYS_ALERT_SL_YELLOW= 'dcgsn-yellow-light';
+    var SYS_ALERT_SL_GREEN= 'dcgsn-green-light';
+    var SYS_ALERT_SL_WHITE= 'dcgsn-white-light';
+
+    var SYS_TOOLTIP_TEXT = '.dcgsn-system-tooltiptext';
+
+    function createTooltip(state) {
+      var table = $(".dcgsn-system-table")[0];
+      $("#dcgsn-system-table-body").find("tr:gt(0)").remove();
+      state.forEach(function(current_value, index) {
+        var tmp = current_value.split(",");
+        var row = table.insertRow();
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        cell1.innerHTML = tmp[0];
+        cell2.innerHTML = tmp[1];
+      });
+    }
+
+    function setSystemRed() {
+      createTooltip(systemStateRed);
+
+      $(SYS_ALERT_SL).removeClass(SYS_ALERT_SL_OFF);
+      $(SYS_ALERT_SL).removeClass(SYS_ALERT_SL_WHITE);
+      $(SYS_ALERT_SL).removeClass(SYS_ALERT_SL_YELLOW);
+      $(SYS_ALERT_SL).removeClass(SYS_ALERT_SL_GREEN);
+      $(SYS_ALERT_SL).addClass(SYS_ALERT_SL_RED);
+
+    };
+    /** Set System status to 'yellow' meaning degraded functionality */
+    function setSystemYellow() {
+      createTooltip(systemStateYellow);
+      
+      $(SYS_ALERT_SL).removeClass(SYS_ALERT_SL_OFF);
+      $(SYS_ALERT_SL).removeClass(SYS_ALERT_SL_WHITE);
+      $(SYS_ALERT_SL).removeClass(SYS_ALERT_SL_RED);
+      $(SYS_ALERT_SL).removeClass(SYS_ALERT_SL_GREEN);
+      $(SYS_ALERT_SL).addClass(SYS_ALERT_SL_YELLOW);
+    };
+    /** Set System status to 'green' meaning no issues */
+    function setSystemGreen() {
+      createTooltip(systemStateGreen);
+      
+      $(SYS_ALERT_SL).removeClass(SYS_ALERT_SL_OFF);
+      $(SYS_ALERT_SL).removeClass(SYS_ALERT_SL_WHITE);
+      $(SYS_ALERT_SL).removeClass(SYS_ALERT_SL_YELLOW);
+      $(SYS_ALERT_SL).removeClass(SYS_ALERT_SL_RED);
+      $(SYS_ALERT_SL).addClass(SYS_ALERT_SL_GREEN);
+    };
+    /** Set System status to 'white' meaning unknown status */
+    function setSystemWhite() {
+      createTooltip(systemStateWhite);
+      
+      $(SYS_ALERT_SL).removeClass(SYS_ALERT_SL_OFF);
+      $(SYS_ALERT_SL).removeClass(SYS_ALERT_SL_WHITE);
+      $(SYS_ALERT_SL).removeClass(SYS_ALERT_SL_RED);
+      $(SYS_ALERT_SL).removeClass(SYS_ALERT_SL_GREEN);
+      $(SYS_ALERT_SL).addClass(SYS_ALERT_SL_YELLOW);
+    };
+
+    setTimeout(setSystemGreen, 2000);
+    setTimeout(setSystemYellow, 4000);
+    setTimeout(setSystemRed, 6000);
+    setTimeout(setSystemWhite, 8000);
+    setTimeout(setSystemRed, 10000);
+    setTimeout(setSystemYellow, 12000);
+    setTimeout(setSystemGreen, 14000);
+
+    // setSystemGreen();
+    // setSystemYellow();
+    // setSystemRed();
+    // setSystemWhite();
+    
+  })();
+
+</script>
+</html>
