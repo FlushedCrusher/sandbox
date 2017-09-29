@@ -65,7 +65,9 @@ function Accordion(attrs) {
 
       var bdy = document.createElement('div');
         bdy.classList.add('panel-body');
-        bdy.innerText = panel.contentText;
+        panel.contentText && (bdy.innerText = panel.contentText);
+        panel.contentHtml && (bdy.innerHTML = panel.contentHtml);
+        panel.contentElement && (bdy.appendChild(panel.contentElement));
 
       title.appendChild(hdng);
       hdr.appendChild(title);
