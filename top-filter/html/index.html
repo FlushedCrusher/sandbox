@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+      <meta charset="utf-8">
+      <meta name="author" content="Daniel J. Montanez">
+      
+      <title>Top Filter - Example</title>
+
+      <link rel="stylesheet" href="https://bootswatch.com/flatly/bootstrap.css" />
+      <link rel="stylesheet" href="../css/style.css" />
+
+  </head>
+
+  <body>
+    <div id="top-filter-component"></div>
+  </body>
+
+  <script
+    src="https://code.jquery.com/jquery-3.2.1.js"
+    integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+    crossorigin="anonymous"></script>
+  <script type="text/javascript" src="../lib/state-machine.js"></script>
+  <script type="text/javascript" src="../_default/options.js" </script>
+  <script type="text/javascript" src="../components/control.js"></script>
+  <script type="text/javascript" src="../components/pickList.js"></script>
+  <script type="text/javascript" src="../components/selection.js"></script>
+  <script type="text/javascript" src="../index.js"></script>
+  <script type="text/javascript">
+  
+  (function() {
+
+    var topFilter = new TopFilter()
+      .apply({ action: TopFilter.ACTIONS.CREATE })
+      .apply({ action: TopFilter.ACTIONS.BUILD })
+      .apply({ action: TopFilter.ACTIONS.DRAW });
+
+  })();
+
+  </script>
+
+</html>
