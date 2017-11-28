@@ -1,6 +1,6 @@
 /**
  * Top Filter
- * @name Selection
+ * @name SelectionGroup
  */
 (function (root, construct) {
     'use strict';
@@ -9,39 +9,38 @@
         module.exports = construct();
     }
     else {
-        root.TopFilterSelection = construct();
+        root.TopFilterSelectionGroup = construct();
     }
 }(this, function () {
     'use strict';
 
-    function Selection(options) {
+    function SelectionGroup(options) {
         var me = this;
         me.options = options;
     }
 
-    Selection.ACTIONS = Object.freeze({
+    SelectionGroup.ACTIONS = Object.freeze({
         CREATE: Symbol("create"),
         UPDATE: Symbol("update"),
         DELETE: Symbol("delete")
     });
 
-    Selection.prototype.apply = function (options) {
+    SelectionGroup.prototype.apply = function (options) {
         var me = this;
         var _options = options || {};
         me.options = $.extend(
-            true,
-            {},
+            true, {},
             me.options,
             _options
         );
         switch (me.options.action) {
-            case Selection.ACTIONS.CREATE:
+            case SelectionGroup.ACTIONS.CREATE:
                 me._create();
                 break;
-            case Selection.ACTIONS.UPDATE:
+            case SelectionGroup.ACTIONS.UPDATE:
                 me._update();
                 break;
-            case Selection.ACTIONS.DELETE:
+            case SelectionGroup.ACTIONS.DELETE:
                 me._delete();
                 break;
             default:
@@ -49,38 +48,58 @@
         }
     };
 
-    Selection.prototype._create = function () {
+    SelectionGroup.prototype._create = function () {
         var me = this;
-
         me.element = document.createElement("div");
-        me.element.classList.add("control-group")
-
-        var _row = document.createElement("div");
-        _row.classList.add("controls", "span2");
-
-        var _wrapper = document.createElement("label");
-        _wrapper.classList.add("checkbox");
-
-        var _option = document.createElement("input");
-        _option.type = "checkbox";
-        _option.id = option.id;
-        _option.value = option.value;
-        _option.name = option.name;
-
-        me._update()
+        me.element.classList.add("control-group", "row");
+        me._update();
     };
 
-    Selection.prototype._update = function () {
+    SelectionGroup.prototype._update = function () {
         var me = this;
-
+        me.rows = me._getRows();
+        me.element.innerText = "";
+        me.rows.forEach((_row) => {
+            me.element.appendChild(_row);
+        });
     };
 
-    Selection.prototype._delete = function () {
+    SelectionGroup.prototype._delete = function () {
         var me = this;
         me.element.remove();
         delete me.element;
     };
 
-    return Selection;
+    SelectionGroup.prototype._getRows = function () {
+        var me = this;
+        var _rows = [];
+        me.chunkArray(me.options.data, me.options.maxRows).forEach((_options) => {
+            var _row = document.createElement("div");
+            _row.classList.add("controls", "span2", "col-xs-6");
+            _options.forEach((_option) => {
+                var _wrapper = document.createElement("label");
+                _wrapper.classList.add("checkbox");
+                var _checkBox = document.createElement("input");
+                _checkBox.type = "checkbox";
+                _checkBox.id = _option.id;
+                _checkBox.value = _option.value;
+                _wrapper.appendChild(_checkBox);
+                _wrapper.appendChild(document.createTextNode(_option.name));
+                _row.appendChild(_wrapper);
+            });
+            _rows.push(_row);
+        });
+        return _rows;
+    };
+
+    SelectionGroup.prototype.chunkArray = function (myArray, chunk_size) {
+        var results = [];
+        while (myArray.length) {
+            results.push(myArray.splice(0, chunk_size));
+        }
+        return results;
+    };
+
+    return SelectionGroup;
 
 }));

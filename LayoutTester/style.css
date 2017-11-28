@@ -1,0 +1,53 @@
+.my-page {
+    width: 100%;
+    height: 100%;
+}
+
+.my-head {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 50PX;
+    background-color: rgb(235, 238, 240);
+    border-bottom: 1px solid rgb(210, 214, 216);
+}
+
+.my-nav {
+    position: fixed;
+    top: 50PX;
+    width: 100%;
+    height: 50PX;
+    background-color: rgb(235, 238, 240);
+    border-bottom: 1px solid rgb(210, 214, 216);
+}
+
+.my-content-container {
+    position: absolute;
+    top: 100px;
+    width: 100%;
+    height: calc(100% - 100px);
+    overflow-y: auto;
+    background-color: rgb(235, 238, 240);
+}
+
+.my-content {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+}
+
+.my-info {
+    height: 60px;
+    width: calc(100% - 40px);
+    margin: 5px 20px;
+    border: 1px solid rgb(210, 214, 216);
+}
+
+.my-grid {
+    height: calc(100% - 90px);
+    width: calc(100% - 40px);
+    margin: 0 20px 20px 20px;
+    background-color: white;
+    box-shadow: -6px 6px 10px -7px rgba(0, 0, 0, 0.4);
+}

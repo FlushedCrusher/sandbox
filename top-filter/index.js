@@ -43,7 +43,13 @@
         me.pickListCache = new Map();
         me.defualtOptions = TopFilterOptions;
         me.options = options;
-        me._setTransitions();
+        me.defualtOptions.fsm.methods = {
+            onCreate: me._create.bind(me),
+            onBuild: me._build.bind(me),
+            onDraw: me._draw.bind(me),
+            onUpdate: me._update.bind(me),
+            onDelete: me._delete.bind(me)
+        };
         me.fsm = new StateMachine(me.defualtOptions.fsm);
         return me;
     }
@@ -60,8 +66,7 @@
         var me = this;
         var _options = options || {};
         me.options = $.extend(
-            true,
-            {},
+            true, {},
             me.defualtOptions,
             me.options,
             _options
@@ -89,17 +94,6 @@
         return me;
     };
 
-    TopFilter.prototype._setTransitions = function () {
-        var me = this;
-        me.defualtOptions.fsm.methods = {
-            onCreate: me._create.bind(me),
-            onBuild: me._build.bind(me),
-            onDraw: me._draw.bind(me),
-            onUpdate: me._update.bind(me),
-            onDelete: me._delete.bind(me)
-        };
-    };
-
     TopFilter.prototype._create = function () {
         var me = this;
         me.root = document.getElementById(me.options.root) || document.body;
@@ -112,15 +106,22 @@
         me.controls.style.float = me.options.reverseLayout ? "left" : "right";
         me.pickLists = document.createElement('div');
         me.pickLists.style.height = "inherit";
+        me.pickLists.style.display = "flex";
+        me.pickLists.style.flexDirection = "row";
         me.pickLists.style.float = me.options.reverseLayout ? "right" : "left";
         me.options.controls.forEach((_control) => {
             me.controlCache.set(_control.id, new me.Control(_control));
-            me.controlCache.get(_control.id).apply($.extend(true, {}, _control, { action: me.Control.ACTIONS.CREATE }));
+            me.controlCache.get(_control.id).apply($.extend(true, {}, _control, {
+                action: me.Control.ACTIONS.CREATE
+            }));
         });
         me.options.pickLists.forEach((_pickList) => {
             me.pickListCache.set(_pickList.id, new me.PickList(_pickList));
-            me.pickListCache.get(_pickList.id).apply($.extend(true, {}, _pickList, { action: me.PickList.ACTIONS.CREATE }));
+            me.pickListCache.get(_pickList.id).apply($.extend(true, {}, _pickList, {
+                action: me.PickList.ACTIONS.CREATE
+            }));
         });
+        
         me._update();
     };
 
@@ -150,10 +151,14 @@
         me.element.classList.add(...me.options.classes);
 
         me.options.controls.forEach((_control) => {
-            me.controlCache.get(_control.id).apply($.extend(true, {}, _control, { action: me.Control.ACTIONS.UPDATE }));
+            me.controlCache.get(_control.id).apply($.extend(true, {}, _control, {
+                action: me.Control.ACTIONS.UPDATE
+            }));
         });
         me.options.pickLists.forEach((_pickList) => {
-            me.pickListCache.get(_pickList.id).apply($.extend(true, {}, _pickList, { action: me.PickList.ACTIONS.UPDATE }));
+            me.pickListCache.get(_pickList.id).apply($.extend(true, {}, _pickList, {
+                action: me.PickList.ACTIONS.UPDATE
+            }));
         });
     };
 
